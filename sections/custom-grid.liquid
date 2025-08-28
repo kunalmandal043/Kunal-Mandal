@@ -1,0 +1,64 @@
+{% schema %}
+{
+  "name": "Custom Grid",
+  "settings": [],
+  "blocks": [
+    {
+      "type": "product",
+      "name": "Product",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Select Product" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Custom Grid" }]
+}
+{% endschema %}
+
+<section class="custom-grid">
+  <h2>Tisso vison in the wild</h2>
+  <div class="grid-container">
+    {% for block in section.blocks %}
+      {% assign product = all_products[block.settings.product] %}
+      {% if product %}
+        <div class="grid-item" data-handle="{{ product.handle }}">
+          {% if product.featured_image %}
+  <img
+    src="{{ product.featured_image | img_url: '600x' }}"
+    alt="{{ product.title | escape }}"
+    width="{{ product.featured_image.width }}"
+    height="{{ product.featured_image.height }}"
+    loading="lazy"
+  >
+{% endif %}
+
+          <p>{{ product.title }}</p>
+        </div>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Product Popup -->
+<div id="product-popup" class="popup hidden">
+  <div class="popup-content">
+    <span id="popup-close">&times;</span>
+    <img id="popup-image" 
+     src="{{ 'placeholder.png' | asset_url }}" 
+     alt="Product preview" 
+     width="400" height="400" loading="lazy">
+
+    <h2 id="popup-title"></h2>
+    <p id="popup-price"></p>
+    <p id="popup-description"></p>
+
+    <!-- Variants -->
+    <label for="variant-select">Choose your options:</label>
+    <select id="variant-select"></select>
+
+    <!-- Add to Cart -->
+    <button id="add-to-cart">ADD TO CART</button>
+  </div>
+</div>
+
