@@ -1,150 +1,88 @@
 {% comment %}
-  Custom Banner (pixel-perfect)
-  - All red-rectangle texts editable from the customizer
-  - Background image selectable
-  - Button hover animation (arrow slide)
-  - Mobile responsive
+  File: sections/gift-guide-banner.liquid
+  Purpose: One-file banner with inline CSS + background image from assets/img/bg-img.jpg
 {% endcomment %}
 
-<section class="tv-banner" style="--tv-bg:#f2f2f2;">
-  <div class="tv-banner__bg">
-    {% if section.settings.bg_image != blank %}
-      <img class="tv-banner__bg-img" src="{{ section.settings.bg_image | image_url: width: 2880 }}" alt="">
-    {% endif %}
-  </div>
-
-  <!-- Top strip: logo (left) | small tagline (center) | CTA (right) -->
-  <div class="tv-banner__top container">
-    <div class="tv-badge">{{ section.settings.logo_text }}</div>
-
-    <p class="tv-topnote">{{ section.settings.top_note }}</p>
-
-    {% if section.settings.top_cta_label != blank %}
-      <a href="{{ section.settings.top_cta_link | default: '#' }}" class="tv-cta tv-cta--yellow">
-        <span>{{ section.settings.top_cta_label }}</span>
-        <svg class="tv-cta__icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </a>
-    {% endif %}
-  </div>
-
-  <!-- Main content -->
-  <div class="tv-banner__content container">
-    <h1 class="tv-title">{{ section.settings.main_title }}</h1>
-
-    {% if section.settings.subcopy != blank %}
-      <p class="tv-subcopy">{{ section.settings.subcopy }}</p>
-    {% endif %}
-
-    {% if section.settings.primary_label != blank %}
-      <a href="{{ section.settings.primary_link | default: '#' }}" class="tv-cta tv-cta--black">
-        <span>{{ section.settings.primary_label }}</span>
-        <svg class="tv-cta__icon" width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M5 12h12M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </a>
-    {% endif %}
-  </div>
-
-  <!-- Bottom ribbon -->
-  {% if section.settings.bottom_note != blank %}
-    <div class="tv-banner__ribbon">
-      <div class="container">
-        <span class="tv-ribbon__text">{{ section.settings.bottom_note }}</span>
-      </div>
-    </div>
-  {% endif %}
-
+<section class="gift-banner" style="--bg:url('{{ 'img/bg-img.jpg' | asset_url }}');">
   <style>
-    .tv-banner{position:relative; overflow:hidden; background:var(--tv-bg);}
-    .tv-banner__bg{position:absolute; inset:0; z-index:0;}
-    .tv-banner__bg-img{width:100%; height:100%; object-fit:cover; object-position:center;}
-    .container{max-width:1200px; margin:0 auto; padding:0 20px; position:relative; z-index:1;}
+    .gift-banner{
+      position:relative; isolation:isolate;
+      background-image:var(--bg);
+      background-size:cover; background-position:center; background-repeat:no-repeat;
+      padding:24px 24px 56px;
+    }
+    .gift-banner__bar{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+      background:#efefef; padding:10px 16px; border-radius:4px;
+    }
+    .gift-banner__logo{ font-weight:700; letter-spacing:.06em; }
+    .gift-banner__eyebrow{ margin:0 auto; font-size:14px; opacity:.9; }
+    .gift-banner__cta-top a{
+      display:inline-flex; align-items:center; gap:8px; padding:12px 18px;
+      background:#ffe45c; color:#111; border:1.5px solid #111; border-radius:4px;
+      transition: transform .2s ease, filter .2s ease;
+    }
+    .gift-banner__cta-top a:hover{ transform:translateY(-2px); filter:brightness(.95); }
 
-    /* Top strip */
-    .tv-banner__top{
-      display:grid;
-      grid-template-columns:1fr auto 1fr;
-      align-items:center;
-      gap:12px;
-      padding:14px 0;
+    .gift-banner__inner{ max-width:1120px; margin:80px auto 0; }
+    .gift-banner__title{ font-size:72px; line-height:.95; margin:0 0 20px; }
+    .gift-banner__sub{ max-width:540px; background:#fff; border:2px solid #111; padding:18px 22px; }
+    .gift-banner__actions{ margin:24px 0 32px; }
+    .gift-banner__actions .btn{
+      display:inline-block; padding:14px 24px; border:2px solid #111; border-radius:4px;
+      transition: transform .2s ease, background-color .2s ease, color .2s ease;
     }
-    .tv-badge{
-      display:inline-block; font-weight:700; letter-spacing:.08em;
-      border:3px solid #000; padding:8px 10px; width:max-content; background:#fff;
-    }
-    .tv-topnote{
-      text-align:center; font-size:14px; background:#fff; padding:8px 14px;
-      border:3px solid #000; width:max-content; justify-self:center;
-    }
-    .tv-cta{
-      display:inline-flex; align-items:center; gap:10px; padding:12px 18px;
-      border:3px solid #000; border-radius:4px; font-weight:700; text-decoration:none;
-      transition:transform .2s ease, box-shadow .2s ease;
-    }
-    .tv-cta span{position:relative;}
-    .tv-cta__icon{transition:transform .2s ease;}
-    .tv-cta:hover{transform:translateY(-2px); box-shadow:4px 4px 0 #000;}
-    .tv-cta:hover .tv-cta__icon{transform:translateX(4px);}
-
-    .tv-cta--yellow{background:#ffe54d; color:#000; justify-self:end;}
-    .tv-cta--black{background:#000; color:#fff; margin-top:22px; width:max-content;}
-
-    /* Main */
-    .tv-banner__content{padding:48px 0 56px;}
-    .tv-title{
-      font-size: clamp(42px, 6vw, 84px);
-      font-weight:800; line-height:1; letter-spacing:-.02em;
-      background:#fff; border:5px solid #000; display:inline-block; padding:14px 18px; margin:16px 0;
-    }
-    .tv-subcopy{
-      max-width:640px; background:#fff; border:4px solid #000;
-      padding:18px 20px; line-height:1.5; margin-top:14px;
-      font-size:16px;
+    .gift-banner__actions .btn--primary{ background:#111; color:#fff; }
+    .gift-banner__actions .btn--primary:hover{ transform:translateY(-2px); background:#000; }
+    .gift-banner__tagline{
+      position:sticky; bottom:0; text-align:center; background:#eee; border-top:2px solid #111;
+      padding:8px 12px; letter-spacing:.02em;
     }
 
-    /* Ribbon */
-    .tv-banner__ribbon{background:#eee; border-top:3px solid #000; border-bottom:3px solid #000; padding:8px 0; margin-top:28px;}
-    .tv-ribbon__text{
-      display:inline-block; background:#ff4; border:3px solid #000; padding:6px 10px; font-weight:700; letter-spacing:.04em;
-    }
-
-    /* Responsive tweaks */
-    @media (max-width: 768px){
-      .tv-banner__top{grid-template-columns:1fr 1fr; grid-template-areas:
-        "logo cta" "note note"; row-gap:10px;}
-      .tv-badge{grid-area:logo;}
-      .tv-topnote{grid-area:note; justify-self:center;}
-      .tv-cta--yellow{grid-area:cta; justify-self:end;}
-      .tv-banner__content{padding:28px 0 36px;}
-      .tv-subcopy{font-size:14px;}
+    @media (max-width: 749px){
+      .gift-banner{ padding:16px 16px 40px; }
+      .gift-banner__inner{ margin-top:40px; }
+      .gift-banner__title{ font-size:42px; }
+      .gift-banner__sub{ font-size:14px; }
+      .gift-banner__bar{ flex-wrap:wrap; gap:8px; }
     }
   </style>
+
+  <div class="gift-banner__bar">
+    <div class="gift-banner__logo">{{ section.settings.logo_text }}</div>
+    <p class="gift-banner__eyebrow">{{ section.settings.eyebrow }}</p>
+    <div class="gift-banner__cta-top">
+      <a href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_label }}</a>
+    </div>
+  </div>
+
+  <div class="gift-banner__inner">
+    <h1 class="gift-banner__title">{{ section.settings.heading }}</h1>
+    <div class="gift-banner__sub">{{ section.settings.subheading }}</div>
+    <div class="gift-banner__actions">
+      <a class="btn btn--primary" href="{{ section.settings.primary_link }}">{{ section.settings.primary_label }}</a>
+    </div>
+  </div>
+
+  <p class="gift-banner__tagline">{{ section.settings.tagline }}</p>
+
+  {% schema %}
+  {
+    "name": "Gift guide banner (single file)",
+    "tag": "section",
+    "class": "gift-banner-section",
+    "settings": [
+      { "type":"text", "id":"logo_text", "label":"Logo text", "default":"TISSO VISON" },
+      { "type":"text", "id":"eyebrow", "label":"Eyebrow copy", "default":"Find the ideal gift for your loved ones." },
+      { "type":"text", "id":"heading", "label":"Main heading", "default":"The Gift Guide" },
+      { "type":"richtext", "id":"subheading", "label":"Subheading", "default":"<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>" },
+      { "type":"text", "id":"primary_label", "label":"Primary button label", "default":"SHOP NOW" },
+      { "type":"url",  "id":"primary_link",  "label":"Primary button link" },
+      { "type":"text", "id":"secondary_label", "label":"Top right button label", "default":"CHOOSE GIFT" },
+      { "type":"url",  "id":"secondary_link",  "label":"Top right button link" },
+      { "type":"text", "id":"tagline", "label":"Bottom tagline", "default":"SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
+    ],
+    "presets": [{ "name":"Gift guide banner" }]
+  }
+  {% endschema %}
 </section>
-
-{% schema %}
-{
-  "name": "Custom Banner (Tisso Vision)",
-  "settings": [
-    { "type": "image_picker", "id": "bg_image", "label": "Background illustration/image" },
-
-    { "type": "text", "id": "logo_text", "label": "Logo text (top-left)", "default": "TISSO VISON" },
-
-    { "type": "text", "id": "top_note", "label": "Top center note", "default": "Find the ideal gift for your loved ones." },
-
-    { "type": "text", "id": "top_cta_label", "label": "Top CTA label", "default": "CHOOSE GIFT" },
-    { "type": "url",  "id": "top_cta_link",  "label": "Top CTA link" },
-
-    { "type": "text", "id": "main_title", "label": "Main title", "default": "The Gift Guide" },
-
-    { "type": "textarea", "id": "subcopy", "label": "Description paragraph", "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season." },
-
-    { "type": "text", "id": "primary_label", "label": "Primary button label", "default": "SHOP NOW" },
-    { "type": "url",  "id": "primary_link",  "label": "Primary button link" },
-
-    { "type": "text", "id": "bottom_note", "label": "Bottom ribbon text", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
-  ],
-  "presets": [{ "name": "Custom Banner (Tisso Vision)" }]
-}
-{% endschema %}
