@@ -12,7 +12,7 @@
   "presets": [{ "name": "Custom Banner" }]
 }
 {% endschema %}
-
+{{ 'custom-banner.css' | asset_url | stylesheet_tag }}
 <section class="custom-banner">
  
   <p class="banner-top">{{ section.settings.top_note }}</p>
