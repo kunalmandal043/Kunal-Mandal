@@ -13,13 +13,15 @@
 }
 {% endschema %}
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-banner.js' | asset_url }}" defer></script>
+
 <section class="custom-banner">
  
-  <p class="banner-top">{{ section.settings.top_note }}</p>
+  {% comment %} <p class="banner-top">{{ section.settings.top_note }}</p>
   <h1>{{ section.settings.title }}</h1>
   <p class="banner-sub">{{ section.settings.subtitle }}</p>
   <a href="{{ section.settings.button_link }}" class="banner-btn">
     {{ section.settings.button_label }}
   </a>
-  <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
+  <p class="banner-bottom">{{ section.settings.bottom_note }}</p> {% endcomment %}
 </section>
