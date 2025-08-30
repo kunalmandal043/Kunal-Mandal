@@ -121,25 +121,20 @@
   
 } */
 .banner-bottom{
-  
-  width: 1440px;
-  height: 34px;
-  opacity: 1;
+  width: 100%;
+  text-align: center;
+  padding: 8px 12px;
+  background: #fff;
+  color: #000;
+  font-family: Jost, system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
 
-  /* Gap only works on flex/grid containers; include display if needed */
-  display: flex;                  /* optional: remove if not flex/grid */  /* controls gap usage */
-  gap: 375px;                     /* space between children when using flex/grid */
-
-  padding-top: 10px;
-  padding-right: 50px;
-  padding-bottom: 10px;
-  padding-left: 50px;
-
-  /* angle is not a CSS property; rotation would be: transform: rotate(0deg); */
-  /* Consider box-sizing to keep dimensions stable with padding: */
-  box-sizing: border-box;
-  background: rgba(245, 245, 245, 1);
-
+  /* thin blue border lines top and bottom to match the visual */
+  border-top: 2px solid #1ba7e1;
+  border-bottom: 2px solid #1ba7e1;
 }
 
 
