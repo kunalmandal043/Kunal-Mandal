@@ -64,11 +64,30 @@
   font-size: 16px;
   line-height: 20.48px;    /* or 1.28 */
   letter-spacing: 0;
-
+  padding-right: 44px;
   text-align: center;
   text-transform: uppercase;
   text: rgba(0, 0, 0, 1);
 
 }
+
+
+.banner-cta::after{
+  content: "→";                       /* arrow glyph */
+  position: absolute;
+  right: 14px;                        /* space from the edge of the button */
+  top: 50%;
+  transform: translateY(-50%);
+  font-weight: 700;                   /* bold like the design */
+  line-height: 1;
+  color: inherit;                     /* match button text color */
+  pointer-events: none;               /* click passes through */
+}
+
+/* Optional: small nudge on hover */
+.banner-cta:hover::after{
+  transform: translate(2px, -50%);    /* slide arrow a bit to the right */
+}
+
 
 
