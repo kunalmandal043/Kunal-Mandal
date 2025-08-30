@@ -74,18 +74,23 @@
 
 }
 .btn-icon{
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  
+
+  width: 24px;                      /* fixed line length */
+  height: 0;                        /* draw the line via the border */
+  opacity: 1;
+
+  /* optional positioning relative to parent if needed */
+  /* position: relative; top: 21.55px; left: 161px; */
+
+  border-top: 1.5px solid rgba(0, 0, 0, 1);
+  border-right: 0;
+  border-bottom: 0;
+  border-left: 0;
+
+  /* center within a block parent */
+  margin-left: auto;
+  margin-right: auto;
 }
-.banner-btn .btn-icon{
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  flex: 0 0 auto;
-}
-.banner-btn::after{ content: none; }
 
 
 
