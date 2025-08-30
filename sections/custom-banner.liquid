@@ -35,7 +35,13 @@
   <h1 class="banner-title">{{ section.settings.title }}</h1>
   <p class="banner-sub">{{ section.settings.subtitle }}</p>
   <a href="{{ section.settings.button_link }}" class="banner-btn">
-    {{ section.settings.button_label }}
-  </a>
+  {{ section.settings.button_label }}
+  <img
+    src="{{ 'choose-gift-arrow.svg' | asset_url }}"
+    alt=""
+    class="btn-icon"
+    width="20" height="20" loading="lazy" decoding="async">
+</a>
+
   <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
 </section>
