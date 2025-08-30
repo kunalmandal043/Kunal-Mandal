@@ -1,14 +1,12 @@
 .custom-banner{
-  width: 1440px;
-  height: 780px;
-  margin: 0 auto;                    /* center the fixed canvas */
+  width: 100%;
+  min-height: 878px;                 /* or use padding to control height */
   background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-size: cover;            /* fill the canvas */
-  background-position: center;       /* crop evenly */
+  background-size: cover;
+  background-position: center;
   background-repeat: no-repeat;
-  overflow: hidden;
+ 
 }
-
 
 /* Header bar */
 .banner-head{
