@@ -1,144 +1,138 @@
-.custom-banner{
+.custom-banner {
   width: 100%;
-  height: 780px;                 /* or use padding to control height */
+  height: 780px;
   background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-size: cover; 
-  padding:0;
-  background-size: contain;
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  position:relative;
- 
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* Header stays top, footer sticks bottom */
 }
 
-/* Header bar */
-.banner-head{
+/* ------------------ HEADER ------------------ */
+.banner-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;    /* left / center / right */
-  gap: 16px;                         
+  justify-content: space-between; /* left / center / right */
+  gap: 16px;
   padding: 10px 50px;
   background: #F5F5F5;
   width: 100%;
-  height: 64px;                      /* optional; can be auto */
+  height: 64px;
 }
 
-/* Left brand */
-.banner-head__left{ display:flex; align-items:center; }
-.brand{
-  font-weight: 700;                   /* not text:bold; */
+.banner-head__left { display: flex; align-items: center; }
+
+.brand {
+  font-weight: 700;
   font-size: 20px;
   line-height: 1;
   text-transform: uppercase;
-  /* remove fixed width/height to avoid clipping */
 }
 
-/* Center note */
-.banner-head__center{
+.banner-head__center {
   margin: 0 auto;
   text-align: center;
-  color: #000;                        /* not text:#000000; */
+  color: #000;
   font-family: Jost, system-ui, sans-serif;
   font-weight: 400;
   font-size: 16px;
   line-height: 1.1;
-  /* remove width/height/angle/leading-trim */
 }
 
-.banner-head__right{
-  width: 207px;
-  height: 44px;
+.banner-head__right {
   background: rgba(255, 245, 68, 1);
-
-  display : flex;
-}
-
-.banner-cta{
-  width: 102px;
-  height: 21px;
-  opacity: 1;
-   display: flex;
-  flex-direction:column;
- 
-
-  position: relative;      /* add positioning if top/left should apply */
-  top: 11.67px;
-  left: 41px;
-
-  font-family: "Jost", system-ui, sans-serif;
-  font-weight: 400;
-  font-style: normal;      /* “Regular” → normal */
-  font-size: 16px;
-  line-height: 20.48px;    /* or 1.28 */
-  letter-spacing: 0;
-  text-decoration: none;
-  
-  text-align: center;
-  text-transform: uppercase;
-  text: rgba(0, 0, 0, 1);
-  
-
-}
-.btn-icon{
-
-  width: 24px;                      /* fixed line length */
-                        /* draw the line via the border */
-  opacity: 1;
-
-  /* optional positioning relative to parent if needed */
-  /* position: relative; top: 21.55px; left: 161px; */
-
-  border-top: 1.5px solid rgba(0, 0, 0, 1);
-  border-right: 0;
-  border-bottom: 0;
-  border-left: 0;
-
-  /* center within a block parent */
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.banner-title{
-  width: 459px;
-  height: 70px;
-  opacity: 1;
-
-  /* Only use positioning if this element needs to be offset */
-  position: relative;      /* or absolute if required by layout */
-  top: 489px;
-  left: 67px;
-
-  font-family: "Jost", system-ui, sans-serif;
-  font-weight: 500;        /* “Medium” weight is 500 */
-  font-style: normal;      /* “Medium” is not a font-style */
-  font-size: 70px;
-  line-height: 100%;       /* or use unitless: 1 */
-  letter-spacing: 0;
-
-  text-transform: none;    /* not provided, but explicit if needed */
-  vertical-align: middle;  /* applies when inline/inline-block */
-  color: rgba(0, 0, 0, 1); /* “text” -> color */
-  
-  
-}
-.banner-footer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;  /* stretch full width */
-  height: 34px;
-  background: rgba(255, 245, 68, 1);
+  padding: 10px 20px;
   display: flex;
   align-items: center;
-  justify-content: center; /* center text */
 }
 
+.banner-cta {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  text-decoration: none;
+  text-align: center;
+  text-transform: uppercase;
+  color: #000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
+/* optional styling for inline SVG arrow */
+.btn-icon {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+}
 
+/* ------------------ BODY ------------------ */
+.banner-body {
+  flex: 1; /* take available space between head & footer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* vertically center */
+  text-align: center;
+  padding: 40px 20px;
+}
 
+.banner-title {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 70px;
+  line-height: 1.1;
+  color: rgba(0, 0, 0, 1);
+  margin-bottom: 20px;
+}
 
+.banner-sub {
+  font-family: "Jost", system-ui, sans-serif;
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1.4;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
 
+.banner-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  background: rgba(255, 245, 68, 1);
+  color: #000;
+  padding: 12px 24px;
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
 
+.banner-btn:hover {
+  background: rgba(230, 220, 50, 1);
+}
 
+/* ------------------ FOOTER ------------------ */
+.banner-footer {
+  background: rgba(255, 245, 68, 1);
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 20px;
+}
 
-
+.banner-bottom {
+  font-family: "Jost", system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  margin: 0;
+  text-align: center;
+}
