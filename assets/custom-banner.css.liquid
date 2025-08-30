@@ -69,29 +69,8 @@
   text-align: center;
   text-transform: uppercase;
   text: rgba(0, 0, 0, 1);
+  background-image: url('{{ "choose-gift-arrow.svg" | asset_url }}');
 
-}
-
-
-/* Right-side inline SVG icon */
-.banner-cta::after{
-  content: "";
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  width: 20px;                 /* adjust to your SVG’s viewBox */
-  height: 20px;
-  background-image: url('{{ "Line 15.svg" | asset_url }}');
-  background-size: contain;    /* keep aspect ratio */
-  background-repeat: no-repeat;
-  background-position: center right;
-  pointer-events: none;
-}
-
-/* Optional hover nudge */
-.banner-cta:hover::after{
-  transform: translate(2px, -50%);
 }
 
 
