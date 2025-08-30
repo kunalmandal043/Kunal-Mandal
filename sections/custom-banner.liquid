@@ -18,18 +18,19 @@
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
 <section class="custom-banner">
   <!-- Header bar -->
-  <div class="banner-head">
-    <div class="banner-head__left">
-      <span class="brand">TISSO VISON</span>
-    </div>
-    <p class="banner-head__center">{{ section.settings.top_note }}</p>
-    <div class="banner-head__right">
-      <a href="{{ section.settings.button_link }}" class="banner-cta">
-        {{ section.settings.button_label }}
-        <span class="banner-cta__icon" aria-hidden="true">→</span>
-      </a>
-    </div>
+<div class="banner-head">
+  <div class="banner-head__left">
+    <span class="brand">{{ section.settings.brand_text }}</span>
   </div>
+  <p class="banner-head__center">{{ section.settings.top_note }}</p>
+  <div class="banner-head__right">
+    <a href="{{ section.settings.button_link }}" class="banner-cta">
+      {{ section.settings.top_cta_label }}
+      <span class="banner-cta__icon" aria-hidden="true">→</span>
+    </a>
+  </div>
+</div>
+
 
   <!-- Body -->
   <h1 class="banner-title">{{ section.settings.title }}</h1>
