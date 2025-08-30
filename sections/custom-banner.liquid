@@ -8,13 +8,11 @@
     { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Discover Joy: Your Ultimate Holiday Gift Destination." },
     { "type": "text", "id": "bottom_note", "label": "Bottom Note", "default": "SUSTAINABLE. ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" },
     { "type": "text", "id": "top_cta_label", "label": "Top-right button label", "default": "CHOOSE GIFT" },
-    { "type": "url",  "id": "button_link", "label": "Top-right button link" },
-    { "type": "text", "id": "button_label", "label": "Body button label", "default": "CHOOSE GIFT" }
+    { "type": "url",  "id": "button_link", "label": "Top-right button link" }
   ],
   "presets": [{ "name": "Custom Banner" }]
 }
 {% endschema %}
-
 
 
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
@@ -38,12 +36,12 @@
   <p class="banner-sub">{{ section.settings.subtitle }}</p>
   <a href="{{ section.settings.button_link }}" class="banner-btn">
   {{ section.settings.button_label }}
-  <svg xmlns="choose-gift-arrow.svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="btn-icon">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-  </svg>
+  <img
+    src="{{ 'choose-gift-arrow.svg' | asset_url }}"
+    alt=""
+    class="btn-icon"
+    width="20" height="20" loading="lazy" decoding="async">
   </a>
-
-
 
   <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
 </section>
