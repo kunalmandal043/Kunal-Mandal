@@ -72,29 +72,9 @@
   
 
 }
-.banner-btn{
-  position: relative;
-  display: inline-flex;             /* ensure the button can hold text + icon */
-  align-items: center;
-  gap: 10px;                        /* text–icon spacing if you later switch to <img> */
-  padding-right: 48px;              /* room for the arrow placed on the right */
-  text-decoration: none;
-}
+.banner-btn{ display:inline-flex; align-items:center; gap:10px; }
+.banner-btn .btn-icon{ width:20px; height:20px; display:inline-block; }
 
-.banner-btn::after{
-  content: "";                      /* must be set for ::after to render */
-  position: absolute;
-  top: 50%;
-  right: 14px;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  background-image: url('{{ "choose-gift-arrow.svg" | asset_url }}');
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  pointer-events: none;
-}
 
 
 
