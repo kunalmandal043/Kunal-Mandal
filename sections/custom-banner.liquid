@@ -12,13 +12,26 @@
   "presets": [{ "name": "Custom Banner" }]
 }
 {% endschema %}
+
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'custom-banner.js' | asset_url }}" defer></script>
 
 <section class="custom-banner">
- 
-  <p class="banner-top">{{ section.settings.top_note }}</p>
-  <h1>{{ section.settings.title }}</h1>
+  <!-- Header bar -->
+  <div class="banner-head">
+    <div class="banner-head__left">
+      <span class="brand">TISSO VISON</span>
+    </div>
+    <p class="banner-head__center">{{ section.settings.top_note }}</p>
+    <div class="banner-head__right">
+      <a href="{{ section.settings.button_link }}" class="banner-cta">
+        {{ section.settings.button_label }}
+        <span class="banner-cta__icon" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <h1 class="banner-title">{{ section.settings.title }}</h1>
   <p class="banner-sub">{{ section.settings.subtitle }}</p>
   <a href="{{ section.settings.button_link }}" class="banner-btn">
     {{ section.settings.button_label }}
