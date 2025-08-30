@@ -2,16 +2,18 @@
 {
   "name": "Custom Banner",
   "settings": [
+    { "type": "text", "id": "brand_text", "label": "Brand text (left)", "default": "TISSO VISON" },
+    { "type": "text", "id": "top_note", "label": "Top Note", "default": "Find the ideal gift for your loved ones." },
     { "type": "text", "id": "title", "label": "Main Title", "default": "The Gift Guide" },
     { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Discover Joy: Your Ultimate Holiday Gift Destination." },
-    { "type": "text", "id": "top_note", "label": "Top Note", "default": "Find the ideal gift for your loved ones." },
     { "type": "text", "id": "bottom_note", "label": "Bottom Note", "default": "SUSTAINABLE. ETHICALLY MADE CLOTHES IN SIZES XXS TO 4XL" },
-    { "type": "url", "id": "button_link", "label": "Button Link" },
-    { "type": "text", "id": "button_label", "label": "Button Label", "default": "CHOOSE GIFT" }
+    { "type": "text", "id": "top_cta_label", "label": "Top-right button label", "default": "CHOOSE GIFT" },
+    { "type": "url",  "id": "button_link", "label": "Top-right button link" }
   ],
   "presets": [{ "name": "Custom Banner" }]
 }
 {% endschema %}
+
 
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
 <section class="custom-banner">
