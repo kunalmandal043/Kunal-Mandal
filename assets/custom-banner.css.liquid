@@ -73,8 +73,19 @@
   
 
 }
-.banner-btn{ display:inline-flex; align-items:center; gap:10px; }
-.banner-btn .btn-icon{ width:20px; height:20px; display:inline-block; }
+.banner-btn{
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.banner-btn .btn-icon{
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  flex: 0 0 auto;
+}
+.banner-btn::after{ content: none !important; }
 
 
 
