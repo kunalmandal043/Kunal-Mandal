@@ -73,29 +73,29 @@
 
 }
 .banner-btn{
-  
-  width: 24px;                      /* fixed line length */              /* [1] */
-  height: 0;                        /* draw line via border */           /* [2] */
-  opacity: 1;                       /* fully opaque */                   /* [1] */
-
-  /* Positioning (only if needed) */
-  position: absolute;               /* change to absolute if required */ /* [2] */
-  top: 21.55px;
-  left: 161px;
-  background:rgba(0,0,0,1);
-
-  border-top: 1.5px solid rgba(0, 0, 0, 1);  /* the visible line */      
-  border-right: 0;
-  border-bottom: 0;
-  border-left: 0;
-
-  /* Center the line within a block parent */
-  margin-left: auto;                                                    
-  margin-right: auto;       
-  z-index: -1;                                            
-
- 
+  position: relative;
+  display: inline-flex;             /* ensure the button can hold text + icon */
+  align-items: center;
+  gap: 10px;                        /* text–icon spacing if you later switch to <img> */
+  padding-right: 48px;              /* room for the arrow placed on the right */
+  text-decoration: none;
 }
+
+.banner-btn::after{
+  content: "";                      /* must be set for ::after to render */
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  background-image: url('{{ "choose-gift-arrow.svg" | asset_url }}');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
 
 
 
