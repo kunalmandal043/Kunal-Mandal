@@ -18,30 +18,33 @@
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
 <section class="custom-banner">
   <!-- Header bar -->
-<div class="banner-head">
-  <div class="banner-head__left">
-    <span class="brand">{{ section.settings.brand_text }}</span>
-  </div>
-  <p class="banner-head__center">{{ section.settings.top_note }}</p>
-  <div class="banner-head__right">
-    <a href="{{ section.settings.button_link }}" class="banner-cta">
-      {{ section.settings.top_cta_label }}
-      <svg xmlns="choose-gift-arrow.svg" width="24px" height="0" opacity=1 viewBox="0 0 24 24" stroke="currentColor" class="btn-icon">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-      </svg>
+  <div class="banner-head">
+    <div class="banner-head__left">
+     <span class="brand">{{ section.settings.brand_text }}</span>
+    </div>
+    <p class="banner-head__center">{{ section.settings.top_note }}</p>
+    <div class="banner-head__right">
+      <a href="{{ section.settings.button_link }}" class="banner-cta">
+       {{ section.settings.top_cta_label }}
+        <svg xmlns="choose-gift-arrow.svg" width="24px" height="0" opacity=1 viewBox="0 0 24 24" stroke="currentColor" class="btn-icon">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
 
+      </a>
+    </div>
+  </div>
+
+  <div class="banner-body">
+    <!-- Body -->
+    <h1 class="banner-title">{{ section.settings.title }}</h1>
+    <p class="banner-sub">{{ section.settings.subtitle }}</p>
+    <a href="{{ section.settings.button_link }}" class="banner-btn">
+    {{ section.settings.button_label }}
     </a>
   </div>
-</div>
 
-
-  <!-- Body -->
-  <h1 class="banner-title">{{ section.settings.title }}</h1>
-  <p class="banner-sub">{{ section.settings.subtitle }}</p>
-  <a href="{{ section.settings.button_link }}" class="banner-btn">
-    {{ section.settings.button_label }}
-  </a>
-
-  
-  <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
+  <!--footer-->
+  <div class="banner-footer">
+    <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
+    </div>
 </section>
