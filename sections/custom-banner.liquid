@@ -26,6 +26,10 @@
   <div class="banner-head__right">
     <a href="{{ section.settings.button_link }}" class="banner-cta">
       {{ section.settings.top_cta_label }}
+      <svg xmlns="choose-gift-arrow.svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="btn-icon">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+    </svg>
+
     </a>
   </div>
 </div>
@@ -35,13 +39,7 @@
   <h1 class="banner-title">{{ section.settings.title }}</h1>
   <p class="banner-sub">{{ section.settings.subtitle }}</p>
   <a href="{{ section.settings.button_link }}" class="banner-btn">
-  {{ section.settings.button_label }}
-  <img
-    src="{{ 'choose-gift-arrow.svg' | asset_url }}"
-    alt=""
-    class="btn-icon"
-    width="20" height="20" loading="lazy" decoding="async">
+    {{ section.settings.button_label }}
   </a>
-
   <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
 </section>
