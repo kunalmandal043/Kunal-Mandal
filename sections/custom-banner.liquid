@@ -45,7 +45,21 @@
   <div class="body-text"> 
     <h1 class="banner-title">{{ section.settings.title }}</h1> 
     <p class="banner-sub">{{ section.settings.subtitle }}</p> 
-    <a href="{{ section.settings.button_link }}" class="banner-btn"> {{ section.settings.button_label }} </a> 
+    <div class="banner-head__bottom">
+      <a href="{{ section.settings.button_link }}" class="banner-cta">
+        {{ section.settings.top_cta_label }}
+        <img 
+          src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
+          alt="Arrow icon" 
+          class="btn-icon"
+          width="20" 
+          height="20" 
+          loading="lazy" 
+          decoding="async"
+        />
+      </a>
+
+    </div> 
   </div> 
 </div>
 
