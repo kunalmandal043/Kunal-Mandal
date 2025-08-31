@@ -102,19 +102,21 @@
 
 
 .banner-head__bottom {
-  position: relative;
   width: fit-content;
   padding: 12px 24px;
-  background: #000;
-  overflow: hidden;   /* so the sliding background doesn’t overflow */
+  background: #000; /* default black */
+  margin-top: 1.5rem;
+  position: relative;
+  overflow: hidden; /* required for sliding effect */
   cursor: pointer;
 }
 
+/* Sliding yellow background */
 .banner-head__bottom::before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;   /* start outside */
+  left: -100%; /* start off-screen */
   width: 100%;
   height: 100%;
   background: rgba(255, 245, 68, 1); /* yellow */
@@ -123,38 +125,37 @@
 }
 
 .banner-head__bottom:hover::before {
-  left: 0; /* slides in left → right */
+  left: 0; /* slide into view */
 }
 
 .bottom-banner-cta {
   position: relative;
-  z-index: 2;  /* text stays above sliding background */
+  z-index: 2; /* keep text above yellow */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
+  color: #fff; /* default white text on black background */
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #000000;  /* default white */
   transition: color 0.4s ease-in-out;
 }
 
-.banner-head__bottom:hover .bottom-banner-cta {
-  color: #000000; /* stays white */
-}
-
 .bottom-btn-icon {
-  width: 18px;
-  height: 18px;
-  transition: filter 0.4s ease-in-out;
-  filter: brightness(0) invert(1); /* makes dark SVG → white */
+  position: relative;
+  z-index: 2;
+  transition: color 0.4s ease-in-out;
+  color: #fff; /* default white */
 }
 
+/* On hover → text + arrow turn black */
+.banner-head__bottom:hover .bottom-banner-cta,
 .banner-head__bottom:hover .bottom-btn-icon {
-  filter: brightness(0) invert(1); /* ensure it stays white */
+  color: #000;
 }
+
 
 
 /* ------------------ FOOTER ------------------ */
