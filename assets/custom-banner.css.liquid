@@ -102,24 +102,60 @@
 
 
 .banner-head__bottom {
+  position: relative;
   width: fit-content;
   padding: 12px 24px;
   background: #000;
-  margin-top: 1.5rem;
+  overflow: hidden;   /* so the sliding background doesn’t overflow */
+  cursor: pointer;
+}
+
+.banner-head__bottom::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;   /* start outside */
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 245, 68, 1); /* yellow */
+  transition: left 0.4s ease-in-out;
+  z-index: 1;
+}
+
+.banner-head__bottom:hover::before {
+  left: 0; /* slides in left → right */
 }
 
 .bottom-banner-cta {
+  position: relative;
+  z-index: 2;  /* text stays above sliding background */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #fff;
   display: flex;
   align-items: center;
   gap: 8px;
-  
+  color: #fff;  /* default white */
+  transition: color 0.4s ease-in-out;
 }
+
+.banner-head__bottom:hover .bottom-banner-cta {
+  color: #fff; /* stays white */
+}
+
+.bottom-btn-icon {
+  width: 18px;
+  height: 18px;
+  transition: filter 0.4s ease-in-out;
+  filter: brightness(0) invert(1); /* makes dark SVG → white */
+}
+
+.banner-head__bottom:hover .bottom-btn-icon {
+  filter: brightness(0) invert(1); /* ensure it stays white */
+}
+
 
 /* ------------------ FOOTER ------------------ */
 .banner-footer {
