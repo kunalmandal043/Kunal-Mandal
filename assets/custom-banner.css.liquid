@@ -1,10 +1,7 @@
 .custom-banner {
   width: 1440px;
   height: 780px;
-  background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;   /*  makes it cover full area */
+  
   
   display: flex;
   flex-direction: column;
@@ -79,6 +76,10 @@
   justify-content: center; /* vertically center */
   text-align: center;
   padding: 40px 20px;
+  background-image: url('{{ "bg-img.svg" | asset_url }}');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;   /*  makes it cover full area */
 }
 
 .banner-title {
