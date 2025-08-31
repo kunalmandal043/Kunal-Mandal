@@ -1,3 +1,4 @@
+/* ------------------ BASE ------------------ */
 .custom-banner {
   width: 100%;
   min-height: 100vh;
@@ -15,7 +16,6 @@
   padding: 10px 5%;
   background: #F5F5F5;
   width: 100%;
-  height: auto;
   flex-wrap: wrap;
 }
 
@@ -33,19 +33,17 @@
   font-size: 1rem;
 }
 
-/* ------------------ HOVER EFFECT FOR TOP-RIGHT CTA ------------------ */
+/* ------------------ TOP-RIGHT CTA ------------------ */
 .banner-head__right {
-  position: relative; /* for pseudo overlay */
+  position: relative;
   overflow: hidden;
-  background: rgba(255, 245, 68, 1); /* initial yellow */
+  background: rgba(255, 245, 68, 1);
   padding: 10px 20px;
   display: flex;
   align-items: center;
-  cursor: pointer;
   transition: color 0.4s ease-in-out;
 }
 
-/* Sliding black overlay */
 .banner-head__right::before {
   content: "";
   position: absolute;
@@ -53,20 +51,19 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: #000; /* black overlay */
+  background: #000;
   z-index: 0;
   transition: left 0.4s ease-in-out;
 }
 
 .banner-head__right:hover::before {
-  left: 0; /* slide overlay from left to right */
+  left: 0;
 }
 
-/* Text + arrow inside top-right button */
 .banner-head__right .banner-cta {
   position: relative;
-  z-index: 1; /* above overlay */
-  color: #000; /* initial black text */
+  z-index: 1;
+  color: #000;
   font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
@@ -78,49 +75,50 @@
   transition: color 0.4s ease-in-out;
 }
 
-/* Arrow image */
+.banner-head__right:hover .banner-cta {
+  color: #fff;
+}
+
 .banner-head__right .banner-cta img {
   width: 20px;
   height: 20px;
-  filter: brightness(0); /* initial black arrow */
+  filter: brightness(0);
   transition: filter 0.4s ease-in-out;
 }
 
-/* Hover effect for text and arrow */
-.banner-head__right:hover .banner-cta {
-  color: #fff; /* text turns white */
-}
-
 .banner-head__right:hover .banner-cta img {
-  filter: brightness(0) invert(1); /* arrow turns white */
+  filter: brightness(0) invert(1);
 }
-
 
 /* ------------------ BODY ------------------ */
 .banner-body {
   position: relative;
   width: 100%;
-  height: 100vh;
+  min-height: 70vh;
   background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center center;
   background-size: cover;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 0 5%;
+  padding: 20px 5%;
   color: #000;
 }
 
 .body-text {
-  position: absolute;
-  top: 400px;   /* fixed 489px from top */
-  left: 67px;   /* same as your design */
   max-width: 600px;
-
   display: flex;
-  flex-direction: column; /* stack title and subtitle */
-  gap: 20px; /* space between title and sub text */
+  flex-direction: column;
+  gap: 20px;
 }
 
+/* Use relative positioning for mobile */
+@media (min-width: 769px) {
+  .body-text {
+    position: absolute;
+    top: 400px;
+    left: 67px;
+  }
+}
 
 .banner-title {
   font-family: "Jost", sans-serif;
@@ -132,18 +130,16 @@
 }
 
 .banner-sub {
-  max-width: 483px;       /* enough room for wrapping */
-  position: relative;     /* no need absolute unless exact placement */
+  max-width: 100%;
   font-family: "Jost", sans-serif;
   font-weight: 400;
   font-size: 20px;
-  line-height: 1.4;       /* better readability */
-  color: #000;            /* make sure text is visible */
-  margin-top: 20px;       /* spacing below title */
-  white-space: normal;    /* allow wrapping naturally */
-  letter-spacing:0px;
+  line-height: 1.4;
+  color: #000;
+  margin-top: 20px;
+  white-space: normal;
+  letter-spacing: 0px;
 }
-
 
 /* ------------------ SHOP NOW BUTTON ------------------ */
 .banner-head__bottom {
@@ -151,14 +147,10 @@
   width: fit-content;
   padding: 12px 24px;
   margin-top: 1.5rem;
-  background: #000; /* black default */
+  background: #000;
   overflow: hidden;
-  cursor: pointer;
-  
-  
 }
 
-/* Sliding yellow overlay */
 .banner-head__bottom::before {
   content: "";
   position: absolute;
@@ -166,51 +158,44 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: rgba(255, 245, 68, 1); /* yellow */
+  background: rgba(255, 245, 68, 1);
   z-index: 0;
   transition: left 0.4s ease-in-out;
 }
 
 .banner-head__bottom:hover::before {
-  left: 0; /* slides in from left */
+  left: 0;
 }
 
-/* Text + arrow container */
 .bottom-banner-cta {
-  
   position: relative;
-  z-index: 1; /* above overlay */
+  z-index: 1;
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #fff; /* default white */
-  display: flex;
+  color: #fff;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
+  column-gap: 12px;
   transition: color 0.4s ease-in-out;
 }
 
-/* Arrow image */
-.bottom-btn-icon {
+.bottom-banner-cta img {
   width: 20px;
   height: 20px;
-  filter: brightness(0) invert(1); /* makes arrow white */
+  filter: brightness(0) invert(1);
   transition: filter 0.4s ease-in-out;
 }
 
-/* Hover effects */
 .banner-head__bottom:hover .bottom-banner-cta {
-  color: #000; /* text turns black */
+  color: #000;
 }
 
-.banner-head__bottom:hover .bottom-btn-icon {
-  filter: brightness(0) invert(0); /* arrow turns black */
+.banner-head__bottom:hover .bottom-banner-cta img {
+  filter: brightness(0) invert(0);
 }
-
-
-
 
 /* ------------------ FOOTER ------------------ */
 .banner-footer {
@@ -238,8 +223,8 @@
   }
 
   .banner-body {
-    height: auto;
-    padding: 40px 20px;
+    min-height: 60vh;
+    padding: 30px 20px;
   }
 
   .banner-title {
@@ -261,20 +246,6 @@
   .banner-sub {
     font-size: 1rem;
   }
-}
-
-@media (max-width: 480px) {
-  .banner-body {
-    padding: 20px;
-  }
-
-  .banner-title {
-    font-size: 1.75rem;
-  }
-
-  .banner-sub {
-    font-size: 0.9rem;
-  }
 
   .banner-head__bottom {
     width: 100%;
@@ -284,5 +255,31 @@
   .bottom-banner-cta {
     justify-content: center;
     width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-title {
+    font-size: 1.75rem;
+  }
+
+  .banner-sub {
+    font-size: 0.9rem;
+  }
+
+  .body-text {
+    position: relative;
+    top: auto;
+    left: auto;
+    max-width: 100%;
+  }
+
+  .banner-head__bottom {
+    width: 100%;
+    padding: 10px 15px;
+  }
+
+  .bottom-banner-cta {
+    column-gap: 8px;
   }
 }
