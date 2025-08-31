@@ -33,66 +33,41 @@
   font-size: 1rem;
 }
 
-/* ------------------ HOVER EFFECT FOR RIGHT HEADER ------------------ */
-.banner-head__right {
-  background: rgba(255, 245, 68, 1); /* initial yellow */
-  padding: 10px 20px;
-  display: flex;
-  align-items: center;
-  position: relative; /* for pseudo overlay */
-  overflow: hidden;
-  cursor: pointer;
-  transition: color 0.4s ease-in-out;
-}
-
-/* Sliding black overlay */
-.banner-head__right::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: #000; /* black overlay */
-  z-index: 0;
-  transition: left 0.4s ease-in-out;
-}
-
-.banner-head__right:hover::before {
-  left: 0; /* slide overlay from left to right */
-}
-
-/* Text + arrow inside .banner-head__right */
+/* Initial state for text */
 .banner-cta {
   position: relative;
-  z-index: 1; /* above overlay */
+  z-index: 1;
   font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #000; /* initial black */
+  color: #FFD700; /* initial yellow */
   display: flex;
   align-items: center;
   gap: 8px;
   transition: color 0.4s ease-in-out;
 }
 
-/* Arrow image */
+/* Arrow image initial state */
 .banner-cta img {
   width: 20px;
   height: 20px;
-  filter: brightness(0); /* initial black arrow */
+  filter: brightness(1); /* initial yellow arrow */
   transition: filter 0.4s ease-in-out;
 }
 
-/* Hover effect for text + arrow */
+/* Hover state */
+.banner-head__right:hover::before {
+  left: 0; /* slide black overlay */
+}
+
 .banner-head__right:hover .banner-cta {
-  color: #FFD700; /* optional: or keep black depending on your design */
+  color: #000; /* text turns black */
 }
 
 .banner-head__right:hover .banner-cta img {
-  filter: brightness(0) invert(1); /* turns arrow black → white if needed */
+  filter: brightness(0); /* arrow turns black */
 }
 
 
