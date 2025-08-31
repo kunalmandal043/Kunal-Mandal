@@ -34,23 +34,67 @@
 }
 
 .banner-head__right {
-  background: rgba(255, 245, 68, 1);
+/* ------------------ CHOOSE GIFT BUTTON ------------------ */
+.banner-head__right {
+  position: relative;
+  overflow: hidden;
   padding: 10px 20px;
   display: flex;
   align-items: center;
+  background: rgba(255, 245, 68, 1); /* default yellow */
+  cursor: pointer;
 }
 
+/* Sliding black overlay */
+.banner-head__right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #000; /* black overlay */
+  z-index: 0;
+  transition: left 0.4s ease-in-out;
+}
+
+.banner-head__right:hover::before {
+  left: 0; /* slide in from left */
+}
+
+/* Text + arrow */
 .banner-cta {
-  font-weight:400px;
+  position: relative;
+  z-index: 1;
+  font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #000;
+  color: #000; /* default black */
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: color 0.4s ease-in-out;
 }
+
+/* Arrow for CHOOSE GIFT */
+.banner-cta .cta-icon {
+  width: 18px;
+  height: 18px;
+  filter: brightness(0) invert(0); /* black arrow default */
+  transition: filter 0.4s ease-in-out;
+}
+
+/* On hover → text & arrow turn white */
+.banner-head__right:hover .banner-cta {
+  color: #fff;
+}
+
+.banner-head__right:hover .banner-cta .cta-icon {
+  filter: brightness(0) invert(1); /* arrow turns white */
+}
+
 
 /* ------------------ BODY ------------------ */
 .banner-body {
