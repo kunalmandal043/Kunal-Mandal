@@ -231,45 +231,54 @@
   text-align: center;
 }
 
-/* ------------------ RESPONSIVE ------------------ */
-@media (max-width: 1024px) {
-  .banner-head {
-    padding: 10px 20px;
-  }
-
+/* ------------------ RESPONSIVE FIXES ------------------ */
+@media (max-width: 768px) {
   .banner-body {
+    background-position: center top;
+    background-size: contain;
     height: auto;
     padding: 40px 20px;
+    text-align: center;
+  }
+
+  .body-text {
+    position: static;   /* remove absolute positioning */
+    top: auto;
+    left: auto;
+    transform: none;
+    max-width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    gap: 12px;
   }
 
   .banner-title {
-    font-size: 2.5rem;
-  }
-}
-
-@media (max-width: 768px) {
-  .banner-head {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .banner-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
   }
 
   .banner-sub {
     font-size: 1rem;
+    line-height: 1.5;
+    margin: 0 auto 1rem auto;
+    max-width: 90%;
+  }
+
+  .banner-head__bottom {
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .bottom-banner-cta {
+    justify-content: center;
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .banner-body {
-    padding: 20px;
-  }
-
   .banner-title {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
   }
 
   .banner-sub {
@@ -277,12 +286,6 @@
   }
 
   .banner-head__bottom {
-    width: 100%;
-    text-align: center;
-  }
-
-  .bottom-banner-cta {
-    justify-content: center;
-    width: 100%;
+    padding: 14px;
   }
 }
