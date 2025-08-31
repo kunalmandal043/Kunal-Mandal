@@ -66,23 +66,25 @@
 }
 
 /* ------------------ BODY ------------------ */
-.banner-body { 
-  flex: 1; 
-  display: flex; 
-  flex-direction: column; 
-  align-items: flex-start; /* left align */ 
-  justify-content: center; /* vertical center */ 
-  text-align: left; 
-  padding: 40px 20px; 
-  background-image: url('{{ "bg-img.svg" | asset_url }}'); 
-  background-repeat: no-repeat; 
-  background-position: center; 
-  background-size: cover; /* fully cover horizontally & vertically */
+.banner-body {
+  flex: 1; /* take space between head & footer */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* align to left */
+  justify-content: center; /* vertical center */
+  text-align: left;
+  padding: 40px 20px;
+  
+  /* background image */
+  background-image: url('{{ "bg-img.svg" | asset_url }}');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover; /* fully cover horizontally */
 }
 
 .body-text {
-  margin-left: 67px;
-  max-width: 600px;
+  margin-left: 67px; /* push away from left */
+  max-width: 600px; /* optional for readability */
 }
 
 
