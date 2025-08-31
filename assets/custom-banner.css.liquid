@@ -67,25 +67,20 @@
 
 /* ------------------ BODY ------------------ */
 .banner-body {
-  position: relative;
- 
-}
-
-.banner-bg {
-  width: 100%;
-  height: 780px;
-  display: block;
-}
-.banner-content {
+  flex: 1;  /* take available space between head & footer*/
   display: flex;
-  position: absolute;
-  top: 50%;
-  left: 67px;
-  transform: translateY(-50%);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; // vertically center 
+  text-align: center;
+  padding: 40px 20px;
+  background-image: url('{{ "bg-img.svg" | asset_url }}');
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: 100% auto;   /*  makes it cover full area */
+  
+  
 }
-
-
-
 
 .banner-title {
   font-family: "Jost", system-ui, sans-serif;
@@ -122,7 +117,7 @@
 }
 
 .banner-btn:hover {
-  background: rgba(0, 0, 0, 1);
+  background: rgba(230, 220, 50, 1);
 }
 
 /* ------------------ FOOTER ------------------ */
