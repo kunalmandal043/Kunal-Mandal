@@ -44,7 +44,14 @@
 
 
   <div class="banner-body">
-    {{ 'bg-img.svg' | asset_img_url: 'master' | image_tag: alt: 'Banner background' }}
+  <img 
+  src="{{ 'bg-img.svg' | asset_url }}" 
+  alt="Banner background" 
+  class="banner-bg"
+  width="1920" 
+  height="800"
+  />
+
 
     <div class="body-content">
       <h1 class="banner-title">{{ section.settings.title }}</h1>
