@@ -67,25 +67,26 @@
 
 /* ------------------ BODY ------------------ */
 .banner-body {
-  flex: 1; /* take space between head & footer */
+  height: 70vh; /* adjust based on your design */
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* align to left */
+  align-items: flex-start; /* left align text */
   justify-content: center; /* vertical center */
   text-align: left;
   padding: 40px 20px;
-  
+
   /* background image */
   background-image: url('{{ "bg-img.svg" | asset_url }}');
   background-repeat: no-repeat;
   background-position: center;
-  background-size: cover; /* fully cover horizontally */
+  background-size: cover; /* fully cover area */
 }
 
 .body-text {
-  margin-left: 67px; /* push away from left */
-  max-width: 600px; /* optional for readability */
+  margin-left: 67px; /* move text away from left */
+  max-width: 600px; /* optional readability */
 }
+
 
 
 .banner-title {
