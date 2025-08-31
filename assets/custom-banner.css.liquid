@@ -101,19 +101,38 @@
 }
 
 
-/* Default button */
+/* ------------------ SHOP NOW BUTTON ------------------ */
 .banner-head__bottom {
+  position: relative;
   width: fit-content;
   padding: 12px 24px;
-  background: #000;
   margin-top: 1.5rem;
-  position: relative;
+  background: #000; /* black default */
   overflow: hidden;
-  transition: background 0.4s ease-in-out;
+  cursor: pointer;
 }
 
-/* Text */
+/* Sliding yellow overlay */
+.banner-head__bottom::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: #FFD700; /* yellow */
+  z-index: 0;
+  transition: left 0.4s ease-in-out;
+}
+
+.banner-head__bottom:hover::before {
+  left: 0; /* slides in from left */
+}
+
+/* Text + arrow container */
 .bottom-banner-cta {
+  position: relative;
+  z-index: 1; /* above overlay */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
@@ -130,22 +149,19 @@
 .bottom-btn-icon {
   width: 20px;
   height: 20px;
-  filter: brightness(0) invert(1); /* makes image white */
+  filter: brightness(0) invert(1); /* makes arrow white */
   transition: filter 0.4s ease-in-out;
 }
 
-/* Hover effect */
-.banner-head__bottom:hover {
-  background: #FFD700; /* yellow */
-}
-
+/* Hover effects */
 .banner-head__bottom:hover .bottom-banner-cta {
   color: #000; /* text turns black */
 }
 
 .banner-head__bottom:hover .bottom-btn-icon {
-  filter: brightness(0) invert(0); /* makes arrow black */
+  filter: brightness(0) invert(0); /* arrow turns black */
 }
+
 
 
 
