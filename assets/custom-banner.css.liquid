@@ -33,24 +33,68 @@
   font-size: 1rem;
 }
 
+/* ------------------ HOVER EFFECT FOR RIGHT HEADER ------------------ */
 .banner-head__right {
-  background: rgba(255, 245, 68, 1);
+  position: relative; /* needed for overlay */
+  background: rgba(255, 245, 68, 1); /* initial yellow */
   padding: 10px 20px;
   display: flex;
   align-items: center;
+  overflow: hidden;
+  cursor: pointer;
 }
 
+/* Sliding black overlay */
+.banner-head__right::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%; /* start off-screen */
+  width: 100%;
+  height: 100%;
+  background: #000; /* black overlay */
+  z-index: 0;
+  transition: left 0.4s ease-in-out;
+}
+
+/* Slide overlay on hover */
+.banner-head__right:hover::before {
+  left: 0;
+}
+
+/* CHOOSE GIFT text and arrow container */
 .banner-cta {
-  font-weight:400px;
+  position: relative;
+  z-index: 1; /* above overlay */
+  font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #000;
+  color: #000; /* initial black text */
   display: flex;
   align-items: center;
   gap: 8px;
+  transition: color 0.4s ease-in-out;
 }
+
+/* Arrow image */
+.banner-cta img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0); /* initial black arrow */
+  transition: filter 0.4s ease-in-out;
+}
+
+/* Hover effect for text + arrow */
+.banner-head__right:hover .banner-cta {
+  color: #000; /* text remains black (over yellow) */
+}
+
+.banner-head__right:hover .banner-cta img {
+  filter: brightness(0); /* arrow turns black */
+}
+
 
 /* ------------------ BODY ------------------ */
 .banner-body {
