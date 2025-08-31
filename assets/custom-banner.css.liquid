@@ -82,13 +82,24 @@
 
 
 .banner-title {
-  font-family: "Jost", system-ui, sans-serif;
-  font-weight: 500;
+
+  width: 459px;
+  height: 70px;
+  position: absolute; /* since top/left are given */
+  top: 489px;
+  left: 67px;
+
+  font-family: "Jost", sans-serif;
+  font-weight: 500; /* Medium = 500 */
+  font-style: normal;
   font-size: 70px;
-  line-height: 1.1;
-  color: rgba(0, 0, 0, 1);
-  margin-bottom: 20px;
+  line-height: 100%; /* same as design */
+  letter-spacing: 0px;
+  vertical-align: middle;
+  opacity: 1;
+  transform: rotate(0deg); /* angle */
 }
+
 
 .banner-sub {
   font-family: "Jost", system-ui, sans-serif;
