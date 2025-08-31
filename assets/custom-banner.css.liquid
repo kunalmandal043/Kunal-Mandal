@@ -138,22 +138,23 @@
   background: rgba(0, 0, 0, 1);
 
 }
-.bottom-banner-cta{
-
+.bottom-banner-cta {
+  position: absolute;
+  top: 14px;
+  left: 55px;
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 16px;
+  text-decoration: none;
+  text-align: center;
   text-transform: uppercase;
-  color: #000;
-  display: flex;
+  color: #fff;
+  display: inline-flex; /* inline to keep text in one line */
   align-items: center;
-  justify-content: center;
-  
-  /* Make text vertical */
-  writing-mode: vertical-rl; /* vertical top-to-bottom */
-  text-orientation: upright; 
+  gap: 8px;
+  z-index: 2;
+  white-space: nowrap; /* <-- prevents "SHOP NOW" from breaking */
 }
-
 
 .bottom-btn-icon{
 
