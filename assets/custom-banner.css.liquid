@@ -66,18 +66,25 @@
 }
 
 /* ------------------ BODY ------------------ */
-.banner-body { flex: 1; /* take available space between head & footer*/ 
+.banner-body { 
+  flex: 1; 
   display: flex; 
   flex-direction: column; 
-  align-items: center; 
-  justify-content: center; // vertically center 
-  text-align: center; padding: 40px 20px; 
+  align-items: flex-start; /* left align */ 
+  justify-content: center; /* vertical center */ 
+  text-align: left; 
+  padding: 40px 20px; 
   background-image: url('{{ "bg-img.svg" | asset_url }}'); 
   background-repeat: no-repeat; 
   background-position: center; 
-  background-size: cover; /* makes it cover full area */ 
-  background-size: contain; 
+  background-size: cover; /* fully cover horizontally & vertically */
 }
+
+.body-text {
+  margin-left: 67px;
+  max-width: 600px;
+}
+
 
 .banner-title {
   font-family: "Jost", system-ui, sans-serif;
