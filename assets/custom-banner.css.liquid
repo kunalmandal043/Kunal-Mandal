@@ -33,16 +33,16 @@
   font-size: 1rem;
 }
 
+/* ------------------ HOVER EFFECT FOR RIGHT HEADER ------------------ */
 .banner-head__right {
-/* ------------------ CHOOSE GIFT BUTTON ------------------ */
-.banner-head__right {
-  position: relative;
-  overflow: hidden;
+  background: rgba(255, 245, 68, 1); /* initial yellow */
   padding: 10px 20px;
   display: flex;
   align-items: center;
-  background: rgba(255, 245, 68, 1); /* default yellow */
+  position: relative; /* for pseudo overlay */
+  overflow: hidden;
   cursor: pointer;
+  transition: color 0.4s ease-in-out;
 }
 
 /* Sliding black overlay */
@@ -59,40 +59,40 @@
 }
 
 .banner-head__right:hover::before {
-  left: 0; /* slide in from left */
+  left: 0; /* slide overlay from left to right */
 }
 
-/* Text + arrow */
+/* Text + arrow inside .banner-head__right */
 .banner-cta {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* above overlay */
   font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #000; /* default black */
+  color: #000; /* initial black */
   display: flex;
   align-items: center;
   gap: 8px;
   transition: color 0.4s ease-in-out;
 }
 
-/* Arrow for CHOOSE GIFT */
-.banner-cta .cta-icon {
-  width: 18px;
-  height: 18px;
-  filter: brightness(0) invert(0); /* black arrow default */
+/* Arrow image */
+.banner-cta img {
+  width: 20px;
+  height: 20px;
+  filter: brightness(0); /* initial black arrow */
   transition: filter 0.4s ease-in-out;
 }
 
-/* On hover → text & arrow turn white */
+/* Hover effect for text + arrow */
 .banner-head__right:hover .banner-cta {
-  color: #fff;
+  color: #FFD700; /* optional: or keep black depending on your design */
 }
 
-.banner-head__right:hover .banner-cta .cta-icon {
-  filter: brightness(0) invert(1); /* arrow turns white */
+.banner-head__right:hover .banner-cta img {
+  filter: brightness(0) invert(1); /* turns arrow black → white if needed */
 }
 
 
