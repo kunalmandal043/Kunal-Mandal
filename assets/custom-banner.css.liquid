@@ -101,59 +101,50 @@
 }
 
 
+/* Default button */
 .banner-head__bottom {
   width: fit-content;
   padding: 12px 24px;
-  background: #000; /* default black */
+  background: #000;
   margin-top: 1.5rem;
   position: relative;
-  overflow: hidden; /* required for sliding effect */
-  cursor: pointer;
+  overflow: hidden;
+  transition: background 0.4s ease-in-out;
 }
 
-/* Sliding yellow background */
-.banner-head__bottom::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%; /* start off-screen */
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 245, 68, 1); /* yellow */
-  transition: left 0.4s ease-in-out;
-  z-index: 1;
-}
-
-.banner-head__bottom:hover::before {
-  left: 0; /* slide into view */
-}
-
+/* Text */
 .bottom-banner-cta {
-  position: relative;
-  z-index: 2; /* keep text above yellow */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #fff; /* default white text on black background */
+  color: #fff; /* default white */
   display: flex;
   align-items: center;
   gap: 8px;
   transition: color 0.4s ease-in-out;
 }
 
+/* Arrow image */
 .bottom-btn-icon {
-  position: relative;
-  z-index: 2;
-  transition: color 0.4s ease-in-out;
-  color: #fff; /* default white */
+  width: 20px;
+  height: 20px;
+  filter: brightness(0) invert(1); /* makes image white */
+  transition: filter 0.4s ease-in-out;
 }
 
-/* On hover → text + arrow turn black */
-.banner-head__bottom:hover .bottom-banner-cta,
+/* Hover effect */
+.banner-head__bottom:hover {
+  background: #FFD700; /* yellow */
+}
+
+.banner-head__bottom:hover .bottom-banner-cta {
+  color: #000; /* text turns black */
+}
+
 .banner-head__bottom:hover .bottom-btn-icon {
-  color: #000;
+  filter: brightness(0) invert(0); /* makes arrow black */
 }
 
 
