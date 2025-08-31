@@ -66,28 +66,18 @@
 }
 
 /* ------------------ BODY ------------------ */
-.banner-body {
-  height: 85vh; /* adjust based on your design */
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* left align text */
-  justify-content: center; /* vertical center */
-  text-align: left;
-  padding: 40px 20px;
-
-  /* background image */
-  background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover; /* fully cover area */
+.banner-body { flex: 1; /* take available space between head & footer*/ 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
+  justify-content: center; // vertically center 
+  text-align: center; padding: 40px 20px; 
+  background-image: url('{{ "bg-img.svg" | asset_url }}'); 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  background-size: cover; /* makes it cover full area */ 
+  background-size: contain; 
 }
-
-.body-text {
-  margin-left: 67px; /* move text away from left */
-  max-width: 600px; /* optional readability */
-}
-
-
 
 .banner-title {
   font-family: "Jost", system-ui, sans-serif;
