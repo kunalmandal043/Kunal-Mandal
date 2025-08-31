@@ -33,43 +33,24 @@
   font-size: 1rem;
 }
 
-/* Initial state for text */
+.banner-head__right {
+  background: rgba(255, 245, 68, 1);
+  padding: 10px 20px;
+  display: flex;
+  align-items: center;
+}
+
 .banner-cta {
-  position: relative;
-  z-index: 1;
-  font-weight: 400;
+  font-weight:400px;
   font-family: "Jost", system-ui, sans-serif;
   font-size: 1rem;
   text-decoration: none;
   text-transform: uppercase;
-  color: #FFD700; /* initial yellow */
+  color: #000;
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: color 0.4s ease-in-out;
 }
-
-/* Arrow image initial state */
-.banner-cta img {
-  width: 20px;
-  height: 20px;
-  filter: brightness(1); /* initial yellow arrow */
-  transition: filter 0.4s ease-in-out;
-}
-
-/* Hover state */
-.banner-head__right:hover::before {
-  left: 0; /* slide black overlay */
-}
-
-.banner-head__right:hover .banner-cta {
-  color: #000; /* text turns black */
-}
-
-.banner-head__right:hover .banner-cta img {
-  filter: brightness(0); /* arrow turns black */
-}
-
 
 /* ------------------ BODY ------------------ */
 .banner-body {
@@ -139,7 +120,7 @@
   left: -100%;
   width: 100%;
   height: 100%;
-  background: #FFD700; /* yellow */
+  background: rgba(255, 245, 68, 1); /* yellow */
   z-index: 0;
   transition: left 0.4s ease-in-out;
 }
