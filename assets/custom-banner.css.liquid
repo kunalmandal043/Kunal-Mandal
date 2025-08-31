@@ -66,20 +66,17 @@
 }
 
 /* ------------------ BODY ------------------ */
-.banner-body {
-  flex: 1;  /* take available space between head & footer*/
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.banner-body { flex: 1; /* take available space between head & footer*/ 
+  display: flex; 
+  flex-direction: column; 
+  align-items: center; 
   justify-content: center; // vertically center 
-  text-align: center;
-  padding: 40px 20px;
-  background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100% auto;   /*  makes it cover full area */
-  
-  
+  text-align: center; padding: 40px 20px; 
+  background-image: url('{{ "bg-img.svg" | asset_url }}'); 
+  background-repeat: no-repeat; 
+  background-position: center; 
+  background-size: cover; /* makes it cover full area */ 
+  background-size: contain; 
 }
 
 .banner-title {
