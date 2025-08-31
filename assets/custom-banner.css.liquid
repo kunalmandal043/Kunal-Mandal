@@ -67,20 +67,22 @@
 
 /* ------------------ BODY ------------------ */
 .banner-body {
-  flex: 1;  /* take available space between head & footer*/
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center; // vertically center 
+  position: relative;
   text-align: center;
-  padding: 40px 20px;
-  background-image: url('{{ "bg-img.svg" | asset_url }}');
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: 100% auto;   /*  makes it cover full area */
-  
-  
 }
+
+.banner-bg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.banner-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 
 .banner-title {
   font-family: "Jost", system-ui, sans-serif;
