@@ -234,58 +234,63 @@
 /* ------------------ RESPONSIVE FIXES ------------------ */
 @media (max-width: 768px) {
   .banner-body {
-    background-position: center top;
+    background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center bottom;
     background-size: contain;
     height: auto;
-    padding: 40px 20px;
+    padding: 20px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
 
   .body-text {
-    position: static;   /* remove absolute positioning */
-    top: auto;
-    left: auto;
-    transform: none;
+    position: relative; /* make it flow above bg */
+    order: -1;          /* ensure it appears above bg-img */
+    margin: 0 auto 20px auto;
     max-width: 100%;
-    margin: 0 auto;
     text-align: center;
-    gap: 12px;
   }
 
   .banner-title {
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     line-height: 1.2;
-    margin-bottom: 0.5rem;
   }
 
   .banner-sub {
-    font-size: 1rem;
-    line-height: 1.5;
-    margin: 0 auto 1rem auto;
-    max-width: 90%;
+    font-size: 0.95rem;
+    line-height: 1.4;
+    margin-top: 10px;
   }
 
+  /* Shop Now button (fixed size as per your specs) */
   .banner-head__bottom {
-    width: 100%;
-    margin: 0 auto;
+    width: 193px;
+    height: 45px;
+    padding: 13px 20px;
+    margin: 20px auto 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    opacity: 1;
+    position: relative;   /* keep flow-based positioning */
+    top: 0;               /* reset absolute top for safety */
+    left: 0;              /* reset absolute left for safety */
   }
 
   .bottom-banner-cta {
-    justify-content: center;
-    width: 100%;
+    font-size: 0.9rem;
+    gap: 10px;
   }
 }
 
 @media (max-width: 480px) {
   .banner-title {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   .banner-sub {
-    font-size: 0.9rem;
-  }
-
-  .banner-head__bottom {
-    padding: 14px;
+    font-size: 0.85rem;
   }
 }
