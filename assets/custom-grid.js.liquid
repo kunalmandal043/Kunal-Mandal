@@ -42,12 +42,23 @@ document.addEventListener("DOMContentLoaded", () => {
         const colors = new Set();
 
         product.variants.forEach(variant => {
-          variant.options.forEach((opt, i) => {
-            const optName = product.options[i].name.toLowerCase();
-            if (optName === "size") sizes.add(opt);
-            if (optName === "color") colors.add(opt);
-          });
+          if (variant.option1) {
+            const optName = product.options[0].name.toLowerCase();
+            if (optName === "size") sizes.add(variant.option1);
+            if (optName === "color") colors.add(variant.option1);
+          }
+          if (variant.option2) {
+            const optName = product.options[1]?.name.toLowerCase();
+            if (optName === "size") sizes.add(variant.option2);
+            if (optName === "color") colors.add(variant.option2);
+          }
+          if (variant.option3) {
+            const optName = product.options[2]?.name.toLowerCase();
+            if (optName === "size") sizes.add(variant.option3);
+            if (optName === "color") colors.add(variant.option3);
+          }
         });
+
 
         sizes.forEach(size => {
           const option = document.createElement("option");
@@ -80,9 +91,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant => 
-      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
+    const matchedVariant = currentProduct.variants.find(variant =>
+      (variant.option1 === selectedSize || variant.option2 === selectedSize || variant.option3 === selectedSize) &&
+      (variant.option1 === selectedColor || variant.option2 === selectedColor || variant.option3 === selectedColor)
     );
+
 
     if (!matchedVariant) return alert("Please select valid options");
 

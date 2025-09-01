@@ -48,8 +48,7 @@
 
     <!-- Top section: Image + Details -->
     <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="245px" height="230px" class="popup-image">
-
+      popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
       <div class="popup-details">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
