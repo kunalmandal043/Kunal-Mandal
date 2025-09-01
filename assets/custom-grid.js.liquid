@@ -1,12 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-  // Replace missing images with fallback from JSON
-  document.querySelectorAll("img[data-fallback-handle]").forEach(img => {
-    const handle = img.dataset.fallbackHandle;
-    if (window.fallbackImages && window.fallbackImages[handle]) {
-      img.src = window.fallbackImages[handle];
-    }
-  });
-
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
   const popupImage = document.getElementById("popup-image");
@@ -18,6 +10,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let selectedProductId = null;
   let selectedVariantId = null;
+
+  // ✅ Replace placeholder images with fallback images from JSON
+  function applyFallbackImages() {
+    document.querySelectorAll("img[data-fallback-handle]").forEach(img => {
+      const handle = img.dataset.fallbackHandle;
+      if (
+        (img.src.includes("placeholder.png") || !img.src) &&
+        window.fallbackImages &&
+        window.fallbackImages[handle]
+      ) {
+        img.src = window.fallbackImages[handle];
+      }
+    });
+  }
+
+  // Wait until fallback JSON is loaded
+  const checkFallbackInterval = setInterval(() => {
+    if (window.fallbackImages) {
+      applyFallbackImages();
+      clearInterval(checkFallbackInterval);
+    }
+  }, 300);
 
   // Open popup on clicking the circle icon
   document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
@@ -33,25 +47,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const productHandle = gridItem.dataset.productHandle;
 
-      // Fetch product JSON from Shopify
-      const res = await fetch(`/products/${productHandle}.js`);
-      const productData = await res.json();
+      try {
+        // Fetch product JSON from Shopify
+        const res = await fetch(`/products/${productHandle}.js`);
+        const productData = await res.json();
 
-      // Set product image
-      if (productData.images && productData.images.length > 0) {
-        popupImage.src = productData.images[0];
+        // Set product image
+        if (productData.images && productData.images.length > 0) {
+          popupImage.src = productData.images[0];
+        }
+
+        // Populate variants
+        variantSelect.innerHTML = "";
+        productData.variants.forEach(v => {
+          const option = document.createElement("option");
+          option.value = v.id;
+          option.textContent = v.title;
+          variantSelect.appendChild(option);
+        });
+
+        selectedVariantId = productData.variants[0]?.id || null;
+      } catch (err) {
+        console.error("Error fetching product data:", err);
       }
-
-      // Populate variants
-      variantSelect.innerHTML = "";
-      productData.variants.forEach(v => {
-        const option = document.createElement("option");
-        option.value = v.id;
-        option.textContent = v.title;
-        variantSelect.appendChild(option);
-      });
-
-      selectedVariantId = productData.variants[0].id;
 
       popup.classList.remove("hidden");
     });
@@ -60,6 +78,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // Close popup
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
+  });
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) popup.classList.add("hidden");
   });
 
   // Update selected variant
@@ -71,16 +92,20 @@ document.addEventListener("DOMContentLoaded", function () {
   addToCartBtn.addEventListener("click", async () => {
     if (!selectedVariantId) return;
 
-    await fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: [{ id: selectedVariantId, quantity: 1 }]
-      })
-    });
+    try {
+      await fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{ id: selectedVariantId, quantity: 1 }]
+        })
+      });
 
-    alert("Product added to cart!");
-    popup.classList.add("hidden");
+      alert("Product added to cart!");
+      popup.classList.add("hidden");
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      alert("Could not add product to cart.");
+    }
   });
 });
-

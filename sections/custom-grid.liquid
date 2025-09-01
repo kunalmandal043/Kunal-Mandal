@@ -1,16 +1,15 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
-<!-- Load fallback images JSON into a global object -->
-<script src="{{ 'fallback-images.json' | asset_url }}" defer></script>
+<!-- Load fallback images JSON -->
 <script>
   document.addEventListener("DOMContentLoaded", () => {
     fetch("{{ 'fallback-images.json' | asset_url }}")
       .then(res => res.json())
-      .then(data => { window.fallbackImages = data; });
+      .then(data => { window.fallbackImages = data; })
+      .catch(err => console.error("Could not load fallback images:", err));
   });
 </script>
-
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
@@ -28,22 +27,13 @@
           data-product-description="{{ product.description | strip_html | escape }}"
         >
           <!-- Product Image -->
-          {% if product.featured_image %}
-            <img 
-              src="{{ product.featured_image.src | image_url: width: 433, height: 444, crop: 'center' }}" 
-              width="433" height="444"
-              loading="lazy"
-              alt="{{ product.title }}"
-            >
-          {% else %}
-            <img 
-              src="{{ 'placeholder.png' | asset_url }}" 
-              data-fallback-handle="{{ product.handle }}"
-              width="433" height="444"
-              loading="lazy"
-              alt="{{ product.title }}"
-            >
-          {% endif %}
+          <img 
+            src="{% if product.featured_image %}{{ product.featured_image.src | image_url: width: 433, height: 444, crop: 'center' }}{% else %}{{ 'placeholder.png' | asset_url }}{% endif %}" 
+            width="433" height="444"
+            loading="lazy"
+            alt="{{ product.title }}"
+            data-fallback-handle="{{ product.handle }}"
+          >
 
           <!-- Popup trigger icon -->
           <img 
