@@ -62,13 +62,13 @@
 /* Mobile view: 2 images per row */
 @media (max-width: 768px) {
   .grid-container {
-    gap: 4px;
     grid-template-columns: repeat(2, 1fr);
   }
 
   .grid-item img {
     width: 100%;   /* scale down for smaller screens */
     height: auto;  /* keep aspect ratio */
+    gap:4px;
   }
 }
 
