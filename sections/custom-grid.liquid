@@ -5,38 +5,38 @@
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
 
-    {% for block in section.blocks %}
-      {% assign product = block.settings.product %}
-      {% if product %}
-        <div class="grid-item" data-handle="{{ product.handle }}">
-          {% if product.featured_image %}
-            <img 
-              src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
-              alt="{{ product.title }}" 
-              width="433" 
-              height="444"
-              class="grid-image"
-            >
-          {% else %}
-            <img 
-              src="{{ 'placeholder.png' | asset_url }}" 
-              alt="Placeholder" 
-              width="433" 
-              height="444"
-              class="grid-image"
-            >
-          {% endif %}
+    {% assign product_handle = block.settings.product.handle %}
+{% assign shopify_product = all_products[product_handle] %}
 
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup" 
-            width="22" 
-            height="22"
-          >
-        </div>
-      {% endif %}
-    {% endfor %}
+{% if shopify_product %}
+  <div class="grid-item" data-handle="{{ shopify_product.handle }}">
+    {% if shopify_product.featured_image %}
+      <img 
+        src="{{ shopify_product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+        alt="{{ shopify_product.title }}" 
+        width="433" 
+        height="444"
+        class="grid-image"
+      >
+    {% else %}
+      <img 
+        src="{{ 'placeholder.png' | asset_url }}" 
+        alt="Placeholder" 
+        width="433" 
+        height="444"
+        class="grid-image"
+      >
+    {% endif %}
+
+    <img 
+      class="popup-icon" 
+      src="{{ 'circle-popup.svg' | asset_url }}" 
+      alt="Open Popup" 
+      width="22" 
+      height="22"
+    >
+  </div>
+{% endif %}
 
   </div>
 </section>
