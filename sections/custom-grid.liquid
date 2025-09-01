@@ -10,7 +10,8 @@
       "type": "product",
       "name": "Product",
       "settings": [
-        { "type": "product", "id": "product", "label": "Select Product" }
+        { "type": "product", "id": "product", "label": "Select Product" },
+        { "type": "image_picker", "id": "custom_image", "label": "Custom Image (optional)" }
       ]
     }
   ],
@@ -18,6 +19,7 @@
   "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
+
 
 
 {% assign grid_images = 
@@ -36,23 +38,21 @@
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
     {% for image in grid_images %}
-      <div class="grid-item">
+      <div class="grid-item" data-handle="{{ product.handle }}">
         <img 
-          src="{{ image | strip | asset_url }}" 
-          alt="Product image"
-          width="433"
-          height="444"
+          src="{% if block.settings.custom_image != blank %}
+           {{ block.settings.custom_image | img_url: '433x444' }}
+         {% else %}
+           {{ product.featured_image.src | img_url: '433x444' }}
+         {% endif %}" 
+          alt="{{ product.title | escape }}"
+          width="433" height="444"
           loading="lazy"
           class="grid-image"
         >
-        <img 
-        class="popup-icon" 
-        src="{{ 'circle-popup.svg' | asset_url }}" 
-        alt="Open Popup"
-        width="22" height="22"
-        >
+  <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
+</div>
 
-      </div>
     {% endfor %}
   </div>
 </section>
