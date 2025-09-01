@@ -19,40 +19,51 @@
 }
 {% endschema %}
 
+
+{% assign grid_images = 
+  "
+   OrangeWideLeg.png,
+   TailoredJacket.png,
+   AccordionPleatedDress.png,
+   GreenTrenchCoat.png,
+   TennisBlueT-Shirt.png,
+   LongSleeveTennisTop.png" | split: ","
+  %}
+
+
+
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for block in section.blocks %}
-      {% if block.settings.product %}
-        {% assign product = all_products[block.settings.product] %}
-        <div class="grid-item" data-handle="{{ product.handle }}">
-          <img 
-            src="{{ product.featured_image | img_url: '433x444' }}" 
-            alt="{{ product.title }}"
-            width="433"
-            height="444"
-            loading="lazy"
-            class="grid-image"
-          >
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup"
-            width="22" height="22"
-          >
-        </div>
-      {% endif %}
+    {% for image in grid_images %}
+      <div class="grid-item">
+        <img 
+          src="{{ image | strip | asset_url }}" 
+          alt="Product image"
+          width="433"
+          height="444"
+          loading="lazy"
+          class="grid-image"
+        >
+        <img 
+        class="popup-icon" 
+        src="{{ 'circle-popup.svg' | asset_url }}" 
+        alt="Open Popup"
+        width="22" height="22"
+        >
+
+      </div>
     {% endfor %}
   </div>
 </section>
+
 
 <!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
-
     <img id="popup-image" 
-      src="{{ 'placeholder.png' | asset_url }}" 
+      src="{{ 'placehoder.png' | asset_url }}" 
       alt="Product preview" 
       width="400" height="400" loading="lazy">
 
@@ -61,23 +72,10 @@
     <p id="popup-description"></p>
 
     <!-- Variants -->
-    <div class="variant-section">
-      <div class="variant-field">
-        <img src="{{ 'choose-color.svg' | asset_url }}" alt="Choose Color" class="variant-icon">
-        <label for="variant-color">Color:</label>
-        <select id="variant-color"></select>
-      </div>
-
-      <div class="variant-field">
-        <img src="{{ 'choose-size.svg' | asset_url }}" alt="Choose Size" class="variant-icon">
-        <label for="variant-size">Size:</label>
-        <select id="variant-size"></select>
-      </div>
-    </div>
+    <label for="variant-select">Choose your options:</label>
+    <select id="variant-select"></select>
 
     <!-- Add to Cart -->
-    <button id="add-to-cart" class="add-to-cart-btn">
-      <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart">
-    </button>
+    <button id="add-to-cart">ADD TO CART</button>
   </div>
 </div>
