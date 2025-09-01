@@ -11,19 +11,22 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedProductId = null;
   let selectedVariantId = null;
 
-  // ✅ Replace placeholder images with fallback images from JSON
-  function applyFallbackImages() {
-    document.querySelectorAll("img[data-fallback-handle]").forEach(img => {
-      const handle = img.dataset.fallbackHandle;
-      if (
-        (img.src.includes("placeholder.png") || !img.src) &&
-        window.fallbackImages &&
-        window.fallbackImages[handle]
-      ) {
-        img.src = window.fallbackImages[handle];
+  document.addEventListener("DOMContentLoaded", function () {
+  // Get all grid items with placeholders
+  const gridItems = document.querySelectorAll("img[data-fallback-handle]");
+
+  if (window.fallbackImages) {
+    // Extract all "Image Src" values into an array
+    const imageArray = Object.values(window.fallbackImages).map(entry => entry["Image Src"]);
+    
+    // Assign images in order
+    gridItems.forEach((img, index) => {
+      if (imageArray[index]) {
+        img.src = imageArray[index];
       }
     });
   }
+
 
   // Wait until fallback JSON is loaded
   const checkFallbackInterval = setInterval(() => {
