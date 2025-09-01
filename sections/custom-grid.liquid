@@ -1,21 +1,20 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
+{% assign product_handles = "ocean-blue-shirt,red-tshirt,green-jacket,white-sneakers" | split: "," %}
+
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-
-    {% for block in section.blocks %}
-      {% assign product_handle = block.settings.product.handle %}
-      {% assign shopify_product = all_products[product_handle] %}
-
-      {% if shopify_product %}
-        <div class="grid-item" data-handle="{{ shopify_product.handle }}">
+    {% for handle in product_handles %}
+      {% assign product = all_products[handle] %}
+      {% if product %}
+        <div class="grid-item" data-handle="{{ product.handle }}">
           <div class="grid-image-wrapper">
-            {% if shopify_product.featured_image %}
+            {% if product.featured_image %}
               <img 
-                src="{{ shopify_product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
-                alt="{{ shopify_product.title }}" 
+                src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+                alt="{{ product.title }}" 
                 width="433" 
                 height="444"
                 class="grid-image"
@@ -30,7 +29,7 @@
               >
             {% endif %}
 
-            <!-- Popup icon over the image -->
+            <!-- Popup icon -->
             <img 
               class="popup-icon" 
               src="{{ 'circle-popup.svg' | asset_url }}" 
@@ -42,7 +41,6 @@
         </div>
       {% endif %}
     {% endfor %}
-
   </div>
 </section>
 
@@ -59,12 +57,12 @@
 
     <div class="popup-options">
       <div class="option">
-        <img src="{{ 'choose-size.svg' | asset_url }}" alt="Choose Size" class="option-icon" width="24" height="24">
+        <label for="size-select">Size:</label>
         <select id="size-select"></select>
       </div>
 
       <div class="option">
-        <img src="{{ 'choose-color.svg' | asset_url }}" alt="Choose Color" class="option-icon" width="24" height="24">
+        <label for="color-select">Color:</label>
         <select id="color-select"></select>
       </div>
     </div>
@@ -74,21 +72,3 @@
     </button>
   </div>
 </div>
-
-{% schema %}
-{
-  "name": "Custom Grid",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        { "type": "product", "id": "product", "label": "Select Product" }
-      ]
-    }
-  ],
-  "max_blocks": 6,
-  "presets": [{ "name": "Custom Grid" }]
-}
-{% endschema %}

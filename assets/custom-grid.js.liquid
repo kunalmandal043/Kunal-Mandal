@@ -11,119 +11,85 @@ const addToCartBtn = document.getElementById("add-to-cart");
 
 let currentProduct = null;
 
-// ---------------------------
-// Open popup when circle icon is clicked
-// ---------------------------
 gridItems.forEach(item => {
-  const popupIcon = item.querySelector(".popup-icon");
-  if (!popupIcon) return;
+  const icon = item.querySelector(".popup-icon");
 
-  popupIcon.addEventListener("click", async (e) => {
-    e.stopPropagation(); // prevent bubbling to grid-item
+  icon.addEventListener("click", async (e) => {
+    e.stopPropagation();
     const handle = item.dataset.handle;
-    if (!handle) return console.error("Missing product handle");
 
     try {
       const response = await fetch(`/products/${handle}.js`);
-      if (!response.ok) throw new Error(`Failed to fetch product JSON for ${handle}`);
       const product = await response.json();
       currentProduct = product;
 
-      // Fill popup content
-      popupImage.src = (product.images.length > 0)
-        ? product.images[0].src
-        : "{{ 'placeholder.png' | asset_url }}";
-
+      popupImage.src = product.images[0] || "/assets/placeholder.png";
       popupTitle.textContent = product.title;
-      popupPrice.textContent = formatMoney(product.variants[0].price);
-      popupDescription.innerHTML = product.body_html;
+      popupPrice.textContent = formatMoney(product.price);
+      popupDescription.innerHTML = product.description;
 
-      // Populate options
-      populateOptions(product);
+      // Populate size
+      sizeSelect.innerHTML = "";
+      const sizeValues = product.options.find(o => o.name.toLowerCase() === "size")?.values || [];
+      sizeValues.forEach(s => {
+        const option = document.createElement("option");
+        option.value = s;
+        option.textContent = s;
+        sizeSelect.appendChild(option);
+      });
 
-      // Show popup
+      // Populate color
+      colorSelect.innerHTML = "";
+      const colorValues = product.options.find(o => o.name.toLowerCase() === "color")?.values || [];
+      colorValues.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c;
+        option.textContent = c;
+        colorSelect.appendChild(option);
+      });
+
       popup.classList.remove("hidden");
-
     } catch (err) {
-      console.error(err);
-      alert("Failed to load product details.");
+      console.error("Failed to fetch product:", err);
     }
   });
 });
 
-// ---------------------------
 // Close popup
-// ---------------------------
 popupClose.addEventListener("click", () => popup.classList.add("hidden"));
-popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
+popup.addEventListener("click", e => { if(e.target === popup) popup.classList.add("hidden"); });
 
-// ---------------------------
-// Add to Cart
-// ---------------------------
+// Add to cart
 addToCartBtn.addEventListener("click", async () => {
   if (!currentProduct) return;
 
   const selectedSize = sizeSelect.value;
   const selectedColor = colorSelect.value;
 
-  // Find the variant matching the selected size & color
-  const matchedVariant = currentProduct.variants.find(variant => 
-    variant.option1 === selectedSize && variant.option2 === selectedColor
+  const variant = currentProduct.variants.find(v =>
+    v.option1 === selectedSize && v.option2 === selectedColor
   );
 
-  if (!matchedVariant) {
-    return alert("Please select a valid size and color option.");
+  if (!variant) {
+    alert("Variant not found.");
+    return;
   }
 
   try {
     await fetch("/cart/add.js", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: matchedVariant.id, quantity: 1 })
+      body: JSON.stringify({ id: variant.id, quantity: 1 })
     });
-
     alert("Product added to cart!");
     popup.classList.add("hidden");
-
   } catch (err) {
     console.error(err);
-    alert("Failed to add product to cart.");
+    alert("Could not add product to cart.");
   }
 });
 
-// ---------------------------
-// Populate size & color selects
-// ---------------------------
-function populateOptions(product) {
-  sizeSelect.innerHTML = "";
-  colorSelect.innerHTML = "";
-
-  const sizeOption = product.options.find(opt => opt.name.toLowerCase() === "size");
-  const colorOption = product.options.find(opt => opt.name.toLowerCase() === "color");
-
-  if (sizeOption) {
-    sizeOption.values.forEach(size => {
-      const opt = document.createElement("option");
-      opt.value = size;
-      opt.textContent = size;
-      sizeSelect.appendChild(opt);
-    });
-  }
-
-  if (colorOption) {
-    colorOption.values.forEach(color => {
-      const opt = document.createElement("option");
-      opt.value = color;
-      opt.textContent = color;
-      colorSelect.appendChild(opt);
-    });
-  }
-}
-
-// ---------------------------
-// Format price from string
-// ---------------------------
-function formatMoney(priceStr) {
-  const amount = parseFloat(priceStr);
-  return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
+// Format money
+function formatMoney(cents) {
+  return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
