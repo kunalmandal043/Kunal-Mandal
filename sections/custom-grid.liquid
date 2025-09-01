@@ -4,7 +4,6 @@
 {% schema %}
 {
   "name": "Custom Grid",
-  "settings": [],
   "blocks": [
     {
       "type": "product",
@@ -14,10 +13,10 @@
       ]
     }
   ],
-  "max_blocks": 6,
-  "presets": [{ "name": "Custom Grid" }]
+  "max_blocks": 6
 }
 {% endschema %}
+
 
 
 {% assign grid_images = 
@@ -34,15 +33,30 @@
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for image in grid_images %}
-      <div class="grid-item" data-handle="{{ block.settings.product.handle }}">
-  <img src="{{ image | strip | asset_url }}" alt="{{ block.settings.product.title }}" width="433" height="444" class="grid-image">
-  <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
+  {% for block in section.blocks %}
+    {% assign product = all_products[block.settings.product.handle] %}
+    {% if product %}
+      <div class="grid-item" data-handle="{{ product.handle }}">
+        <img 
+          src="{{ product.featured_image | img_url: '433x444' }}" 
+          alt="{{ product.title }}" 
+          width="433" 
+          height="444" 
+          class="grid-image"
+          loading="lazy"
+        >
+        <img 
+          class="popup-icon" 
+          src="{{ 'circle-popup.svg' | asset_url }}" 
+          alt="Open Popup"
+          width="22" 
+          height="22"
+        >
+      </div>
+    {% endif %}
+  {% endfor %}
 </div>
 
-
-    {% endfor %}
-  </div>
 </section>
 
 
