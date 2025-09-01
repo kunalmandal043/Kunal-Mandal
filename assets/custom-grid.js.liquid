@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentProduct = null;
 
+  // Open popup when icon is clicked
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
@@ -19,43 +20,33 @@ document.addEventListener("DOMContentLoaded", () => {
     popupIcon.addEventListener("click", async (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
-      if (!handle) return;
+      if (!handle) return console.error("Missing product handle");
 
       try {
         const response = await fetch(`/products/${handle}.js`);
-        if (!response.ok) throw new Error("Product fetch failed");
+        if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
         const product = await response.json();
         currentProduct = product;
 
-        // Product image
-        if (product.images && product.images.length > 0) {
-          popupImage.src = product.images[0].src;
-        } else {
-          popupImage.src = "{{ 'placeholder.png' | asset_url }}";
-        }
+        // Fill popup
+        popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
 
-        // Title
         popupTitle.textContent = product.title;
-
-        // Price (use first variant price)
-        popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100);
-
-        // Description (use body_html)
+        popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100); // Shopify price in cents
         popupDescription.innerHTML = product.body_html || "";
 
-        // Populate options
+        // Populate size & color
         sizeSelect.innerHTML = "";
         colorSelect.innerHTML = "";
-
-        const sizeIndex = product.options.findIndex(opt => opt.toLowerCase() === "size");
-        const colorIndex = product.options.findIndex(opt => opt.toLowerCase() === "color");
-
         const sizes = new Set();
         const colors = new Set();
 
         product.variants.forEach(variant => {
-          if (sizeIndex >= 0 && variant.options[sizeIndex]) sizes.add(variant.options[sizeIndex]);
-          if (colorIndex >= 0 && variant.options[colorIndex]) colors.add(variant.options[colorIndex]);
+          variant.options.forEach((opt, i) => {
+            const optName = product.options[i].name.toLowerCase();
+            if (optName === "size") sizes.add(opt);
+            if (optName === "color") colors.add(opt);
+          });
         });
 
         sizes.forEach(size => {
@@ -72,7 +63,6 @@ document.addEventListener("DOMContentLoaded", () => {
           colorSelect.appendChild(option);
         });
 
-        // Show popup
         popup.classList.remove("hidden");
       } catch (err) {
         console.error(err);
@@ -82,22 +72,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close popup
   popupClose.addEventListener("click", () => popup.classList.add("hidden"));
-  popup.addEventListener("click", e => {
-    if (e.target === popup) popup.classList.add("hidden");
-  });
+  popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
 
-  // Add to cart
+  // Add to Cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
-
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant => {
-      const sizeMatch = !selectedSize || variant.options.includes(selectedSize);
-      const colorMatch = !selectedColor || variant.options.includes(selectedColor);
-      return sizeMatch && colorMatch;
-    });
+    const matchedVariant = currentProduct.variants.find(variant => 
+      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
+    );
 
     if (!matchedVariant) return alert("Please select valid options");
 
