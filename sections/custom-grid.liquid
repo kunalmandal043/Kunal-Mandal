@@ -2,9 +2,15 @@
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
 <!-- Load fallback images JSON into a global object -->
+<script src="{{ 'fallback-images.json' | asset_url }}" defer></script>
 <script>
-  window.fallbackImages = {{ 'fallback-images.json' | asset_url | file_content }};
+  document.addEventListener("DOMContentLoaded", () => {
+    fetch("{{ 'fallback-images.json' | asset_url }}")
+      .then(res => res.json())
+      .then(data => { window.fallbackImages = data; });
+  });
 </script>
+
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
