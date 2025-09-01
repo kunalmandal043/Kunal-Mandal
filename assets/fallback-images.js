@@ -1,4 +1,4 @@
- [
+ window.fallbackImages =[
   {
     Handle: "black-leather-bag",
     Title: "Black Leather Bag",
