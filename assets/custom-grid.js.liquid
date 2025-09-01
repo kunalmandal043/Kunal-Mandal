@@ -1,44 +1,63 @@
-// No DOMContentLoaded needed because script is loaded with defer
-
-const gridItems = document.querySelectorAll(".grid-item");
 const popup = document.getElementById("product-popup");
 const popupClose = document.getElementById("popup-close");
 const popupImage = document.getElementById("popup-image");
 const popupTitle = document.getElementById("popup-title");
 const popupPrice = document.getElementById("popup-price");
 const popupDescription = document.getElementById("popup-description");
-const variantSelect = document.getElementById("variant-select");
+
+const variantColor = document.getElementById("variant-color");
+const variantSize = document.getElementById("variant-size");
 const addToCartBtn = document.getElementById("add-to-cart");
 
 let currentProduct = null;
+let variantMap = {}; // map { color: { size: variantId } }
 
-// Open popup when grid item is clicked
-gridItems.forEach(item => {
-  item.addEventListener("click", async () => {
+const popupIcons = document.querySelectorAll(".popup-icon");
+
+// Open popup when clicking the circle icon
+popupIcons.forEach(icon => {
+  icon.addEventListener("click", async (e) => {
+    e.stopPropagation();
+    const item = icon.closest(".grid-item");
     const handle = item.dataset.handle;
 
     try {
-      // Fetch product JSON
       const response = await fetch(`/products/${handle}.js`);
       const product = await response.json();
       currentProduct = product;
 
-      // Fill popup content
+      // Fill popup
       popupImage.src = product.images[0] || "{{ 'placeholder.png' | asset_url }}";
       popupTitle.textContent = product.title;
       popupPrice.textContent = formatMoney(product.price);
-      popupDescription.textContent = product.description || "";
+      popupDescription.innerHTML = product.description || "";
 
-      // Populate variants
-      variantSelect.innerHTML = "";
+      // Reset selectors
+      variantColor.innerHTML = "";
+      variantSize.innerHTML = "";
+      variantMap = {};
+
+      // Build variant map
       product.variants.forEach(variant => {
-        const option = document.createElement("option");
-        option.value = variant.id;
-        option.textContent = variant.title + " - " + formatMoney(variant.price);
-        variantSelect.appendChild(option);
+        const parts = variant.title.split(" / ");
+        const color = parts[0] || "Default";
+        const size = parts[1] || "One Size";
+
+        if (!variantMap[color]) variantMap[color] = {};
+        variantMap[color][size] = variant.id;
       });
 
-      // Show popup
+      // Populate colors
+      Object.keys(variantMap).forEach(color => {
+        const option = document.createElement("option");
+        option.value = color;
+        option.textContent = color;
+        variantColor.appendChild(option);
+      });
+
+      // Populate sizes for first color
+      updateSizes(Object.keys(variantMap)[0]);
+
       popup.classList.remove("hidden");
     } catch (err) {
       console.error("Error loading product:", err);
@@ -46,56 +65,42 @@ gridItems.forEach(item => {
   });
 });
 
+// Update sizes when color changes
+variantColor.addEventListener("change", () => {
+  updateSizes(variantColor.value);
+});
+
+function updateSizes(color) {
+  variantSize.innerHTML = "";
+  if (!variantMap[color]) return;
+  Object.keys(variantMap[color]).forEach(size => {
+    const option = document.createElement("option");
+    option.value = size;
+    option.textContent = size;
+    variantSize.appendChild(option);
+  });
+}
+
 // Close popup
 popupClose.addEventListener("click", () => {
   popup.classList.add("hidden");
 });
 popup.addEventListener("click", e => {
-  if (e.target === popup) popup.classList.add("hidden"); // close on outside click
+  if (e.target === popup) popup.classList.add("hidden");
 });
 
 // Add to Cart
 addToCartBtn.addEventListener("click", async () => {
   if (!currentProduct) return;
 
-  const selectedVariantId = variantSelect.value;
-  const selectedVariant = currentProduct.variants.find(v => v.id == selectedVariantId);
+  const color = variantColor.value;
+  const size = variantSize.value;
+  const variantId = variantMap[color]?.[size];
+
+  if (!variantId) {
+    alert("Please select a valid option.");
+    return;
+  }
 
   try {
-    // Add selected variant
-    await fetch("/cart/add.js", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: selectedVariantId, quantity: 1 })
-    });
-
-    // Special rule: If variant is Black + Medium → add Soft Winter Jacket too
-    if (selectedVariant.title.includes("Black") && selectedVariant.title.includes("Medium")) {
-      const jacketResponse = await fetch(`/products/soft-winter-jacket.js`);
-      const jacket = await jacketResponse.json();
-
-      if (jacket.variants.length > 0) {
-        const jacketVariantId = jacket.variants[0].id;
-        await fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: jacketVariantId, quantity: 1 })
-        });
-      }
-    }
-
-    alert("Product added to cart!");
-    popup.classList.add("hidden");
-  } catch (err) {
-    console.error("Error adding to cart:", err);
-    alert("Could not add product to cart.");
-  }
-});
-
-// Format Shopify money
-function formatMoney(cents) {
-  return (cents / 100).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD"
-  });
-}
+    await fetch("/cart/add.js
