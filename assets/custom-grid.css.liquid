@@ -1,3 +1,4 @@
+
 .custom-grid {
   padding: 40px 20px;
   text-align: center;
@@ -129,3 +130,138 @@
 #add-to-cart:hover {
   background: #333;
 }
+
+and custom-grid.js.liquid
+
+.custom-grid {
+  padding: 40px 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Section Heading */
+.heading {
+  width: 372px;
+  height: 43px;
+  font-family: "Lustria", serif;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 120%;
+  text-align: left;
+  margin: 0 0 20px 0;
+}
+
+/* Grid Container */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 4px;
+ 
+}
+
+/* Grid Items */
+.grid-item {
+  padding: 4px;
+  
+  display: inline-block;
+}
+
+.grid-image-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+/* Grid Images */
+.grid-item .grid-image {
+  width: 100%;
+  max-width: 433px;
+  height: auto;
+
+  object-fit: cover;
+  display: block;
+  margin: 0 auto;
+}
+
+/* Popup icon overlay */
+.grid-item .popup-icon {
+  position: absolute;
+  bottom: 30%;
+  right: 45%;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+  z-index: 2;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heading {
+    width: 248px;
+    font-size: 24px;
+    line-height: 120%;
+    text-align: center;
+    margin: 0 auto 20px auto;
+  }
+
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .grid-item .grid-image {
+    max-width: 100%;
+  }
+
+  .grid-item .popup-icon {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Popup */
+.popup {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.popup.hidden { display: none; }
+
+.popup-content {
+  background: #fff;
+  padding: 20px;
+  max-width: 500px;
+  width: 90%;
+  border-radius: 10px;
+  text-align: center;
+  position: relative;
+}
+
+#popup-close {
+  position: absolute;
+  top: 10px; right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#add-to-cart {
+  margin-top: 20px;
+ 
+  
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#add-to-cart:hover {
+  background: #333;
+}
+ 
