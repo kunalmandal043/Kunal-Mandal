@@ -1,0 +1,20 @@
+<div id="fallback-products" class="fallback-grid"></div>
+
+{% comment %} Load JS data from assets {% endcomment %}
+<script src="{{ 'fallback-images.js' | asset_url }}" defer></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    if (window.fallbackImages && Array.isArray(window.fallbackImages)) {
+      const container = document.getElementById("fallback-products");
+      
+      container.innerHTML = window.fallbackImages.map(item => `
+        <div class="fallback-item">
+          <img src="${item.ImageSrc}" alt="${item.Title}" />
+          <h3>${item.Title}</h3>
+          <div class="desc">${item.Body}</div>
+        </div>
+      `).join("");
+    }
+  });
+</script>
