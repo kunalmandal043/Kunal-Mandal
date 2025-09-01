@@ -11,18 +11,18 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedProductId = null;
   let selectedVariantId = null;
 
-  /**
-   * Apply fallback images by matching product handles
-   */
-  window.applyFallbackImages = function () {
+ document.addEventListener("DOMContentLoaded", function () {
+  console.log("✅ DOM Ready");
+
+  // Apply fallback images
+  function applyFallbackImages() {
     const gridImages = document.querySelectorAll("img[data-fallback-handle]");
 
     if (!Array.isArray(window.fallbackImages)) {
-      console.warn(" No fallback images loaded yet.");
+      console.error("❌ No fallbackImages found.");
       return;
     }
 
-    // Build a handle -> imageSrc map
     const imageMap = {};
     window.fallbackImages.forEach(entry => {
       if (entry["Handle"] && entry["Image Src"]) {
@@ -30,19 +30,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    console.log(" Fallback image map ready:", imageMap);
+    console.log("✅ Image Map:", imageMap);
 
-    // Replace each grid image
-    gridImages.forEach((img) => {
+    gridImages.forEach(img => {
       const handle = img.dataset.fallbackHandle;
       if (imageMap[handle]) {
-        console.log(" Setting image for", handle, "→", imageMap[handle]);
+        console.log("👉 Setting", handle, "→", imageMap[handle]);
         img.src = imageMap[handle];
       } else {
-        console.warn(" No match for handle:", handle);
+        console.warn("❌ No match for handle:", handle);
       }
     });
-  };
+  }
+
+  applyFallbackImages();
+});
+
 
   /**
    * Open popup
