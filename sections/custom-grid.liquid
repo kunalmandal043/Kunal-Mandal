@@ -18,28 +18,41 @@
   "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
-{% assign grid_images = "AccordionPleatedDress.png,GreenTrenchCoat.png,LongSleeveTennisTop.png,OrangeWideLeg.png,TailoredJacket.png,TennisBlueT-Shirt.png" | split: "," %}
+
+
+{% assign grid_images = 
+  "AccordionPleatedDress.png,
+   GreenTrenchCoat.png,
+   LongSleeveTennisTop.png,
+   OrangeWideLeg.png,
+   TailoredJacket.png,
+   TennisBlueT-Shirt.png" | split: "," %}
+
+{% assign grid_titles = 
+  "Accordion Pleated Dress,
+   Green Trench Coat,
+   Long Sleeve Tennis Top,
+   Orange Wide Leg,
+   Tailored Jacket,
+   Tennis Blue T-Shirt" | split: "," %}
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for block in section.blocks %}
-      {% assign product = all_products[block.settings.product] %}
-      {% if product %}
-        <div class="grid-item" data-handle="{{ product.handle }}">
-          <img
-            src="{{ grid_images[forloop.index0] | asset_url }}"
-            alt="{{ product.title | escape }}"
-            width="600"
-            height="800"
-            loading="lazy"
-          >
-          <p>{{ product.title }}</p>
-        </div>
-      {% endif %}
+    {% for image in grid_images %}
+      <div class="grid-item">
+        <img 
+          src="{{ image | strip | asset_url }}" 
+          alt="{{ grid_titles[forloop.index0] | strip }}" 
+          width="600" height="800"
+          loading="lazy"
+        >
+        <p>{{ grid_titles[forloop.index0] | strip }}</p>
+      </div>
     {% endfor %}
   </div>
 </section>
+
 
 <!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
