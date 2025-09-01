@@ -1,6 +1,11 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
+<!-- Load fallback images JSON into a global object -->
+<script>
+  window.fallbackImages = {{ 'fallback-images.json' | asset_url | file_content }};
+</script>
+
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
 
@@ -12,11 +17,22 @@
           class="grid-item"
           data-product-handle="{{ product.handle }}"
           data-product-id="{{ product.id }}"
+          data-product-title="{{ product.title | escape }}"
+          data-product-price="{{ product.price | money }}"
+          data-product-description="{{ product.description | strip_html | escape }}"
         >
           <!-- Product Image -->
           {% if product.featured_image %}
             <img 
               src="{{ product.featured_image.src | image_url: width: 433, height: 444, crop: 'center' }}" 
+              width="433" height="444"
+              loading="lazy"
+              alt="{{ product.title }}"
+            >
+          {% else %}
+            <img 
+              src="{{ 'placeholder.png' | asset_url }}" 
+              data-fallback-handle="{{ product.handle }}"
               width="433" height="444"
               loading="lazy"
               alt="{{ product.title }}"
@@ -36,19 +52,11 @@
   </div>
 </section>
 
-
 <!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
-    
-    <img id="popup-image" 
-      src="{{ 'placeholder.png' | asset_url }}" 
-      alt="Product preview" 
-      width="400" height="400"
-      loading="lazy"
-    >
-
+    <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
     <h2 id="popup-title"></h2>
     <p id="popup-price"></p>
     <p id="popup-description"></p>
@@ -61,7 +69,6 @@
     <button id="add-to-cart">ADD TO CART</button>
   </div>
 </div>
-
 
 {% schema %}
 {
@@ -77,8 +84,6 @@
     }
   ],
   "max_blocks": 6,
-  "presets": [
-    { "name": "Custom Grid" }
-  ]
+  "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}

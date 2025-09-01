@@ -1,49 +1,59 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
+  // Replace missing images with fallback from JSON
+  document.querySelectorAll("img[data-fallback-handle]").forEach(img => {
+    const handle = img.dataset.fallbackHandle;
+    if (window.fallbackImages && window.fallbackImages[handle]) {
+      img.src = window.fallbackImages[handle];
+    }
+  });
+
   const popup = document.getElementById("product-popup");
+  const popupClose = document.getElementById("popup-close");
   const popupImage = document.getElementById("popup-image");
   const popupTitle = document.getElementById("popup-title");
   const popupPrice = document.getElementById("popup-price");
   const popupDescription = document.getElementById("popup-description");
   const variantSelect = document.getElementById("variant-select");
   const addToCartBtn = document.getElementById("add-to-cart");
-  const popupClose = document.getElementById("popup-close");
 
-  let currentProduct = null;
+  let selectedProductId = null;
+  let selectedVariantId = null;
 
-  // Click only on popup icon
+  // Open popup on clicking the circle icon
   document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
     icon.addEventListener("click", async (e) => {
-      e.stopPropagation(); // Prevent parent click events
       const gridItem = e.target.closest(".grid-item");
-      const handle = gridItem.dataset.productHandle;
 
-      try {
-        // Fetch product JSON dynamically
-        const res = await fetch(`/products/${handle}.js`);
-        const product = await res.json();
-        currentProduct = product;
+      selectedProductId = gridItem.dataset.productId;
 
-        // Fill popup data
-        popupImage.src = product.featured_image;
-        popupTitle.textContent = product.title;
-        popupPrice.textContent = formatMoney(product.price);
-        popupDescription.textContent = product.description || "";
+      // Fill popup with product info
+      popupTitle.textContent = gridItem.dataset.productTitle;
+      popupPrice.textContent = gridItem.dataset.productPrice;
+      popupDescription.textContent = gridItem.dataset.productDescription;
 
-        // Populate variants
-        variantSelect.innerHTML = "";
-        product.variants.forEach(variant => {
-          const option = document.createElement("option");
-          option.value = variant.id;
-          option.textContent = variant.title;
-          variantSelect.appendChild(option);
-        });
+      const productHandle = gridItem.dataset.productHandle;
 
-        // Show popup
-        popup.classList.remove("hidden");
+      // Fetch product JSON from Shopify
+      const res = await fetch(`/products/${productHandle}.js`);
+      const productData = await res.json();
 
-      } catch (error) {
-        console.error("Error loading product:", error);
+      // Set product image
+      if (productData.images && productData.images.length > 0) {
+        popupImage.src = productData.images[0];
       }
+
+      // Populate variants
+      variantSelect.innerHTML = "";
+      productData.variants.forEach(v => {
+        const option = document.createElement("option");
+        option.value = v.id;
+        option.textContent = v.title;
+        variantSelect.appendChild(option);
+      });
+
+      selectedVariantId = productData.variants[0].id;
+
+      popup.classList.remove("hidden");
     });
   });
 
@@ -52,37 +62,25 @@ document.addEventListener("DOMContentLoaded", () => {
     popup.classList.add("hidden");
   });
 
-  // Add to cart
-  addToCartBtn.addEventListener("click", async () => {
-    const variantId = variantSelect.value;
-    if (!variantId) return;
-
-    try {
-      const res = await fetch("/cart/add.js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Accept": "application/json"
-        },
-        body: JSON.stringify({ id: variantId, quantity: 1 })
-      });
-
-      if (!res.ok) throw new Error("Add to cart failed");
-
-      alert("Product added to cart!");
-      popup.classList.add("hidden");
-
-    } catch (error) {
-      console.error("Cart error:", error);
-      alert("Could not add to cart.");
-    }
+  // Update selected variant
+  variantSelect.addEventListener("change", (e) => {
+    selectedVariantId = e.target.value;
   });
 
-  // Format Shopify money
-  function formatMoney(cents) {
-    return new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: Shopify.currency.active
-    }).format(cents / 100);
-  }
+  // Add to cart
+  addToCartBtn.addEventListener("click", async () => {
+    if (!selectedVariantId) return;
+
+    await fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        items: [{ id: selectedVariantId, quantity: 1 }]
+      })
+    });
+
+    alert("Product added to cart!");
+    popup.classList.add("hidden");
+  });
 });
+
