@@ -116,7 +116,7 @@
   {
     Handle: "striped-skirt-and-top",
     Title: "Striped Skirt and Top",
-    BodyHTML: "<p>Black cotton top with matching striped skirt.</p>",
+    Body: "Black cotton top with matching striped skirt.",
     Vendor: "partners-demo",
     Price: 50,
     ImageSrc: "https://cdn.shopify.com/s/files/1/0693/9348/1922/files/woman-in-the-city_925x_fa6b306e-cdb3-4593-94a7-91ba71d3e059.jpg?v=1756222361"
