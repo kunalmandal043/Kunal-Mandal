@@ -1,57 +1,6 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
-<section class="custom-grid">
-  <h2 class="heading">Tisso vision in the wild</h2>
-  <div class="grid-container">
-    {% for block in section.blocks %}
-      {% assign product = all_products[block.settings.product] %}
-      {% if product %}
-        <div 
-          class="grid-item"
-          data-handle="{{ product.handle }}"
-        >
-          <img 
-            src="{{ product.featured_image | img_url: '433x444' }}" 
-            width="433" height="444"
-            loading="lazy"
-            alt="{{ product.title }}"
-          >
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup"
-            width="22" height="22"
-          >
-        </div>
-      {% else %}
-        <div class="grid-item placeholder">
-          <div class="placeholder-box">Select a product</div>
-        </div>
-      {% endif %}
-    {% endfor %}
-  </div>
-</section>
-
-<!-- Product Popup -->
-<div id="product-popup" class="popup hidden">
-  <div class="popup-content">
-    <span id="popup-close">&times;</span>
-
-    <img id="popup-image" src="" alt="Product preview" width="400" height="400">
-    <h2 id="popup-title"></h2>
-    <p id="popup-price"></p>
-    <p id="popup-description"></p>
-
-    <!-- Variant selector -->
-    <label for="variant-select">Choose options:</label>
-    <select id="variant-select"></select>
-
-    <!-- Add to Cart -->
-    <button id="add-to-cart">ADD TO CART</button>
-  </div>
-</div>
-
 {% schema %}
 {
   "name": "Custom Grid",
@@ -69,3 +18,63 @@
   "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
+
+
+{% assign grid_images = 
+  "
+   OrangeWideLeg.png,
+   TailoredJacket.png,
+   AccordionPleatedDress.png,
+   GreenTrenchCoat.png,
+   TennisBlueT-Shirt.png,
+   LongSleeveTennisTop.png" | split: "," %}
+
+
+
+<section class="custom-grid">
+  <h2 class="heading">Tisso vision in the wild</h2>
+  <div class="grid-container">
+    {% for image in grid_images %}
+      <div class="grid-item">
+        <img 
+          src="{{ image | strip | asset_url }}" 
+          alt="Product image"
+          width="433"
+          height="444"
+          loading="lazy"
+          class="grid-image"
+        >
+        <img 
+        class="popup-icon" 
+        src="{{ 'circle-popup.svg' | asset_url }}" 
+        alt="Open Popup"
+        width="22" height="22"
+        >
+
+      </div>
+    {% endfor %}
+  </div>
+</section>
+
+
+<!-- Product Popup -->
+<div id="product-popup" class="popup hidden">
+  <div class="popup-content">
+    <span id="popup-close">&times;</span>
+    <img id="popup-image" 
+      src="{{ 'placehoder.png' | asset_url }}" 
+      alt="Product preview" 
+      width="400" height="400" loading="lazy">
+
+    <h2 id="popup-title"></h2>
+    <p id="popup-price"></p>
+    <p id="popup-description"></p>
+
+    <!-- Variants -->
+    <label for="variant-select">Choose your options:</label>
+    <select id="variant-select"></select>
+
+    <!-- Add to Cart -->
+    <button id="add-to-cart">ADD TO CART</button>
+  </div>
+</div>
