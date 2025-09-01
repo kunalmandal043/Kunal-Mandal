@@ -121,9 +121,9 @@ function populateOptions(product) {
 }
 
 // ---------------------------
-// Format price from cents
+// Format price from string
 // ---------------------------
-function formatMoney(cents) {
-  const amount = parseFloat(cents); // JSON returns price as string
+function formatMoney(priceStr) {
+  const amount = parseFloat(priceStr);
   return amount.toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
