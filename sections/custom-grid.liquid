@@ -5,6 +5,7 @@
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
+
   <div class="grid-container">
     {% for product in all_products_collection.products limit:6 %}
       <div class="grid-item" data-handle="{{ product.handle }}">
@@ -15,77 +16,62 @@
               alt="{{ product.title }}" 
               width="433" 
               height="444"
-              class="grid-image"
-            >
+              class="grid-image">
           {% else %}
-            <img 
-              src="{{ 'placeholder.png' | asset_url }}" 
-              alt="Placeholder" 
-              width="433" 
-              height="444"
-              class="grid-image"
-            >
+            <img src="{{ 'placeholder.png' | asset_url }}" alt="Placeholder" width="433" height="444" class="grid-image">
           {% endif %}
 
-          <!-- Popup icon -->
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup" 
-            width="22" 
-            height="22"
-          >
+          <!-- Popup trigger icon -->
+          <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
         </div>
       </div>
     {% endfor %}
   </div>
 </section>
 
-<!-- Product Popup -->
+<!-- Quick View Modal -->
 <div id="product-popup" class="popup hidden">
-  <div class="popup-content">
-    <span id="popup-close">&times;</span>
+  <div class="popup-content" role="dialog" aria-modal="true">
+    <button id="popup-close" aria-label="Close">×</button>
 
-    <!-- Top section: Image + Details -->
-    <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
-
-      <div class="popup-details">
-        <h2 id="popup-title"></h2>
-        <p id="popup-price"></p>
-        <p id="popup-description"></p>
-      </div>
-    </div>
-
-    <!-- Bottom section: Options + Add to Cart -->
-    <div class="popup-bottom">
-      <div class="popup-option">
-        <label for="color-select">Choose Color:</label>
-        <select id="color-select"></select>
+    <div class="qv">
+      <div class="qv-media">
+        <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product image" loading="lazy">
       </div>
 
-      <div class="popup-option">
-        <label for="size-select">Choose Size:</label>
-        <select id="size-select"></select>
-      </div>
+      <div class="qv-info">
+        <h2 id="popup-title" class="qv-title"></h2>
+        <div id="popup-price" class="qv-price"></div>
+        <p id="popup-description" class="qv-desc"></p>
 
-      <button id="add-to-cart">
-        <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
-      </button>
+        <div class="qv-field">
+          <div class="qv-label">Color</div>
+          <div id="color-group" class="qv-swatches" role="radiogroup" aria-label="Choose color">
+            <!-- swatch buttons injected by JS -->
+          </div>
+        </div>
+
+        <div class="qv-field">
+          <div class="qv-label">Size</div>
+          <div class="qv-size">
+            <select id="size-select" aria-label="Choose your size"></select>
+            <span class="chev" aria-hidden="true">▾</span>
+          </div>
+        </div>
+
+        <button id="add-to-cart" class="qv-add">
+          ADD TO CART <span aria-hidden="true">→</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
-
 
 {% schema %}
 {
   "name": "Custom Grid",
   "settings": [],
   "blocks": [],
-  "presets": [
-    {
-      "name": "Custom Grid"
-    }
-  ]
+  "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
