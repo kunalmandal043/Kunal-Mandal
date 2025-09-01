@@ -18,23 +18,22 @@
   "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
+{% assign grid_images = "AccordionPleatedDress.png,GreenTrenchCoat.png,LongSleeveTennisTop.png,OrangeWideLeg.png,TailoredJacket.png,TennisBlueT-Shirt.png" | split: "," %}
 
 <section class="custom-grid">
-  <h2 class="heading">Tisso vison in the wild</h2>
+  <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% assign images = "AccordionPleatedDress.png,GreenTrenchCoat.png,LongSleeveTennisTop.png,OrangeWideLeg.png,TailoredJacket.png,TennisBlueT-Shirt.png" | split: "," %}
     {% for block in section.blocks %}
       {% assign product = all_products[block.settings.product] %}
-      {% if product and images[forloop.index0] %}
+      {% if product %}
         <div class="grid-item" data-handle="{{ product.handle }}">
           <img
-          src="{{ images[forloop.index0] | asset_url }}"
-          alt="{{ product.title | escape }}"
-          width="600"
-          height="800"
-          loading="lazy"
-          />
-
+            src="{{ grid_images[forloop.index0] | asset_url }}"
+            alt="{{ product.title | escape }}"
+            width="600"
+            height="800"
+            loading="lazy"
+          >
           <p>{{ product.title }}</p>
         </div>
       {% endif %}
