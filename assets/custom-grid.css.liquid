@@ -1,19 +1,13 @@
-/* ===== Grid Section Styling ===== */
+
+
 .custom-grid {
   padding: 40px 20px;
-  max-width: 1200px;  /* Center the section and prevent overflow */
+  text-align: center;
+  max-width: 1200px; /* prevent overflow */
   margin: 0 auto;
 }
 
-/* Grid layout */
-.grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 per row */
-  gap: 20px;
-  margin-top: 20px;
-}
-
-/* Heading */
+/* Section Heading */
 .heading {
   width: 372px;
   height: 43px;
@@ -21,78 +15,77 @@
   font-weight: 400;
   font-style: normal;
   font-size: 36px;
-  line-height: 120%;
+  line-height: 120%; /* ~43px */
   letter-spacing: 0px;
   vertical-align: middle;
-  text-align: left; /* Left on desktop */
+  text-align: left; /* Desktop left aligned */
   margin: 0 0 20px 0;
 }
 
-/* Heading Mobile */
-@media (max-width: 768px) {
-  .heading {
-    width: 248px;
-    height: 29px;
-    font-size: 24px;
-    line-height: 120%;
-    text-align: center; /* Center aligned */
-    margin: 0 auto 20px auto;
-  }
+/* Grid Container */
+.grid-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Desktop: 3 per row */
+  gap: 20px;
+  margin-top: 20px;
 }
 
-/* ===== Grid Items ===== */
+/* Grid Items */
 .grid-item {
   padding: 10px;
   border-radius: 8px;
   transition: transform 0.2s ease;
 }
+
 .grid-item:hover {
   transform: scale(1.03);
 }
 
-/* Desktop images fixed size */
-.grid-item img {
-  width: 100%;              /* Fill column */
-  max-width: 433px;         /* Desktop limit */
-  aspect-ratio: 433 / 444;  /* Maintain ratio */
+/* Grid Images */
+.grid-item img,
+.grid-image {
+  width: 100%;              /* responsive scaling */
+  max-width: 433px;         /* fixed desktop size */
+  height: auto;             /* maintain aspect ratio */
+  aspect-ratio: 433 / 444;  /* helps prevent layout shift */
   object-fit: cover;
   display: block;
   margin: 0 auto;
-  height: auto;
 }
 
-/* ===== Responsive Breakpoints ===== */
 
-/* Tablet: 2 per row */
-@media (max-width: 1024px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .grid-item img {
-    max-width: 100%;  /* Fully fluid */
-    aspect-ratio: auto;
-  }
-}
 
-/* Mobile: 2 per row */
+/* Tablet & Mobile (<=768px): 2 images per row */
 @media (max-width: 768px) {
+  .heading {
+    width: 248px;
+    height: 29px;
+    font-size: 24px;
+    line-height: 120%; /* ~29px */
+    text-align: center;
+    margin: 0 auto 20px auto;
+  }
+
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
-  .grid-item img {
-    width: 100%;
-    height: auto;
+
+  .grid-item img,
+  .grid-image {
+    max-width: 100%; /* shrink to fit */
   }
 }
 
-/* Very small phones: 1 per row */
+/* Small phones (<=480px): 1 image per row */
 @media (max-width: 480px) {
   .grid-container {
     grid-template-columns: 1fr;
   }
 }
 
-/* ===== Popup Styles ===== */
+
+
 .popup {
   position: fixed;
   top: 0; left: 0;
@@ -103,6 +96,7 @@
   justify-content: center;
   z-index: 9999;
 }
+
 .popup.hidden { display: none; }
 
 .popup-content {
@@ -114,12 +108,14 @@
   text-align: center;
   position: relative;
 }
+
 #popup-close {
   position: absolute;
   top: 10px; right: 15px;
   font-size: 24px;
   cursor: pointer;
 }
+
 #add-to-cart {
   margin-top: 20px;
   background: #000;
@@ -130,6 +126,7 @@
   cursor: pointer;
   transition: background 0.3s ease;
 }
+
 #add-to-cart:hover {
   background: #333;
 }
