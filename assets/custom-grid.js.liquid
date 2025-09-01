@@ -29,8 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         currentProduct = product;
 
         // Fill popup
-        popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
-
+        popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
         popupTitle.textContent = product.title;
         popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100); // Shopify price in cents
         popupDescription.innerHTML = product.body_html || "";
@@ -58,7 +57,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (optName === "color") colors.add(variant.option3);
           }
         });
-
 
         sizes.forEach(size => {
           const option = document.createElement("option");
@@ -95,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
       (variant.option1 === selectedSize || variant.option2 === selectedSize || variant.option3 === selectedSize) &&
       (variant.option1 === selectedColor || variant.option2 === selectedColor || variant.option3 === selectedColor)
     );
-
 
     if (!matchedVariant) return alert("Please select valid options");
 
