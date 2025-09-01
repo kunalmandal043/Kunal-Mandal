@@ -11,24 +11,30 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedProductId = null;
   let selectedVariantId = null;
 
-  document.addEventListener("DOMContentLoaded", function () {
-  // Get all grid items with placeholders
-  const gridItems = document.querySelectorAll("img[data-fallback-handle]");
+  /**
+   * Apply fallback images from JSON
+   */
+  function applyFallbackImages() {
+    const gridImages = document.querySelectorAll("img[data-fallback-handle]");
 
-  if (window.fallbackImages) {
-    // Extract all "Image Src" values into an array
-    const imageArray = Object.values(window.fallbackImages).map(entry => entry["Image Src"]);
-    
-    // Assign images in order
-    gridItems.forEach((img, index) => {
+    if (!Array.isArray(window.fallbackImages)) return;
+
+    // Extract valid image URLs only
+    const imageArray = window.fallbackImages
+      .map(entry => entry["Image Src"])
+      .filter(src => src && src.length > 0);
+
+    // Replace grid images in order
+    gridImages.forEach((img, index) => {
       if (imageArray[index]) {
         img.src = imageArray[index];
       }
     });
   }
 
-
-  // Wait until fallback JSON is loaded
+  /**
+   * Wait until fallback JSON is loaded
+   */
   const checkFallbackInterval = setInterval(() => {
     if (window.fallbackImages) {
       applyFallbackImages();
@@ -36,11 +42,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }, 300);
 
-  // Open popup on clicking the circle icon
+  /**
+   * Open popup on clicking the circle icon
+   */
   document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
     icon.addEventListener("click", async (e) => {
       const gridItem = e.target.closest(".grid-item");
-
       selectedProductId = gridItem.dataset.productId;
 
       // Fill popup with product info
@@ -51,11 +58,11 @@ document.addEventListener("DOMContentLoaded", function () {
       const productHandle = gridItem.dataset.productHandle;
 
       try {
-        // Fetch product JSON from Shopify
+        // Fetch product JSON from Shopify for variants & images
         const res = await fetch(`/products/${productHandle}.js`);
         const productData = await res.json();
 
-        // Set product image
+        // Use JSON image if available
         if (productData.images && productData.images.length > 0) {
           popupImage.src = productData.images[0];
         }
@@ -78,7 +85,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Close popup
+  /**
+   * Close popup
+   */
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
   });
@@ -86,12 +95,16 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
-  // Update selected variant
+  /**
+   * Update selected variant
+   */
   variantSelect.addEventListener("change", (e) => {
     selectedVariantId = e.target.value;
   });
 
-  // Add to cart
+  /**
+   * Add to cart
+   */
   addToCartBtn.addEventListener("click", async () => {
     if (!selectedVariantId) return;
 

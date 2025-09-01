@@ -26,14 +26,17 @@
           data-product-price="{{ product.price | money }}"
           data-product-description="{{ product.description | strip_html | escape }}"
         >
+          
           <!-- Product Image -->
           <img 
-            src="{% if product.featured_image %}{{ product.featured_image.src | image_url: width: 433, height: 444, crop: 'center' }}{% else %}{{ 'placeholder.png' | asset_url }}{% endif %}" 
+            src="" 
             width="433" height="444"
             loading="lazy"
             alt="{{ product.title }}"
             data-fallback-handle="{{ product.handle }}"
           >
+
+
 
           <!-- Popup trigger icon -->
           <img 
