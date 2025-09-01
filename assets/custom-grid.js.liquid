@@ -14,10 +14,11 @@ let currentProduct = null;
 // Open popup
 gridItems.forEach(item => {
   const popupIcon = item.querySelector(".popup-icon");
+  if (!popupIcon) return;
+  
   popupIcon.addEventListener("click", async (e) => {
-    e.stopPropagation(); // prevent parent click
+    e.stopPropagation(); // prevent bubbling
     const handle = item.dataset.handle;
-
     if (!handle) {
       console.error("Missing product handle on grid item");
       return;
@@ -30,22 +31,21 @@ gridItems.forEach(item => {
       currentProduct = product;
 
       // Fill popup
-      popupImage.src = product.images.length > 0 
-        ? product.images[0] 
+      popupImage.src = product.images.length > 0
+        ? product.images[0]
         : "{{ 'placeholder.png' | asset_url }}";
       popupTitle.textContent = product.title;
       popupPrice.textContent = formatMoney(product.price);
       popupDescription.textContent = product.description || "";
 
-      // Populate size & color (like we discussed before) ...
+      // Populate size & color dropdowns (as discussed before)...
 
-      popup.classList.remove("hidden"); // 
+      popup.classList.remove("hidden"); // Show the popup
     } catch (err) {
       console.error("Error loading product:", err);
     }
   });
 });
-
 
 // Close popup
 popupClose.addEventListener("click", () => popup.classList.add("hidden"));
