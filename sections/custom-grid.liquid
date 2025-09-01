@@ -1,23 +1,6 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
-<!-- Load fallback images JSON -->
-<script>
-  document.addEventListener("DOMContentLoaded", () => {
-    fetch("{{ 'fallback-images.json' | asset_url }}")
-      .then(res => res.json())
-      .then(data => {
-        window.fallbackImages = data;
-
-        // Immediately apply images after JSON loads
-        if (typeof window.applyFallbackImages === "function") {
-          window.applyFallbackImages();
-        }
-      })
-      .catch(err => console.error("Could not load fallback images:", err));
-  });
-</script>
-
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
 

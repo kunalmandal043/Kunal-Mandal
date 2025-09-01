@@ -12,129 +12,17 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedVariantId = null;
 
   /**
-   * Apply fallback images from JSON
-   */
-  window.applyFallbackImages = function () {
-    const gridImages = document.querySelectorAll("img[data-fallback-handle]");
-
-    if (!Array.isArray(window.fallbackImages)) {
-      console.warn("No fallback images found.");
-      return;
-    }
-
-    // Collect valid URLs only
-    const imageArray = window.fallbackImages
-      .map(entry => entry["Image Src"])
-      .filter(src => src && src.length > 0);
-
-    console.log("Applying fallback images:", imageArray);
-
-    gridImages.forEach((img, index) => {
-      if (imageArray[index]) {
-        img.src = imageArray[index];
-      }
-    });
-  };
-
-  /**
-   * Open popup on clicking the circle icon
-   */
-  document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
-    icon.addEventListener("click", async (e) => {
-      const gridItem = e.target.closest(".grid-item");
-      selectedProductId = gridItem.dataset.productId;
-
-      // Fill popup with product info
-      popupTitle.textContent = gridItem.dataset.productTitle;
-      popupPrice.textContent = gridItem.dataset.productPrice;
-      popupDescription.textContent = gridItem.dataset.productDescription;
-
-      const productHandle = gridItem.dataset.productHandle;
-
-      try {
-        // Fetch product JSON from Shopify for variants & images
-        const res = await fetch(`/products/${productHandle}.js`);
-        const productData = await res.json();
-
-        // Use Shopify product image if available
-        if (productData.images && productData.images.length > 0) {
-          popupImage.src = productData.images[0];
-        }
-
-        // Populate variants
-        variantSelect.innerHTML = "";
-        productData.variants.forEach(v => {
-          const option = document.createElement("option");
-          option.value = v.id;
-          option.textContent = v.title;
-          variantSelect.appendChild(option);
-        });
-
-        selectedVariantId = productData.variants[0]?.id || null;
-      } catch (err) {
-        console.error("Error fetching product data:", err);
-      }
-
-      popup.classList.remove("hidden");
-    });
-  });
-
-  /**
-   * Close popup
-   */
-  popupClose.addEventListener("click", () => {
-    popup.classList.add("hidden");
-  });
-  popup.addEventListener("click", (e) => {
-    if (e.target === popup) popup.classList.add("hidden");
-  });
-
-  /**
-   * Update selected variant
-   */
-  variantSelect.addEventListener("change", (e) => {
-    selectedVariantId = e.target.value;
-  });
-
-  /**
-   * Add to cart
-   */
-  addToCartBtn.addEventListener("click", async () => {
-    if (!selectedVariantId) return;
-
-    try {
-      await fetch("/cart/add.js", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: [{ id: selectedVariantId, quantity: 1 }]
-        })
-      });
-document.addEventListener("DOMContentLoaded", function () {
-  const popup = document.getElementById("product-popup");
-  const popupClose = document.getElementById("popup-close");
-  const popupImage = document.getElementById("popup-image");
-  const popupTitle = document.getElementById("popup-title");
-  const popupPrice = document.getElementById("popup-price");
-  const popupDescription = document.getElementById("popup-description");
-  const variantSelect = document.getElementById("variant-select");
-  const addToCartBtn = document.getElementById("add-to-cart");
-
-  let selectedProductId = null;
-  let selectedVariantId = null;
-
-  /**
    * Apply fallback images by matching product handles
    */
   window.applyFallbackImages = function () {
     const gridImages = document.querySelectorAll("img[data-fallback-handle]");
 
     if (!Array.isArray(window.fallbackImages)) {
-      console.warn("No fallback images found.");
+      console.warn(" No fallback images loaded yet.");
       return;
     }
 
-    // Build a map of handle -> imageSrc
+    // Build a handle -> imageSrc map
     const imageMap = {};
     window.fallbackImages.forEach(entry => {
       if (entry["Handle"] && entry["Image Src"]) {
@@ -142,26 +30,28 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    console.log("Applying fallback images:", imageMap);
+    console.log(" Fallback image map ready:", imageMap);
 
-    // Replace each grid image with its matching fallback
+    // Replace each grid image
     gridImages.forEach((img) => {
       const handle = img.dataset.fallbackHandle;
       if (imageMap[handle]) {
+        console.log(" Setting image for", handle, "→", imageMap[handle]);
         img.src = imageMap[handle];
+      } else {
+        console.warn(" No match for handle:", handle);
       }
     });
   };
 
   /**
-   * Open popup when clicking the circle icon
+   * Open popup
    */
   document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
     icon.addEventListener("click", async (e) => {
       const gridItem = e.target.closest(".grid-item");
       selectedProductId = gridItem.dataset.productId;
 
-      // Fill popup with product info
       popupTitle.textContent = gridItem.dataset.productTitle;
       popupPrice.textContent = gridItem.dataset.productPrice;
       popupDescription.textContent = gridItem.dataset.productDescription;
@@ -169,22 +59,18 @@ document.addEventListener("DOMContentLoaded", function () {
       const productHandle = gridItem.dataset.productHandle;
 
       try {
-        // Fetch Shopify product JSON (for variants and images)
         const res = await fetch(`/products/${productHandle}.js`);
         const productData = await res.json();
 
-        // Use Shopify product image if available
         if (productData.images && productData.images.length > 0) {
           popupImage.src = productData.images[0];
         } else {
-          // Fallback: use JSON image
           const match = window.fallbackImages.find(f => f["Handle"] === productHandle);
           if (match && match["Image Src"]) {
             popupImage.src = match["Image Src"];
           }
         }
 
-        // Populate variants
         variantSelect.innerHTML = "";
         productData.variants.forEach(v => {
           const option = document.createElement("option");
@@ -195,16 +81,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedVariantId = productData.variants[0]?.id || null;
       } catch (err) {
-        console.error("Error fetching product data:", err);
+        console.error(" Error fetching product data:", err);
       }
 
       popup.classList.remove("hidden");
     });
   });
 
-  /**
-   * Close popup
-   */
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
   });
@@ -212,16 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (e.target === popup) popup.classList.add("hidden");
   });
 
-  /**
-   * Update selected variant
-   */
   variantSelect.addEventListener("change", (e) => {
     selectedVariantId = e.target.value;
   });
 
-  /**
-   * Add to cart
-   */
   addToCartBtn.addEventListener("click", async () => {
     if (!selectedVariantId) return;
 
@@ -237,17 +114,20 @@ document.addEventListener("DOMContentLoaded", function () {
       alert("Product added to cart!");
       popup.classList.add("hidden");
     } catch (err) {
-      console.error("Error adding to cart:", err);
+      console.error(" Error adding to cart:", err);
       alert("Could not add product to cart.");
     }
   });
-});
 
-      alert("Product added to cart!");
-      popup.classList.add("hidden");
-    } catch (err) {
-      console.error("Error adding to cart:", err);
-      alert("Could not add product to cart.");
-    }
-  });
+  /**
+   * Fetch fallback-images.json after DOM is ready
+   */
+  fetch("{{ 'fallback-images.json' | asset_url }}")
+    .then(res => res.json())
+    .then(data => {
+      console.log(" Loaded fallback JSON:", data);
+      window.fallbackImages = data;
+      window.applyFallbackImages();
+    })
+    .catch(err => console.error(" Could not load fallback images:", err));
 });
