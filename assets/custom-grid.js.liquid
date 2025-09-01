@@ -28,7 +28,9 @@ gridItems.forEach(item => {
       currentProduct = product;
 
       // Fill popup
-      popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
+      popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}"; // already full URL
+
+
       popupTitle.textContent = product.title;
       popupPrice.textContent = formatMoney(product.price);
       popupDescription.textContent = product.description || "";
