@@ -28,38 +28,37 @@ gridItems.forEach(item => {
       currentProduct = product;
 
       // Fill popup
-      popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}"; // already full URL
-
+      popupImage.src = (product.images && product.images.length > 0) 
+          ? product.images[0] 
+          : "{{ 'placeholder.png' | asset_url }}";
+      popupImage.alt = product.title;
+      popupImage.width = 400;
+      popupImage.height = 400;
 
       popupTitle.textContent = product.title;
-      popupPrice.textContent = formatMoney(product.price);
-      popupDescription.textContent = product.description || "";
+      popupPrice.textContent = formatMoney(product.variants[0].price);
+      popupDescription.innerHTML = product.body_html || "";
 
       // Populate size & color
       sizeSelect.innerHTML = "";
       colorSelect.innerHTML = "";
-      const sizes = new Set();
-      const colors = new Set();
+      const sizeIndex = product.options.findIndex(o => o.toLowerCase() === "size");
+      const colorIndex = product.options.findIndex(o => o.toLowerCase() === "color");
 
       product.variants.forEach(variant => {
-        product.options.forEach((opt, i) => {
-          if (opt.toLowerCase() === "size") sizes.add(variant.options[i]);
-          if (opt.toLowerCase() === "color") colors.add(variant.options[i]);
-        });
-      });
+        if (sizeIndex >= 0 && variant.options[sizeIndex]) {
+          const option = document.createElement("option");
+          option.value = variant.options[sizeIndex];
+          option.textContent = variant.options[sizeIndex];
+          if (![...sizeSelect.options].some(o => o.value === option.value)) sizeSelect.appendChild(option);
+        }
 
-      sizes.forEach(size => {
-        const option = document.createElement("option");
-        option.value = size;
-        option.textContent = size;
-        sizeSelect.appendChild(option);
-      });
-
-      colors.forEach(color => {
-        const option = document.createElement("option");
-        option.value = color;
-        option.textContent = color;
-        colorSelect.appendChild(option);
+        if (colorIndex >= 0 && variant.options[colorIndex]) {
+          const option = document.createElement("option");
+          option.value = variant.options[colorIndex];
+          option.textContent = variant.options[colorIndex];
+          if (![...colorSelect.options].some(o => o.value === option.value)) colorSelect.appendChild(option);
+        }
       });
 
       popup.classList.remove("hidden");

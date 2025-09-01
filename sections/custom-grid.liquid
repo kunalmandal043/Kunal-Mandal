@@ -1,4 +1,3 @@
-i have custom.grid.liquid
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
@@ -7,7 +6,7 @@ i have custom.grid.liquid
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for product in all_products_collection.products limit:6 %}
+    {% for product in all_products_collection.products %}
       <div class="grid-item" data-handle="{{ product.handle }}">
         <div class="grid-image-wrapper">
           {% if product.featured_image %}
@@ -48,10 +47,10 @@ i have custom.grid.liquid
     <span id="popup-close">&times;</span>
 
     <!-- Top section: Image + Details -->
-    <div class="popup-top">
+    <div class="popup-top" style="display:flex;gap:20px;flex-wrap:wrap;">
       <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
 
-      <div class="popup-details">
+      <div class="popup-details" style="display:flex;flex-direction:column;gap:10px;">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
         <p id="popup-description"></p>
@@ -59,7 +58,7 @@ i have custom.grid.liquid
     </div>
 
     <!-- Bottom section: Options + Add to Cart -->
-    <div class="popup-bottom">
+    <div class="popup-bottom" style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
       <div class="popup-option">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
@@ -76,7 +75,6 @@ i have custom.grid.liquid
     </div>
   </div>
 </div>
-
 
 {% schema %}
 {
