@@ -1,111 +1,95 @@
-// Quick View interactions: open/close, populate basic data, simple swatches
-(function(){
-  const modal = document.getElementById('product-popup');
-  const closeBtn = document.getElementById('popup-close');
-  const imageEl = document.getElementById('popup-image');
-  const titleEl = document.getElementById('popup-title');
-  const priceEl = document.getElementById('popup-price');
-  const descEl = document.getElementById('popup-description');
-  const sizeSelect = document.getElementById('size-select');
-  const colorGroup = document.getElementById('color-group');
+const gridItems = document.querySelectorAll(".grid-item");
+const popup = document.getElementById("product-popup");
+const popupClose = document.getElementById("popup-close");
+const popupImage = document.getElementById("popup-image");
+const popupTitle = document.getElementById("popup-title");
+const popupPrice = document.getElementById("popup-price");
+const popupDescription = document.getElementById("popup-description");
+const sizeSelect = document.getElementById("size-select");
+const colorSelect = document.getElementById("color-select");
+const addToCartBtn = document.getElementById("add-to-cart");
 
-  // Open modal from grid icon
-  document.addEventListener('click', async (e) => {
-    const icon = e.target.closest('.popup-icon');
-    if (!icon) return;
+let currentProduct = null;
 
-    const card = icon.closest('.grid-item');
-    const handle = card?.dataset.handle;
-    if (!handle) return;
+gridItems.forEach(item => {
+  const icon = item.querySelector(".popup-icon");
 
-    // Basic product fetch via JSON endpoint
-    const res = await fetch(`/products/${handle}.js`);
-    const product = await res.json();
+  icon.addEventListener("click", async (e) => {
+    e.stopPropagation();
+    const handle = item.dataset.handle;
 
-    // Populate media and text
-    const img = product?.images?. || '';
-    imageEl.src = img || imageEl.src;
-    imageEl.alt = product.title || 'Product image';
-    titleEl.textContent = product.title || '';
-    priceEl.textContent = formatMoney(product.price);
-    descEl.textContent = product.description?.replace(/<[^>]*>/g, '').slice(0, 260) || '';
+    try {
+      const response = await fetch(`/products/${handle}.js`);
+      const product = await response.json();
+      currentProduct = product;
 
-    // Build color swatches (from option named 'Color')
-    colorGroup.innerHTML = '';
-    const colorOpt = product.options?.find(o => /color/i.test(o.name));
-    if (colorOpt) {
-      colorOpt.values.slice(0, 2).forEach((val, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'swatch' + (idx === 0 ? ' is-active' : '');
-        btn.textContent = val;
-        btn.dataset.value = val;
-        btn.setAttribute('role','radio');
-        btn.setAttribute('aria-checked', idx === 0 ? 'true' : 'false');
-        colorGroup.appendChild(btn);
+      popupImage.src = product.images[0] || "/assets/placeholder.png";
+      popupTitle.textContent = product.title;
+      popupPrice.textContent = formatMoney(product.price);
+      popupDescription.innerHTML = product.description;
+
+      // Populate size
+      sizeSelect.innerHTML = "";
+      const sizeValues = product.options.find(o => o.name.toLowerCase() === "size")?.values || [];
+      sizeValues.forEach(s => {
+        const option = document.createElement("option");
+        option.value = s;
+        option.textContent = s;
+        sizeSelect.appendChild(option);
       });
-    } else {
-      // Fallback two swatches
-      ['White','Black'].forEach((val, idx) => {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'swatch' + (idx === 0 ? ' is-active' : '');
-        btn.textContent = val;
-        btn.dataset.value = val;
-        btn.setAttribute('role','radio');
-        btn.setAttribute('aria-checked', idx === 0 ? 'true' : 'false');
-        colorGroup.appendChild(btn);
+
+      // Populate color
+      colorSelect.innerHTML = "";
+      const colorValues = product.options.find(o => o.name.toLowerCase() === "color")?.values || [];
+      colorValues.forEach(c => {
+        const option = document.createElement("option");
+        option.value = c;
+        option.textContent = c;
+        colorSelect.appendChild(option);
       });
+
+      popup.classList.remove("hidden");
+    } catch (err) {
+      console.error("Failed to fetch product:", err);
     }
-
-    // Build size select (from option named 'Size')
-    sizeSelect.innerHTML = '';
-    const sizeOpt = product.options?.find(o => /size/i.test(o.name));
-    const sizes = sizeOpt ? sizeOpt.values : ['XS','S','M','L','XL'];
-    const placeholder = document.createElement('option');
-    placeholder.textContent = 'Choose your size';
-    placeholder.selected = true; placeholder.disabled = true;
-    sizeSelect.appendChild(placeholder);
-    sizes.forEach(v => {
-      const o = document.createElement('option');
-      o.value = v; o.textContent = v;
-      sizeSelect.appendChild(o);
-    });
-
-    // Show modal
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
   });
+});
 
-  // Swatch toggle
-  colorGroup?.addEventListener('click', (e) => {
-    const btn = e.target.closest('.swatch');
-    if (!btn) return;
-    colorGroup.querySelectorAll('.swatch').forEach(b=>{
-      b.classList.remove('is-active');
-      b.setAttribute('aria-checked','false');
-    });
-    btn.classList.add('is-active');
-    btn.setAttribute('aria-checked','true');
-  });
+// Close popup
+popupClose.addEventListener("click", () => popup.classList.add("hidden"));
+popup.addEventListener("click", e => { if(e.target === popup) popup.classList.add("hidden"); });
 
-  // Close handlers
-  closeBtn?.addEventListener('click', () => closeModal());
-  modal?.addEventListener('click', (e) => {
-    if (e.target === modal) closeModal();
-  });
-  function closeModal(){
-    modal.classList.add('hidden');
-    document.body.style.overflow = '';
+// Add to cart
+addToCartBtn.addEventListener("click", async () => {
+  if (!currentProduct) return;
+
+  const selectedSize = sizeSelect.value;
+  const selectedColor = colorSelect.value;
+
+  const variant = currentProduct.variants.find(v =>
+    v.option1 === selectedSize && v.option2 === selectedColor
+  );
+
+  if (!variant) {
+    alert("Variant not found.");
+    return;
   }
 
-  // Utility: format cents to money
-  function formatMoney(cents){
-    try{
-      const v = (cents/100);
-      return new Intl.NumberFormat(undefined, { style:'currency', currency: Shopify.currency.active || 'USD' }).format(v);
-    }catch(_){
-      return `$${(cents/100).toFixed(2)}`;
-    }
+  try {
+    await fetch("/cart/add.js", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: variant.id, quantity: 1 })
+    });
+    alert("Product added to cart!");
+    popup.classList.add("hidden");
+  } catch (err) {
+    console.error(err);
+    alert("Could not add product to cart.");
   }
-})();
+});
+
+// Format money
+function formatMoney(cents) {
+  return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+}
