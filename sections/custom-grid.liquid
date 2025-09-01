@@ -38,11 +38,11 @@
       <div class="grid-item">
         <img 
           src="{{ image | strip | asset_url }}" 
-          alt="{{ grid_titles[forloop.index0] | strip }}" 
+          
           width="600" height="800"
           loading="lazy"
         >
-        <p>{{ grid_titles[forloop.index0] | strip }}</p>
+        
       </div>
     {% endfor %}
   </div>
