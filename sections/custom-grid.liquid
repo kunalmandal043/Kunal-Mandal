@@ -1,6 +1,63 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
+<section class="custom-grid">
+  <h2 class="heading">Tisso vision in the wild</h2>
+  <div class="grid-container">
+
+    {% for block in section.blocks %}
+      {% assign product = block.settings.product %}
+      {% if product %}
+        <div class="grid-item" data-handle="{{ product.handle }}">
+          <img 
+            src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+            alt="{{ product.title }}" 
+            width="433" 
+            height="444" 
+            class="grid-image">
+
+          <img 
+            class="popup-icon" 
+            src="{{ 'circle-popup.svg' | asset_url }}" 
+            alt="Open Popup" 
+            width="22" height="22"
+          >
+        </div>
+      {% endif %}
+    {% endfor %}
+
+  </div>
+</section>
+
+<!-- Product Popup -->
+<div id="product-popup" class="popup hidden">
+  <div class="popup-content">
+    <span id="popup-close">&times;</span>
+
+    <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+
+    <h2 id="popup-title"></h2>
+    <p id="popup-price"></p>
+    <p id="popup-description"></p>
+
+    <div class="popup-options">
+      <div class="option">
+        <img src="{{ 'choose-size.svg' | asset_url }}" alt="Choose Size" class="option-icon" width="24" height="24">
+        <select id="size-select"></select>
+      </div>
+
+      <div class="option">
+        <img src="{{ 'choose-color.svg' | asset_url }}" alt="Choose Color" class="option-icon" width="24" height="24">
+        <select id="color-select"></select>
+      </div>
+    </div>
+
+    <button id="add-to-cart">
+      <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" class="btn-icon" width="32" height="32">
+    </button>
+  </div>
+</div>
+
 {% schema %}
 {
   "name": "Custom Grid",
@@ -18,83 +75,3 @@
   "presets": [{ "name": "Custom Grid" }]
 }
 {% endschema %}
-
-
-{% assign grid_images = 
-  "
-   OrangeWideLeg.png,
-   TailoredJacket.png,
-   AccordionPleatedDress.png,
-   GreenTrenchCoat.png,
-   TennisBlueT-Shirt.png,
-   LongSleeveTennisTop.png" | split: "," %}
-
-
-
-<section class="custom-grid">
-  <h2 class="heading">Tisso vision in the wild</h2>
-  <div class="grid-container">
-    {% for image in grid_images %}
-      <div class="grid-item" data-handle="{{ block.settings.product.handle }}">
-        <img 
-        src="{{ image | strip | asset_url }}" 
-        alt="{{ block.settings.product.title | escape }}"
-        width="433"
-        height="444"
-        class="grid-image"
-        loading="lazy"
-      >
-      <img 
-        class="popup-icon" 
-        src="{{ 'circle-popup.svg' | asset_url }}" 
-        alt="Open Popup"
-        width="22"
-        height="22"
-      >
-    </div>
-
-    {% endfor %}
-  </div>
-</section>
-
-
-<!-- Product Popup -->
-<div id="product-popup" class="popup hidden">
-  <div class="popup-content">
-    <span id="popup-close">&times;</span>
-
-    <!-- Product Image -->
-    <img 
-      id="popup-image" 
-      src="{{ 'placeholder.png' | asset_url }}" 
-      alt="Product preview"
-      width="400"
-      height="400"
-      loading="lazy"
-    >
-
-    <!-- Product Info -->
-    <h2 id="popup-title"></h2>
-    <p id="popup-price"></p>
-    <p id="popup-description"></p>
-
-    <!-- Options -->
-    <div class="popup-options">
-      <div class="option">
-        <img src="{{ 'choose-size.svg' | asset_url }}" alt="Choose Size" class="option-icon" width="24" height="24">
-        <select id="size-select"></select>
-      </div>
-
-      <div class="option">
-        <img src="{{ 'choose-color.svg' | asset_url }}" alt="Choose Color" class="option-icon" width="24" height="24">
-        <select id="color-select"></select>
-      </div>
-    </div>
-
-    <!-- Add to Cart -->
-    <button id="add-to-cart">
-      <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" class="btn-icon" width="32" height="32">
-    </button>
-  </div>
-</div>
-

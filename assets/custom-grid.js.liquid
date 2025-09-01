@@ -11,18 +11,15 @@ const addToCartBtn = document.getElementById("add-to-cart");
 
 let currentProduct = null;
 
-// Open popup
+// Open popup when icon is clicked
 gridItems.forEach(item => {
   const popupIcon = item.querySelector(".popup-icon");
   if (!popupIcon) return;
-  
+
   popupIcon.addEventListener("click", async (e) => {
-    e.stopPropagation(); // prevent bubbling
+    e.stopPropagation();
     const handle = item.dataset.handle;
-    if (!handle) {
-      console.error("Missing product handle on grid item");
-      return;
-    }
+    if (!handle) return console.error("Missing product handle");
 
     try {
       const response = await fetch(`/products/${handle}.js`);
@@ -31,44 +28,60 @@ gridItems.forEach(item => {
       currentProduct = product;
 
       // Fill popup
-      popupImage.src = product.images.length > 0
-        ? product.images[0]
-        : "{{ 'placeholder.png' | asset_url }}";
+      popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
       popupTitle.textContent = product.title;
       popupPrice.textContent = formatMoney(product.price);
       popupDescription.textContent = product.description || "";
 
-      // Populate size & color dropdowns (as discussed before)...
+      // Populate size & color
+      sizeSelect.innerHTML = "";
+      colorSelect.innerHTML = "";
+      const sizes = new Set();
+      const colors = new Set();
 
-      popup.classList.remove("hidden"); // Show the popup
+      product.variants.forEach(variant => {
+        product.options.forEach((opt, i) => {
+          if (opt.toLowerCase() === "size") sizes.add(variant.options[i]);
+          if (opt.toLowerCase() === "color") colors.add(variant.options[i]);
+        });
+      });
+
+      sizes.forEach(size => {
+        const option = document.createElement("option");
+        option.value = size;
+        option.textContent = size;
+        sizeSelect.appendChild(option);
+      });
+
+      colors.forEach(color => {
+        const option = document.createElement("option");
+        option.value = color;
+        option.textContent = color;
+        colorSelect.appendChild(option);
+      });
+
+      popup.classList.remove("hidden");
     } catch (err) {
-      console.error("Error loading product:", err);
+      console.error(err);
     }
   });
 });
 
 // Close popup
 popupClose.addEventListener("click", () => popup.classList.add("hidden"));
-popup.addEventListener("click", e => {
-  if (e.target === popup) popup.classList.add("hidden");
-});
+popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
 
-// Add to cart
+// Add to Cart
 addToCartBtn.addEventListener("click", async () => {
   if (!currentProduct) return;
-
   const selectedSize = sizeSelect.value;
   const selectedColor = colorSelect.value;
 
-  // Find variant that matches selected size & color
-  const matchedVariant = currentProduct.variants.find(variant => {
-    return variant.options.includes(selectedSize) && variant.options.includes(selectedColor);
-  });
+  const matchedVariant = currentProduct.variants.find(variant => 
+    variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
+  );
 
-  if (!matchedVariant) {
-    alert("Please select valid options.");
-    return;
-  }
+  if (!matchedVariant) return alert("Please select valid options");
 
   try {
     await fetch("/cart/add.js", {
@@ -76,19 +89,14 @@ addToCartBtn.addEventListener("click", async () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: matchedVariant.id, quantity: 1 })
     });
-
     alert("Product added to cart!");
     popup.classList.add("hidden");
   } catch (err) {
-    console.error("Error adding to cart:", err);
+    console.error(err);
     alert("Could not add product to cart.");
   }
 });
 
-// Format money
 function formatMoney(cents) {
-  return (cents / 100).toLocaleString("en-US", {
-    style: "currency",
-    currency: "USD"
-  });
+  return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 }
