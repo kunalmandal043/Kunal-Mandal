@@ -1,4 +1,3 @@
-
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
@@ -7,7 +6,7 @@
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for product in all_products_collection.products limit:6 %}
+    {% for product in all_products_collection.products %}
       <div class="grid-item" data-handle="{{ product.handle }}">
         <div class="grid-image-wrapper">
           {% if product.featured_image %}
@@ -49,12 +48,12 @@
 
     <!-- Top section: Image + Details -->
     <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" class="popup-image">
 
       <div class="popup-details">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
-        <p id="popup-description"></p>
+        <div id="popup-description"></div>
       </div>
     </div>
 
@@ -77,16 +76,13 @@
   </div>
 </div>
 
-
 {% schema %}
 {
   "name": "Custom Grid",
   "settings": [],
   "blocks": [],
   "presets": [
-    {
-      "name": "Custom Grid"
-    }
+    { "name": "Custom Grid" }
   ]
 }
 {% endschema %}
