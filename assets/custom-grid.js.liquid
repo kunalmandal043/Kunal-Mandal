@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentProduct = null;
 
-  if (!gridItems.length) return;
-
   // Open popup
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
@@ -22,45 +20,47 @@ document.addEventListener("DOMContentLoaded", () => {
     popupIcon.addEventListener("click", async (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
-      if (!handle) return console.error("Missing product handle");
+      if (!handle) return;
 
       try {
         const response = await fetch(`/products/${handle}.js`);
-        if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
+        if (!response.ok) throw new Error("Product fetch failed");
         const product = await response.json();
         currentProduct = product;
 
-        // Image
-        popupImage.src = (product.images && product.images.length > 0) 
-            ? product.images[0] 
-            : "{{ 'placeholder.png' | asset_url }}";
-        popupImage.alt = product.title;
-
-        // Title, price, description
+        // Fill popup
+        popupImage.src = product.images.length ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
         popupTitle.textContent = product.title;
-        popupPrice.textContent = formatMoney(product.variants[0].price);
-        popupDescription.innerHTML = product.body_html || "";
+        popupPrice.textContent = formatMoney(product.price);
+        popupDescription.textContent = product.description || "";
 
-        // Options
+        // Populate options
         sizeSelect.innerHTML = "";
         colorSelect.innerHTML = "";
-        const sizeIndex = product.options.findIndex(o => o.toLowerCase() === "size");
-        const colorIndex = product.options.findIndex(o => o.toLowerCase() === "color");
+
+        const sizeIndex = product.options.findIndex(opt => opt.toLowerCase() === "size");
+        const colorIndex = product.options.findIndex(opt => opt.toLowerCase() === "color");
+
+        const sizes = new Set();
+        const colors = new Set();
 
         product.variants.forEach(variant => {
-          if (sizeIndex >= 0 && variant.options[sizeIndex]) {
-            const option = document.createElement("option");
-            option.value = variant.options[sizeIndex];
-            option.textContent = variant.options[sizeIndex];
-            if (![...sizeSelect.options].some(o => o.value === option.value)) sizeSelect.appendChild(option);
-          }
+          if (sizeIndex >= 0) sizes.add(variant.options[sizeIndex]);
+          if (colorIndex >= 0) colors.add(variant.options[colorIndex]);
+        });
 
-          if (colorIndex >= 0 && variant.options[colorIndex]) {
-            const option = document.createElement("option");
-            option.value = variant.options[colorIndex];
-            option.textContent = variant.options[colorIndex];
-            if (![...colorSelect.options].some(o => o.value === option.value)) colorSelect.appendChild(option);
-          }
+        sizes.forEach(size => {
+          const option = document.createElement("option");
+          option.value = size;
+          option.textContent = size;
+          sizeSelect.appendChild(option);
+        });
+
+        colors.forEach(color => {
+          const option = document.createElement("option");
+          option.value = color;
+          option.textContent = color;
+          colorSelect.appendChild(option);
         });
 
         popup.classList.remove("hidden");
@@ -72,17 +72,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Close popup
   popupClose.addEventListener("click", () => popup.classList.add("hidden"));
-  popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
+  popup.addEventListener("click", e => {
+    if (e.target === popup) popup.classList.add("hidden");
+  });
 
   // Add to cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
+
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant => 
-      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
-    );
+    const matchedVariant = currentProduct.variants.find(variant => {
+      return (
+        (!selectedSize || variant.options.includes(selectedSize)) &&
+        (!selectedColor || variant.options.includes(selectedColor))
+      );
+    });
 
     if (!matchedVariant) return alert("Please select valid options");
 
