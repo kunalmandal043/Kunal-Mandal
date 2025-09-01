@@ -17,17 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
 
-    popupIcon.addEventListener("click", async (e) => {
+    popupIcon.addEventListener("click", (e) => {
       e.stopPropagation();
+
       try {
         const product = JSON.parse(item.dataset.json);
         currentProduct = product;
 
-
         // Fill popup
-        popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
+        popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
         popupTitle.textContent = product.title;
-        popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100); // Shopify price in cents
+        popupPrice.textContent = formatMoney(product.variants[0].price);
         popupDescription.innerHTML = product.body_html || "";
 
         // Populate size & color
@@ -37,21 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const colors = new Set();
 
         product.variants.forEach(variant => {
-          if (variant.option1) {
-            const optName = product.options[0].name.toLowerCase();
-            if (optName === "size") sizes.add(variant.option1);
-            if (optName === "color") colors.add(variant.option1);
-          }
-          if (variant.option2) {
-            const optName = product.options[1]?.name.toLowerCase();
-            if (optName === "size") sizes.add(variant.option2);
-            if (optName === "color") colors.add(variant.option2);
-          }
-          if (variant.option3) {
-            const optName = product.options[2]?.name.toLowerCase();
-            if (optName === "size") sizes.add(variant.option3);
-            if (optName === "color") colors.add(variant.option3);
-          }
+          variant.options.forEach((opt, i) => {
+            const optName = product.options[i].name.toLowerCase();
+            if (optName === "size") sizes.add(opt);
+            if (optName === "color") colors.add(opt);
+          });
         });
 
         sizes.forEach(size => {
@@ -68,9 +58,11 @@ document.addEventListener("DOMContentLoaded", () => {
           colorSelect.appendChild(option);
         });
 
+        // Show popup
         popup.classList.remove("hidden");
+
       } catch (err) {
-        console.error(err);
+        console.error("Product JSON error:", err);
       }
     });
   });
@@ -85,9 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant =>
-      (variant.option1 === selectedSize || variant.option2 === selectedSize || variant.option3 === selectedSize) &&
-      (variant.option1 === selectedColor || variant.option2 === selectedColor || variant.option3 === selectedColor)
+    const matchedVariant = currentProduct.variants.find(variant => 
+      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
     );
 
     if (!matchedVariant) return alert("Please select valid options");
@@ -106,7 +97,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function formatMoney(cents) {
-    return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+  function formatMoney(price) {
+    // Shopify Liquid already gives price as integer (cents)
+    return (price / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
   }
 });
