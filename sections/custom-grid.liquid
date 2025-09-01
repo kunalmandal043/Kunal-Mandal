@@ -47,10 +47,10 @@
     <span id="popup-close">&times;</span>
 
     <!-- Top section: Image + Details -->
-    <div class="popup-top" style="display:flex;gap:20px;flex-wrap:wrap;">
+    <div class="popup-top" style="display: flex; gap: 20px;">
       <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
 
-      <div class="popup-details" style="display:flex;flex-direction:column;gap:10px;">
+      <div class="popup-details" style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
         <p id="popup-description"></p>
@@ -58,7 +58,7 @@
     </div>
 
     <!-- Bottom section: Options + Add to Cart -->
-    <div class="popup-bottom" style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+    <div class="popup-bottom" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
       <div class="popup-option">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
