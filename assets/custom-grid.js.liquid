@@ -14,33 +14,27 @@ document.addEventListener("DOMContentLoaded", function () {
   /**
    * Apply fallback images from JSON
    */
-  function applyFallbackImages() {
+  window.applyFallbackImages = function () {
     const gridImages = document.querySelectorAll("img[data-fallback-handle]");
 
-    if (!Array.isArray(window.fallbackImages)) return;
+    if (!Array.isArray(window.fallbackImages)) {
+      console.warn("No fallback images found.");
+      return;
+    }
 
-    // Extract valid image URLs only
+    // Collect valid URLs only
     const imageArray = window.fallbackImages
       .map(entry => entry["Image Src"])
       .filter(src => src && src.length > 0);
 
-    // Replace grid images in order
+    console.log("Applying fallback images:", imageArray);
+
     gridImages.forEach((img, index) => {
       if (imageArray[index]) {
         img.src = imageArray[index];
       }
     });
-  }
-
-  /**
-   * Wait until fallback JSON is loaded
-   */
-  const checkFallbackInterval = setInterval(() => {
-    if (window.fallbackImages) {
-      applyFallbackImages();
-      clearInterval(checkFallbackInterval);
-    }
-  }, 300);
+  };
 
   /**
    * Open popup on clicking the circle icon
@@ -62,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const res = await fetch(`/products/${productHandle}.js`);
         const productData = await res.json();
 
-        // Use JSON image if available
+        // Use Shopify product image if available
         if (productData.images && productData.images.length > 0) {
           popupImage.src = productData.images[0];
         }
