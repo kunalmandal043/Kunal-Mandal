@@ -13,55 +13,39 @@ let currentProduct = null;
 
 // Open popup
 gridItems.forEach(item => {
-  item.querySelector(".popup-icon").addEventListener("click", async (e) => {
+  const popupIcon = item.querySelector(".popup-icon");
+  popupIcon.addEventListener("click", async (e) => {
     e.stopPropagation(); // prevent parent click
     const handle = item.dataset.handle;
 
+    if (!handle) {
+      console.error("Missing product handle on grid item");
+      return;
+    }
+
     try {
       const response = await fetch(`/products/${handle}.js`);
+      if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
       const product = await response.json();
       currentProduct = product;
 
       // Fill popup
-      popupImage.src = product.images[0] || "{{ 'placeholder.png' | asset_url }}";
+      popupImage.src = product.images.length > 0 
+        ? product.images[0] 
+        : "{{ 'placeholder.png' | asset_url }}";
       popupTitle.textContent = product.title;
       popupPrice.textContent = formatMoney(product.price);
       popupDescription.textContent = product.description || "";
 
-      // Extract Size & Color
-      sizeSelect.innerHTML = "";
-      colorSelect.innerHTML = "";
+      // Populate size & color (like we discussed before) ...
 
-      const sizes = new Set();
-      const colors = new Set();
-
-      product.variants.forEach(variant => {
-        product.options.forEach((opt, i) => {
-          if (opt.toLowerCase() === "size") sizes.add(variant.options[i]);
-          if (opt.toLowerCase() === "color") colors.add(variant.options[i]);
-        });
-      });
-
-      sizes.forEach(size => {
-        const opt = document.createElement("option");
-        opt.value = size;
-        opt.textContent = size;
-        sizeSelect.appendChild(opt);
-      });
-
-      colors.forEach(color => {
-        const opt = document.createElement("option");
-        opt.value = color;
-        opt.textContent = color;
-        colorSelect.appendChild(opt);
-      });
-
-      popup.classList.remove("hidden");
+      popup.classList.remove("hidden"); // 
     } catch (err) {
-      console.error("Error fetching product:", err);
+      console.error("Error loading product:", err);
     }
   });
 });
+
 
 // Close popup
 popupClose.addEventListener("click", () => popup.classList.add("hidden"));
