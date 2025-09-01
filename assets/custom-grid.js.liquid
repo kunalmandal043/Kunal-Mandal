@@ -110,6 +110,138 @@ document.addEventListener("DOMContentLoaded", function () {
           items: [{ id: selectedVariantId, quantity: 1 }]
         })
       });
+document.addEventListener("DOMContentLoaded", function () {
+  const popup = document.getElementById("product-popup");
+  const popupClose = document.getElementById("popup-close");
+  const popupImage = document.getElementById("popup-image");
+  const popupTitle = document.getElementById("popup-title");
+  const popupPrice = document.getElementById("popup-price");
+  const popupDescription = document.getElementById("popup-description");
+  const variantSelect = document.getElementById("variant-select");
+  const addToCartBtn = document.getElementById("add-to-cart");
+
+  let selectedProductId = null;
+  let selectedVariantId = null;
+
+  /**
+   * Apply fallback images by matching product handles
+   */
+  window.applyFallbackImages = function () {
+    const gridImages = document.querySelectorAll("img[data-fallback-handle]");
+
+    if (!Array.isArray(window.fallbackImages)) {
+      console.warn("No fallback images found.");
+      return;
+    }
+
+    // Build a map of handle -> imageSrc
+    const imageMap = {};
+    window.fallbackImages.forEach(entry => {
+      if (entry["Handle"] && entry["Image Src"]) {
+        imageMap[entry["Handle"]] = entry["Image Src"];
+      }
+    });
+
+    console.log("Applying fallback images:", imageMap);
+
+    // Replace each grid image with its matching fallback
+    gridImages.forEach((img) => {
+      const handle = img.dataset.fallbackHandle;
+      if (imageMap[handle]) {
+        img.src = imageMap[handle];
+      }
+    });
+  };
+
+  /**
+   * Open popup when clicking the circle icon
+   */
+  document.querySelectorAll(".grid-item .popup-icon").forEach(icon => {
+    icon.addEventListener("click", async (e) => {
+      const gridItem = e.target.closest(".grid-item");
+      selectedProductId = gridItem.dataset.productId;
+
+      // Fill popup with product info
+      popupTitle.textContent = gridItem.dataset.productTitle;
+      popupPrice.textContent = gridItem.dataset.productPrice;
+      popupDescription.textContent = gridItem.dataset.productDescription;
+
+      const productHandle = gridItem.dataset.productHandle;
+
+      try {
+        // Fetch Shopify product JSON (for variants and images)
+        const res = await fetch(`/products/${productHandle}.js`);
+        const productData = await res.json();
+
+        // Use Shopify product image if available
+        if (productData.images && productData.images.length > 0) {
+          popupImage.src = productData.images[0];
+        } else {
+          // Fallback: use JSON image
+          const match = window.fallbackImages.find(f => f["Handle"] === productHandle);
+          if (match && match["Image Src"]) {
+            popupImage.src = match["Image Src"];
+          }
+        }
+
+        // Populate variants
+        variantSelect.innerHTML = "";
+        productData.variants.forEach(v => {
+          const option = document.createElement("option");
+          option.value = v.id;
+          option.textContent = v.title;
+          variantSelect.appendChild(option);
+        });
+
+        selectedVariantId = productData.variants[0]?.id || null;
+      } catch (err) {
+        console.error("Error fetching product data:", err);
+      }
+
+      popup.classList.remove("hidden");
+    });
+  });
+
+  /**
+   * Close popup
+   */
+  popupClose.addEventListener("click", () => {
+    popup.classList.add("hidden");
+  });
+  popup.addEventListener("click", (e) => {
+    if (e.target === popup) popup.classList.add("hidden");
+  });
+
+  /**
+   * Update selected variant
+   */
+  variantSelect.addEventListener("change", (e) => {
+    selectedVariantId = e.target.value;
+  });
+
+  /**
+   * Add to cart
+   */
+  addToCartBtn.addEventListener("click", async () => {
+    if (!selectedVariantId) return;
+
+    try {
+      await fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: [{ id: selectedVariantId, quantity: 1 }]
+        })
+      });
+
+      alert("Product added to cart!");
+      popup.classList.add("hidden");
+    } catch (err) {
+      console.error("Error adding to cart:", err);
+      alert("Could not add product to cart.");
+    }
+  });
+});
 
       alert("Product added to cart!");
       popup.classList.add("hidden");
