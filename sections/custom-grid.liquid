@@ -46,29 +46,36 @@
   <div class="popup-content">
     <span id="popup-close">&times;</span>
 
-    <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+    <!-- Top section: Image + Details -->
+    <div class="popup-top">
+      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
 
-    <h2 id="popup-title"></h2>
-    <p id="popup-price"></p>
-    <p id="popup-description"></p>
-
-    <div class="popup-options">
-      <div class="option">
-        <label for="size-select">Size:</label>
-        <select id="size-select"></select>
-      </div>
-
-      <div class="option">
-        <label for="color-select">Color:</label>
-        <select id="color-select"></select>
+      <div class="popup-details">
+        <h2 id="popup-title"></h2>
+        <p id="popup-price"></p>
+        <p id="popup-description"></p>
       </div>
     </div>
 
-    <button id="add-to-cart">
-      <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" class="btn-icon" width="32" height="32">
-    </button>
+    <!-- Bottom section: Options + Add to Cart -->
+    <div class="popup-bottom">
+      <div class="popup-option">
+        <label for="color-select">Choose Color:</label>
+        <select id="color-select"></select>
+      </div>
+
+      <div class="popup-option">
+        <label for="size-select">Choose Size:</label>
+        <select id="size-select"></select>
+      </div>
+
+      <button id="add-to-cart">
+        <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
+      </button>
+    </div>
   </div>
 </div>
+
 
 {% schema %}
 {
