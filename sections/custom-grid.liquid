@@ -16,14 +16,14 @@
           <!-- Product Image -->
           {% if product.featured_image %}
             <img 
-              src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+              src="{{ product.featured_image.src | image_url: width: 433, height: 444, crop: 'center' }}" 
               width="433" height="444"
               loading="lazy"
               alt="{{ product.title }}"
             >
           {% endif %}
 
-          <!-- Popup trigger icon (clickable only) -->
+          <!-- Popup trigger icon -->
           <img 
             class="popup-icon" 
             src="{{ 'circle-popup.svg' | asset_url }}" 
@@ -36,16 +36,18 @@
   </div>
 </section>
 
+
 <!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
-
+    
     <img id="popup-image" 
-      src="" 
+      src="{{ 'placeholder.png' | asset_url }}" 
       alt="Product preview" 
-      width="400" height="400" 
-      loading="lazy">
+      width="400" height="400"
+      loading="lazy"
+    >
 
     <h2 id="popup-title"></h2>
     <p id="popup-price"></p>
@@ -59,6 +61,7 @@
     <button id="add-to-cart">ADD TO CART</button>
   </div>
 </div>
+
 
 {% schema %}
 {
@@ -74,6 +77,8 @@
     }
   ],
   "max_blocks": 6,
-  "presets": [{ "name": "Custom Grid" }]
+  "presets": [
+    { "name": "Custom Grid" }
+  ]
 }
 {% endschema %}
