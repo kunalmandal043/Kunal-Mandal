@@ -36,22 +36,10 @@
   <div class="grid-container">
     {% for image in grid_images %}
       <div class="grid-item" data-handle="{{ block.settings.product.handle }}">
-        <img 
-        src="{{ image | strip | asset_url }}" 
-        alt="{{ block.settings.product.title | escape }}"
-        width="433"
-        height="444"
-        class="grid-image"
-        loading="lazy"
-      >
-      <img 
-        class="popup-icon" 
-        src="{{ 'circle-popup.svg' | asset_url }}" 
-        alt="Open Popup"
-        width="22"
-        height="22"
-      >
-    </div>
+  <img src="{{ image | strip | asset_url }}" alt="{{ block.settings.product.title }}" width="433" height="444" class="grid-image">
+  <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
+</div>
+
 
     {% endfor %}
   </div>
