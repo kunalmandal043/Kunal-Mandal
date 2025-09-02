@@ -236,30 +236,33 @@
 @media (max-width: 768px) {
   .banner-body {
     background-position: center top;
-    background-size: cover;
-    height: 60vh;
-    padding: 0 20px;
-    justify-content: flex-start;
+    background-size: cover; /* keep cover instead of contain so it fills */
+    height: auto;
+    min-height: 60vh; /* optional: ensures some banner height */
+    padding: 20px;
+    text-align: center;
+
+    display: flex;
+    flex-direction: column;
     align-items: center;
+    justify-content: flex-start; /* push content to top */
   }
 
   .body-text {
-    position: static;
-    top: auto;
-    left: auto;
+    position: relative;   /* no absolute */
+    top: 0;
+    left: 0;
     transform: none;
-    max-width: 100%;
-    margin: 40px auto 0;
+    max-width: 90%;
+    margin: 20px auto 0 auto; /* spacing from top */
     text-align: center;
     gap: 12px;
-    padding: 0 5%;
   }
 
   .banner-title {
     font-size: 1.8rem;
     line-height: 1.2;
     margin-bottom: 0.5rem;
-    max-width: 100%;
   }
 
   .banner-sub {
@@ -270,30 +273,11 @@
   }
 
   .banner-head__bottom {
-    width: 100%;
+    width: fit-content;
     margin: 0 auto;
   }
 
   .bottom-banner-cta {
     justify-content: center;
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .banner-title {
-    font-size: 1.5rem;
-  }
-
-  .banner-sub {
-    font-size: 0.9rem;
-  }
-
-  .banner-head__bottom {
-    padding: 14px;
-  }
-  
-  .body-text {
-    margin: 20px auto 0;
   }
 }
