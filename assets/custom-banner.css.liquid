@@ -288,15 +288,17 @@
   }
 
   .banner-head__bottom {
-    width: 100%;
-    margin: 20px auto 0;
-    text-align: center;
-    display: flex;
-    justify-content: center;
+    position: absolute;       /* take it out of the normal flow */
+    bottom: 40px;             /* distance from bottom of banner-body */
+    left: 50%;                /* center horizontally */
+    transform: translateX(-50%);
+    margin: 0;
+    width: auto;              /* shrink to fit content */
+    z-index: 2;               /* ensure it’s above ::before background */
   }
 
   .bottom-banner-cta {
     justify-content: center;
-    width: 100%;
+    width: auto;
   }
 }
