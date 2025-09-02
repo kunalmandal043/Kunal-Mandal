@@ -226,7 +226,7 @@
 @media (max-width: 768px) {
   .banner-body {
     position: relative;
-    min-height: 80vh;
+    min-height: 80vh;      /* keep enough height for layout */
     justify-content: flex-start;
     background: none;
     overflow: hidden;
@@ -235,14 +235,13 @@
   .banner-body::before {
     content: "";
     position: absolute;
-    bottom: 0;           /* lock to extreme bottom */
+    bottom: 0;             /* stick to bottom */
     left: 0;
     width: 100%;
-    height: auto;
-    min-height: 264px;   /* your image’s height */
+    height: 62.7%;         /* take 62.7% of banner-body height */
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: contain;  /* keeps exact proportions */
-    background-position: bottom center; /* pin bottom */
+    background-size: 100% auto;  /* stretch horizontally, keep aspect ratio vertically */
+    background-position: center bottom;
     z-index: -1;
   }
 
