@@ -235,14 +235,13 @@
   .banner-body::before {
     content: "";
     position: absolute;
-    bottom: 0;           /* lock to extreme bottom */
+    bottom: 0;                /* stick to bottom */
     left: 0;
     width: 100%;
-    height: auto;
-    min-height: 80vh;   /* your image’s height */
+    height: 70%;              /* take 70% of banner-body height */
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: contain;  /* keeps exact proportions */
-    background-position: bottom center; /* pin bottom */
+    background-size: cover;   /* fill the pseudo-element */
+    background-position: bottom center;
     z-index: -1;
   }
 
