@@ -95,7 +95,6 @@
   filter: brightness(0) invert(1); /* arrow turns white */
 }
 
-
 /* ------------------ BODY ------------------ */
 .banner-body {
   position: relative;
@@ -115,12 +114,10 @@
   top: 400px;   /* fixed 489px from top */
   left: 67px;   /* same as your design */
   max-width: 600px;
-
   display: flex;
   flex-direction: column; /* stack title and subtitle */
   gap: 20px; /* space between title and sub text */
 }
-
 
 .banner-title {
   font-family: "Jost", sans-serif;
@@ -144,8 +141,6 @@
   letter-spacing:0px;
 }
 
-
-
 /* ------------------ SHOP NOW BUTTON ------------------ */
 .banner-head__bottom {
   position: relative;
@@ -155,8 +150,6 @@
   background: #000; /* black default */
   overflow: hidden;
   cursor: pointer;
-  
-  
 }
 
 /* Sliding yellow overlay */
@@ -178,7 +171,6 @@
 
 /* Text + arrow container */
 .bottom-banner-cta {
-  
   position: relative;
   z-index: 1; /* above overlay */
   font-family: "Jost", system-ui, sans-serif;
@@ -210,9 +202,6 @@
   filter: brightness(0) invert(0); /* arrow turns black */
 }
 
-
-
-
 /* ------------------ FOOTER ------------------ */
 .banner-footer {
   background: #F5F5F5;
@@ -236,25 +225,20 @@
 @media (max-width: 768px) {
   .banner-body {
     background-position: center top;
-    background-size: cover; /* keep cover instead of contain so it fills */
-    height: auto;
-    min-height: 60vh; /* optional: ensures some banner height */
+    background-size: cover;
+    height: 50vh;
     padding: 20px;
     text-align: center;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start; /* push content to top */
+    justify-content: flex-start;
   }
 
   .body-text {
-    position: relative;   /* no absolute */
-    top: 0;
-    left: 0;
+    position: static;
+    top: auto;
+    left: auto;
     transform: none;
-    max-width: 90%;
-    margin: 20px auto 0 auto; /* spacing from top */
+    max-width: 100%;
+    margin: 40px auto 0;
     text-align: center;
     gap: 12px;
   }
@@ -263,6 +247,9 @@
     font-size: 1.8rem;
     line-height: 1.2;
     margin-bottom: 0.5rem;
+    margin-top: 0;
+    width: 100%;
+    text-align: center;
   }
 
   .banner-sub {
@@ -270,14 +257,41 @@
     line-height: 1.5;
     margin: 0 auto 1rem auto;
     max-width: 90%;
+    text-align: center;
   }
 
   .banner-head__bottom {
-    width: fit-content;
+    width: 100%;
     margin: 0 auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
   }
 
   .bottom-banner-cta {
     justify-content: center;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner-body {
+    height: 40vh;
+  }
+  
+  .banner-title {
+    font-size: 1.5rem;
+  }
+
+  .banner-sub {
+    font-size: 0.9rem;
+  }
+
+  .banner-head__bottom {
+    padding: 14px;
+  }
+  
+  .body-text {
+    margin-top: 20px;
   }
 }
