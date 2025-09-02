@@ -38,7 +38,7 @@ function initCustomGrid() {
       .then(response => response.json())
       .then(cart => {
         // Update all cart count elements
-        const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
+        const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count, .js-cart-count');
         cartCounts.forEach(element => {
           element.textContent = cart.item_count;
         });
@@ -49,6 +49,11 @@ function initCustomGrid() {
             cart: cart
           }
         }));
+        
+        // Also try Shopify's built-in event
+        if (typeof Shopify !== 'undefined') {
+          document.dispatchEvent(new Event('cart:updated'));
+        }
       })
       .catch(error => {
         console.error('Error updating cart count:', error);
@@ -107,8 +112,8 @@ function initCustomGrid() {
       popupDescription.innerHTML = data.description || "";
 
       // Clear previous options
-      sizeSelect.innerHTML = "";
-      colorSelect.innerHTML = "";
+      sizeSelect.innerHTML = '<option value="">Select Size</option>';
+      colorSelect.innerHTML = '<option value="">Select Color</option>';
       
       // Hide option containers initially
       colorOptionContainer.style.display = 'none';
@@ -185,9 +190,9 @@ function initCustomGrid() {
     const selectedOptions = [];
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
-        selectedOptions.push(selectedColor);
+        selectedOptions.push(selectedColor || option.values[0]);
       } else if (option.name.toLowerCase() === "size") {
-        selectedOptions.push(selectedSize);
+        selectedOptions.push(selectedSize || option.values[0]);
       } else {
         // For other options, use the first available value
         selectedOptions.push(option.values[0]);
