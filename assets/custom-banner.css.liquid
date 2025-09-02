@@ -225,9 +225,9 @@
 /* ------------------ RESPONSIVE FIXES ------------------ */
 @media (max-width: 768px) {
   .banner-body {
-    background-position: center bottom; /* Position image at bottom */
-    background-size: cover;
-    height: 60vh;
+    background-position: center bottom 50px; /* Position image at bottom with some spacing */
+    background-size: 100% auto; /* Make image take full width but maintain aspect ratio */
+    height: 70vh; /* Adjust height to accommodate content */
     padding: 20px;
     justify-content: flex-start;
   }
@@ -238,9 +238,10 @@
     left: auto;
     transform: none;
     max-width: 100%;
-    margin: 20px auto 0;
+    margin: 0 auto;
     text-align: center;
-    gap: 12px;
+    gap: 15px;
+    padding-top: 20px;
   }
 
   .banner-title {
@@ -282,7 +283,8 @@
 
 @media (max-width: 480px) {
   .banner-body {
-    height: 50vh;
+    height: 60vh;
+    background-position: center bottom 30px;
   }
   
   .banner-title {
@@ -299,6 +301,7 @@
   }
   
   .body-text {
-    margin-top: 15px;
+    margin-top: 0;
+    gap: 10px;
   }
 }
