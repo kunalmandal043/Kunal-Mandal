@@ -12,6 +12,8 @@
               src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
               alt="{{ product.title }}" 
               class="grid-image"
+              width: 433, height: 444
+
             >
           {% else %}
             <img src="{{ 'placeholder.png' | asset_url }}" alt="Placeholder" class="grid-image">
