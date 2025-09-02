@@ -1,20 +1,33 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
 {% assign all_products_collection = collections['all-products'] %}
 
 <section class="custom-grid">
-  <h2 class="heading">Tisso Vision in the Wild</h2>
+  <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
     {% for product in all_products_collection.products %}
       <div class="grid-item" data-handle="{{ product.handle }}">
         <div class="grid-image-wrapper">
-          <img 
-            src="{{ product.featured_image | default: 'placeholder.png' | asset_url }}" 
-            alt="{{ product.title }}" 
-            width="433" 
-            height="444"
-            class="grid-image"
-          >
+          {% if product.featured_image %}
+            <img 
+              src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+              alt="{{ product.title }}" 
+              width="433" 
+              height="444"
+              class="grid-image"
+            >
+          {% else %}
+            <img 
+              src="{{ 'placeholder.png' | asset_url }}" 
+              alt="Placeholder" 
+              width="433" 
+              height="444"
+              class="grid-image"
+            >
+          {% endif %}
+
+          <!-- Popup icon -->
           <img 
             class="popup-icon" 
             src="{{ 'circle-popup.svg' | asset_url }}" 
@@ -28,27 +41,34 @@
   </div>
 </section>
 
-<!-- Popup -->
+<!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
+
+    <!-- Top section: Image + Details -->
     <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400">
+      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+
       <div class="popup-details">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
         <div id="popup-description"></div>
       </div>
     </div>
+
+    <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
       <div class="popup-option">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
       </div>
+
       <div class="popup-option">
         <label for="size-select">Choose Size:</label>
         <select id="size-select"></select>
       </div>
+
       <button id="add-to-cart">
         <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
       </button>
@@ -56,101 +76,15 @@
   </div>
 </div>
 
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-  const gridItems = document.querySelectorAll(".grid-item");
-  const popup = document.getElementById("product-popup");
-  const popupClose = document.getElementById("popup-close");
-  const popupImage = document.getElementById("popup-image");
-  const popupTitle = document.getElementById("popup-title");
-  const popupPrice = document.getElementById("popup-price");
-  const popupDescription = document.getElementById("popup-description");
-  const sizeSelect = document.getElementById("size-select");
-  const colorSelect = document.getElementById("color-select");
-  const addToCartBtn = document.getElementById("add-to-cart");
-
-  let currentProduct = null;
-
-  gridItems.forEach(item => {
-    const popupIcon = item.querySelector(".popup-icon");
-    if (!popupIcon) return;
-
-    popupIcon.addEventListener("click", async (e) => {
-      e.stopPropagation();
-      const handle = item.dataset.handle;
-      if (!handle) return;
-
-      try {
-        const response = await fetch(`/products/${handle}.js`);
-        if (!response.ok) throw new Error("Product fetch failed");
-
-        const data = await response.json();
-        currentProduct = data.product || data;
-
-        // Fill popup
-        const mainImage = currentProduct.image?.src || currentProduct.images?.[0]?.src || "{{ 'placeholder.png' | asset_url }}";
-        popupImage.src = mainImage;
-        popupTitle.textContent = currentProduct.title;
-        popupPrice.textContent = `$${parseFloat(currentProduct.variants[0].price).toFixed(2)}`;
-        popupDescription.innerHTML = currentProduct.body_html;
-
-        // Options
-        sizeSelect.innerHTML = "";
-        colorSelect.innerHTML = "";
-        currentProduct.options.forEach(opt => {
-          const selectEl = opt.name.toLowerCase() === "size" ? sizeSelect : colorSelect;
-          opt.values.forEach(val => {
-            const option = document.createElement("option");
-            option.value = val;
-            option.textContent = val;
-            selectEl.appendChild(option);
-          });
-        });
-
-        popup.classList.remove("hidden");
-      } catch(err) {
-        console.error(err);
-      }
-    });
-  });
-
-  // Close popup
-  popupClose.addEventListener("click", () => popup.classList.add("hidden"));
-  popup.addEventListener("click", e => { if(e.target === popup) popup.classList.add("hidden"); });
-
-  // Add to Cart
-  addToCartBtn.addEventListener("click", async () => {
-    if (!currentProduct) return;
-    const selectedSize = sizeSelect.value;
-    const selectedColor = colorSelect.value;
-
-    const matchedVariant = currentProduct.variants.find(v =>
-      v.option1 === selectedSize && v.option2 === selectedColor
-    );
-
-    if (!matchedVariant) return alert("Please select valid options");
-
-    try {
-      await fetch("/cart/add.js", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({id: matchedVariant.id, quantity:1})
-      });
-      alert("Product added to cart!");
-      popup.classList.add("hidden");
-    } catch(err) {
-      console.error(err);
-      alert("Failed to add to cart.");
-    }
-  });
-});
-</script>
-
 {% schema %}
 {
   "name": "Custom Grid",
   "settings": [],
   "blocks": [],
-  "presets": [{"name": "Custom Grid"}]
+  "presets": [
+    {
+      "name": "Custom Grid"
+    }
+  ]
 }
 {% endschema %}
