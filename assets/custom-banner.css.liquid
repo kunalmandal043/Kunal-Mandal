@@ -225,30 +225,31 @@
 /* ------------------ RESPONSIVE FIXES ------------------ */
 @media (max-width: 768px) {
   .banner-body {
-    position: relative;
-    min-height: 80vh;
-    justify-content: flex-start;
-    background: none;
-    overflow: hidden;
-    --mobile-zoom: 1.1; /* ← tweak: 1.2 (mild) … 2.0+ (strong) */
-  }
+  position: relative;
+  min-height: 80vh;
+  justify-content: flex-start;
+  background: none;
+  overflow: hidden;
+  --mobile-zoom: 1.6; /* tweak for zoom intensity */
+}
 
-  @media (max-width: 768px) {
-  .banner-body::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 0;                 /* lock to left edge */
-    
-    width: 100%;
-    height: 100%;
-    background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat left bottom;
-    background-size: cover;  /* stretch to cover left side fully */
-    background-position: left bottom; /* anchor at bottom-left */
-    
-    z-index: -1;
-    pointer-events: none;
-  }
+.banner-body::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;                        /* anchor in the middle */
+  transform: translateX(-80%);      /* shift left as required */
+  
+  width: 100%;
+  height: 100%;
+  
+  background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
+  background-size: calc(100% * var(--mobile-zoom)) auto; /* zoom to cover */
+  background-position: center bottom;
+  
+  z-index: -1;
+  pointer-events: none;
+}
 
   .body-text {
     position: static;
