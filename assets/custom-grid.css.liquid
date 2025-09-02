@@ -68,17 +68,21 @@
   z-index: 1000;
   padding: 20px;
   box-sizing: border-box;
+  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 
+  
+  
 .popup-content {
+  
   background: white;
   padding: 30px;
   width: 100%;
-  max-width: 400px;
+  max-width: 400px; /* Added max-width for larger screens */
   max-height: 95vh;
   overflow-y: auto;
   position: relative;
-  box-sizing: border-box;
+  box-sizing: border-box; /* Include padding in width calculation */
 }
 
 #popup-close {
@@ -87,6 +91,7 @@
   right: 15px;
   font-size: 24px;
   cursor: pointer;
+  transition: opacity 0.4s ease, transform 0.4s ease;
   color: #333;
 }
 
@@ -102,7 +107,7 @@
   width: 50%;
   max-width: 250px;
   height: auto;
-  object-fit: cover;
+  object-fit: cover; /* Ensure image maintains aspect ratio */
 }
 
 .popup-details {
@@ -126,7 +131,7 @@
   font-style: normal;
   font-size: 12px;
   line-height: 110%;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.01em; /* Changed from -1% to valid value */
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -134,53 +139,30 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .popup-option {
   display: flex;
   flex-direction: column;
-  text-align: left;
+  text-align: center;
+  cursor:pointer;
 }
 
 .popup-option label {
+  
   margin-bottom: 6px;
   font-weight: 500;
-  cursor: pointer;
+  cursor:pointer;
 }
 
 .popup-option select {
   padding: 8px;
   border: 1px solid #ddd;
-  cursor: pointer;
+  cursor:pointer;
   font-size: 16px;
-  width: 100%;
+  width: 100%; /* Ensure select doesn't overflow */
   box-sizing: border-box;
-}
-
-/* Color Swatches */
-.color-swatches {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 8px;
-}
-
-.color-swatch {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.color-swatch:hover {
-  transform: scale(1.1);
-}
-
-.color-swatch.selected {
-  box-shadow: 0 0 0 2px #000, 0 0 0 4px #fff;
-  transform: scale(1.1);
 }
 
 #add-to-cart {
@@ -196,7 +178,7 @@
   cursor: pointer;
   transition: background 0.3s ease;
   margin-top: 15px;
-  width: 100%;
+  width: 100%; /* Full width button */
   box-sizing: border-box;
 }
 
@@ -218,32 +200,31 @@
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
-  
   .heading {
-    text-align: center;
+    text-align:center;
     font-size: 24px;
+    
   }
-  
   .popup-icon { 
     width: 16px; 
     height: 16px; 
   }
   
   .popup {
-    padding: 10px;
+    padding: 10px; /* Reduced padding on mobile */
   }
   
   .popup-content {
-    width: 100%;
-    padding: 20px;
-    max-height: 95vh;
+    width: 100%; /* Full width on mobile */
+    padding: 20px; /* Reduced padding on mobile */
+    max-height: 95vh; /* Slightly more height on mobile */
   }
   
   .popup-top {
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 15px;
+    gap: 15px; /* Reduced gap on mobile */
   }
 
   .popup-top img#popup-image {
@@ -259,13 +240,14 @@
     width: 100%;
   }
   
+  /* Additional mobile-specific adjustments */
   .popup-option select {
-    font-size: 14px;
+    font-size: 14px; /* Slightly smaller font on mobile */
   }
   
   #add-to-cart {
-    font-size: 14px;
-    padding: 10px 15px;
+    font-size: 14px; /* Slightly smaller font on mobile */
+    padding: 10px 15px; /* Adjusted padding on mobile */
   }
 }
 
@@ -285,9 +267,5 @@
   
   .popup-details p {
     font-size: 11px;
-  }
-  
-  .color-swatches {
-    justify-content: center;
   }
 }

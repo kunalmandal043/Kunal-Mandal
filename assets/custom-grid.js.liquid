@@ -8,13 +8,12 @@ function initCustomGrid() {
   const popupPrice = document.getElementById("popup-price");
   const popupDescription = document.getElementById("popup-description");
   const sizeSelect = document.getElementById("size-select");
+  const colorSelect = document.getElementById("color-select");
   const addToCartBtn = document.getElementById("add-to-cart");
   const colorOptionContainer = document.getElementById("color-option-container");
   const sizeOptionContainer = document.getElementById("size-option-container");
-  const colorSwatches = document.getElementById("color-swatches");
 
   let currentProduct = null;
-  let selectedColor = null;
 
   // Format money function
   function formatMoney(cents) {
@@ -60,15 +59,16 @@ function initCustomGrid() {
   function updatePrice() {
     if (!currentProduct) return;
     
+    const selectedColor = colorSelect.value;
     const selectedSize = sizeSelect.value;
     
     // Create options array in the correct order
     const selectedOptions = [];
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
-        selectedOptions.push(selectedColor || option.values[0]);
+        selectedOptions.push(selectedColor);
       } else if (option.name.toLowerCase() === "size") {
-        selectedOptions.push(selectedSize || option.values[0]);
+        selectedOptions.push(selectedSize);
       } else {
         // For other options, use the first available value
         selectedOptions.push(option.values[0]);
@@ -108,10 +108,7 @@ function initCustomGrid() {
 
       // Clear previous options
       sizeSelect.innerHTML = "";
-      colorSwatches.innerHTML = "";
-      
-      // Reset selected color
-      selectedColor = null;
+      colorSelect.innerHTML = "";
       
       // Hide option containers initially
       colorOptionContainer.style.display = 'none';
@@ -130,89 +127,11 @@ function initCustomGrid() {
             });
           } else if (option.name.toLowerCase() === "color") {
             colorOptionContainer.style.display = 'block';
-            
-            // Create color swatches instead of dropdown
             option.values.forEach(val => {
-              const swatch = document.createElement("div");
-              swatch.className = "color-swatch";
-              swatch.dataset.value = val;
-              swatch.title = val;
-              
-              // Try to create a color from the value
-              const colorName = val.toLowerCase();
-              let backgroundColor = "#ccc"; // Default gray
-              
-              // Map common color names to hex values
-              const colorMap = {
-                "red": "#ff0000",
-                "blue": "#0000ff",
-                "green": "#008000",
-                "black": "#000000",
-                "white": "#ffffff",
-                "yellow": "#ffff00",
-                "purple": "#800080",
-                "pink": "#ffc0cb",
-                "orange": "#ffa500",
-                "gray": "#808080",
-                "grey": "#808080",
-                "brown": "#a52a2a",
-                "navy": "#000080",
-                "teal": "#008080",
-                "olive": "#808000",
-                "maroon": "#800000",
-                "silver": "#c0c0c0",
-                "gold": "#ffd700",
-                "beige": "#f5f5dc",
-                "cyan": "#00ffff",
-                "magenta": "#ff00ff",
-                "lavender": "#e6e6fa",
-                "turquoise": "#40e0d0",
-                "coral": "#ff7f50",
-                "indigo": "#4b0082",
-                "violet": "#ee82ee",
-                "tan": "#d2b48c",
-                "salmon": "#fa8072",
-                "khaki": "#f0e68c",
-                "plum": "#dda0dd",
-                "orchid": "#da70d6",
-                "azure": "#f0ffff",
-                "mint": "#f5fffa",
-                "ivory": "#fffff0",
-                "wheat": "#f5deb3"
-              };
-              
-              if (colorMap[colorName]) {
-                backgroundColor = colorMap[colorName];
-              } else if (val.startsWith("#") && val.length === 7) {
-                // If it's already a hex code
-                backgroundColor = val;
-              }
-              
-              swatch.style.backgroundColor = backgroundColor;
-              
-              // Add border for light colors
-              if (colorName === "white" || colorName === "beige" || colorName === "ivory" || 
-                  colorName === "azure" || colorName === "mint" || colorName === "wheat") {
-                swatch.style.border = "1px solid #ddd";
-              }
-              
-              swatch.addEventListener("click", () => {
-                // Remove selected class from all swatches
-                document.querySelectorAll(".color-swatch").forEach(s => {
-                  s.classList.remove("selected");
-                });
-                
-                // Add selected class to clicked swatch
-                swatch.classList.add("selected");
-                
-                // Update selected color
-                selectedColor = val;
-                
-                // Update price
-                updatePrice();
-              });
-              
-              colorSwatches.appendChild(swatch);
+              const optionElement = document.createElement("option");
+              optionElement.value = val;
+              optionElement.textContent = val;
+              colorSelect.appendChild(optionElement);
             });
           }
         });
@@ -220,6 +139,7 @@ function initCustomGrid() {
 
       // Add event listeners for option changes
       sizeSelect.addEventListener('change', updatePrice);
+      colorSelect.addEventListener('change', updatePrice);
       
       // Show popup
       popup.classList.remove("hidden");
@@ -258,15 +178,16 @@ function initCustomGrid() {
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
     
+    const selectedColor = colorSelect.value;
     const selectedSize = sizeSelect.value;
     
     // Create options array in the correct order
     const selectedOptions = [];
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
-        selectedOptions.push(selectedColor || option.values[0]);
+        selectedOptions.push(selectedColor);
       } else if (option.name.toLowerCase() === "size") {
-        selectedOptions.push(selectedSize || option.values[0]);
+        selectedOptions.push(selectedSize);
       } else {
         // For other options, use the first available value
         selectedOptions.push(option.values[0]);
@@ -310,7 +231,7 @@ function initCustomGrid() {
     } finally {
       // Reset button state
       addToCartBtn.disabled = false;
-      addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
+      addToCartBtn.querySelector('span').textContent = 'Add to Cart';
     }
   });
 }
