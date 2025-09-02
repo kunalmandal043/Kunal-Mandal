@@ -1,41 +1,44 @@
-{% schema %}
-{
-  "name": "Custom Grid",
-  "settings": [],
-  "blocks": [
-    {
-      "type": "product",
-      "name": "Product",
-      "settings": [
-        { "type": "product", "id": "product", "label": "Select Product" }
-      ]
-    }
-  ],
-  "max_blocks": 6,
-  "presets": [{ "name": "Custom Grid" }]
-}
-{% endschema %}
+{{ 'custom-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
+
+{% assign all_products_collection = collections['all-products'] %}
 
 <section class="custom-grid">
-  <h2>Tisso vison in the wild</h2>
+  <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% for block in section.blocks %}
-      {% assign product = all_products[block.settings.product] %}
-      {% if product %}
-        <div class="grid-item" data-handle="{{ product.handle }}">
+    {% for product in all_products_collection.products %}
+      <div class="grid-item" data-handle="{{ product.handle }}">
+        <div class="grid-image-wrapper">
           {% if product.featured_image %}
-  <img
-    src="{{ product.featured_image | img_url: '600x' }}"
-    alt="{{ product.title | escape }}"
-    width="{{ product.featured_image.width }}"
-    height="{{ product.featured_image.height }}"
-    loading="lazy"
-  >
-{% endif %}
+            <img 
+              src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+              alt="{{ product.title }}" 
+              width="433" 
+              height="444"
+              class="grid-image"
+              loading="lazy"
+            >
+          {% else %}
+            <img 
+              src="{{ 'placeholder.png' | asset_url }}" 
+              alt="Placeholder" 
+              width="433" 
+              height="444"
+              class="grid-image"
+              loading="lazy"
+            >
+          {% endif %}
 
-          <p>{{ product.title }}</p>
+          <!-- Popup icon -->
+          <img 
+            class="popup-icon" 
+            src="{{ 'circle-popup.svg' | asset_url }}" 
+            alt="Open Popup" 
+            width="22" 
+            height="22"
+          >
         </div>
-      {% endif %}
+      </div>
     {% endfor %}
   </div>
 </section>
@@ -44,21 +47,47 @@
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
-    <img id="popup-image" 
-     src="{{ 'placeholder.png' | asset_url }}" 
-     alt="Product preview" 
-     width="400" height="400" loading="lazy">
 
-    <h2 id="popup-title"></h2>
-    <p id="popup-price"></p>
-    <p id="popup-description"></p>
+    <!-- Top section: Image + Details -->
+    <div class="popup-top">
+      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
 
-    <!-- Variants -->
-    <label for="variant-select">Choose your options:</label>
-    <select id="variant-select"></select>
+      <div class="popup-details">
+        <h2 id="popup-title"></h2>
+        <p id="popup-price"></p>
+        <div id="popup-description"></div>
+      </div>
+    </div>
 
-    <!-- Add to Cart -->
-    <button id="add-to-cart">ADD TO CART</button>
+    <!-- Bottom section: Options + Add to Cart -->
+    <div class="popup-bottom">
+      <div class="popup-option" id="color-option-container">
+        <label for="color-select">Choose Color:</label>
+        <select id="color-select"></select>
+      </div>
+
+      <div class="popup-option" id="size-option-container">
+        <label for="size-select">Choose Size:</label>
+        <select id="size-select"></select>
+      </div>
+
+      <button id="add-to-cart">
+        
+        <span>ADD TO CART ➜ </span>
+      </button>
+    </div>
   </div>
 </div>
 
+{% schema %}
+{
+  "name": "Custom Grid",
+  "settings": [],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Custom Grid"
+    }
+  ]
+}
+{% endschema %}
