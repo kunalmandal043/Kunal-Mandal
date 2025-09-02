@@ -1,88 +1,191 @@
-{% comment %}
-  File: sections/gift-guide-banner.liquid
-  Purpose: One-file banner with inline CSS + background image from assets/img/bg-img.jpg
-{% endcomment %}
+{% schema %}
+{
+  "name": "Custom Banner",
+  "settings": [
+    { "type": "text", "id": "brand_text", "label": "Brand text (left)", "default": "TISSO VISON" },
+    { "type": "text", "id": "top_note", "label": "Top Note", "default": "Find the ideal gift for your loved ones." },
+    { "type": "text", "id": "title", "label": "Main Title", "default": "The Gift Guide" },
+    { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season" },
+    { "type": "text", "id": "bottom_note", "label": "Bottom Note", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" },
+    { "type": "text", "id": "top_cta_label", "label": "Top-right button label", "default": "CHOOSE GIFT" },
+    { "type": "url", "id": "button_url", "label": "Button URL" },
+    { "type": "text", "id": "button_text", "label": "Bottom button text", "default": "SHOP NOW" }
+  ],
+  "presets": [{ "name": "Custom Banner" }]
+}
+{% endschema %}
 
-<section class="gift-banner" style="--bg:url('{{ 'bg-img.jpg' | asset_url }}');">
-  <style>
-    .gift-banner{
-      position:relative; isolation:isolate;
-      background-image:var(--bg);
-      background-size:cover; background-position:center; background-repeat:no-repeat;
-      padding:24px 24px 56px;
-    }
-    .gift-banner__bar{
-      display:flex; align-items:center; justify-content:space-between; gap:16px;
-      background:#efefef; padding:10px 16px; border-radius:4px;
-    }
-    .gift-banner__logo{ font-weight:700; letter-spacing:.06em; }
-    .gift-banner__eyebrow{ margin:0 auto; font-size:14px; opacity:.9; }
-    .gift-banner__cta-top a{
-      display:inline-flex; align-items:center; gap:8px; padding:12px 18px;
-      background:#ffe45c; color:#111; border:1.5px solid #111; border-radius:4px;
-      transition: transform .2s ease, filter .2s ease;
-    }
-    .gift-banner__cta-top a:hover{ transform:translateY(-2px); filter:brightness(.95); }
+{{ 'custom-banner.css' | asset_url | stylesheet_tag }}
 
-    .gift-banner__inner{ max-width:1120px; margin:80px auto 0; }
-    .gift-banner__title{ font-size:72px; line-height:.95; margin:0 0 20px; }
-    .gift-banner__sub{ max-width:540px; background:#fff; border:2px solid #111; padding:18px 22px; }
-    .gift-banner__actions{ margin:24px 0 32px; }
-    .gift-banner__actions .btn{
-      display:inline-block; padding:14px 24px; border:2px solid #111; border-radius:4px;
-      transition: transform .2s ease, background-color .2s ease, color .2s ease;
-    }
-    .gift-banner__actions .btn--primary{ background:#111; color:#fff; }
-    .gift-banner__actions .btn--primary:hover{ transform:translateY(-2px); background:#000; }
-    .gift-banner__tagline{
-      position:sticky; bottom:0; text-align:center; background:#eee; border-top:2px solid #111;
-      padding:8px 12px; letter-spacing:.02em;
-    }
+<section class="custom-banner">
+  <!-- Header bar -->
+  <div class="banner-head">
+    <!-- Mobile: Taskbar Icon -->
+    <div class="banner-taskbar" id="mobile-menu-toggle">
+      <img 
+        src="{{ 'taskbar.svg' | asset_url }}" 
+        alt="Menu icon" 
+        width="24" 
+        height="24" 
+        loading="lazy" 
+        decoding="async"
+        class="menu-icon"
+      />
+      <img 
+        src="{{ 'close.svg' | asset_url }}" 
+        alt="Close menu icon" 
+        width="24" 
+        height="24" 
+        loading="lazy" 
+        decoding="async"
+        class="close-icon"
+        style="display: none;"
+      />
+    </div>
 
-    @media (max-width: 749px){
-      .gift-banner{ padding:16px 16px 40px; }
-      .gift-banner__inner{ margin-top:40px; }
-      .gift-banner__title{ font-size:42px; }
-      .gift-banner__sub{ font-size:14px; }
-      .gift-banner__bar{ flex-wrap:wrap; gap:8px; }
-    }
-  </style>
+    <!-- Brand text -->
+    <div class="banner-head__left">
+      <span class="brand">{{ section.settings.brand_text }}</span>
+    </div>
 
-  <div class="gift-banner__bar">
-    <div class="gift-banner__logo">{{ section.settings.logo_text }}</div>
-    <p class="gift-banner__eyebrow">{{ section.settings.eyebrow }}</p>
-    <div class="gift-banner__cta-top">
-      <a href="{{ section.settings.secondary_link }}">{{ section.settings.secondary_label }}</a>
+    <!-- Center text (desktop only) -->
+    <p class="banner-head__center">{{ section.settings.top_note }}</p>
+
+    <!-- Right CTA (desktop only) -->
+    <div class="banner-head__right">
+      <a href="{{ section.settings.button_url }}" class="banner-cta">
+        {{ section.settings.top_cta_label }}
+        <img 
+          src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
+          alt="Arrow icon" 
+          class="btn-icon"
+          width="20" 
+          height="20" 
+          loading="lazy" 
+          decoding="async"
+        />
+      </a>
     </div>
   </div>
 
-  <div class="gift-banner__inner">
-    <h1 class="gift-banner__title">{{ section.settings.heading }}</h1>
-    <div class="gift-banner__sub">{{ section.settings.subheading }}</div>
-    <div class="gift-banner__actions">
-      <a class="btn btn--primary" href="{{ section.settings.primary_link }}">{{ section.settings.primary_label }}</a>
+  <!-- Mobile Dropdown Menu - Now positioned below header -->
+  <div class="mobile-dropdown" id="mobile-dropdown">
+    <div class="mobile-dropdown__content">
+      <p class="mobile-dropdown__center">{{ section.settings.top_note }}</p>
+      <a href="{{ section.settings.button_url }}" class="mobile-dropdown__cta">
+        {{ section.settings.top_cta_label }}
+        <img 
+          src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
+          alt="Arrow icon" 
+          class="btn-icon"
+          width="20" 
+          height="20" 
+          loading="lazy" 
+          decoding="async"
+        />
+      </a>
     </div>
   </div>
 
-  <p class="gift-banner__tagline">{{ section.settings.tagline }}</p>
+  <!-- Body -->
+  <div class="banner-body"> 
+    <div class="body-text"> 
+      <h1 class="banner-title">{{ section.settings.title }}</h1> 
+      <p class="banner-sub">{{ section.settings.subtitle }}</p> 
+      <div class="banner-head__bottom">
+        <a href="{{ section.settings.button_url }}" class="bottom-banner-cta">
+          {{ section.settings.button_text }}
+          <img 
+            src="{{ 'shop-now-arrow.svg' | asset_url }}" 
+            alt="Arrow icon" 
+            class="bottom-btn-icon"
+            width="20" 
+            height="20" 
+            loading="lazy" 
+            decoding="async"
+          />
+        </a>
+      </div> 
+    </div> 
+  </div>
 
-  {% schema %}
-  {
-    "name": "Gift guide banner (single file)",
-    "tag": "section",
-    "class": "gift-banner-section",
-    "settings": [
-      { "type":"text", "id":"logo_text", "label":"Logo text", "default":"TISSO VISON" },
-      { "type":"text", "id":"eyebrow", "label":"Eyebrow copy", "default":"Find the ideal gift for your loved ones." },
-      { "type":"text", "id":"heading", "label":"Main heading", "default":"The Gift Guide" },
-      { "type":"richtext", "id":"subheading", "label":"Subheading", "default":"<p>Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season.</p>" },
-      { "type":"text", "id":"primary_label", "label":"Primary button label", "default":"SHOP NOW" },
-      { "type":"url",  "id":"primary_link",  "label":"Primary button link" },
-      { "type":"text", "id":"secondary_label", "label":"Top right button label", "default":"CHOOSE GIFT" },
-      { "type":"url",  "id":"secondary_link",  "label":"Top right button link" },
-      { "type":"text", "id":"tagline", "label":"Bottom tagline", "default":"SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" }
-    ],
-    "presets": [{ "name":"Gift guide banner" }]
-  }
-  {% endschema %}
+  <!--footer-->
+  <div class="banner-footer">
+    <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
+  </div>
 </section>
+
+<script>
+// Smooth mobile menu implementation
+(function() {
+  // Initialize when DOM is ready
+  function initMobileMenu() {
+    const menuToggle = document.getElementById('mobile-menu-toggle');
+    const mobileDropdown = document.getElementById('mobile-dropdown');
+    
+    if (!menuToggle || !mobileDropdown) {
+      console.error('Mobile menu elements not found');
+      return;
+    }
+    
+    const menuIcon = menuToggle.querySelector('.menu-icon');
+    const closeIcon = menuToggle.querySelector('.close-icon');
+    const body = document.body;
+    
+    // Toggle menu function
+    function toggleMenu() {
+      const isOpen = mobileDropdown.classList.contains('active');
+      
+      if (isOpen) {
+        // Close menu with smooth animation
+        mobileDropdown.classList.remove('active');
+        mobileDropdown.classList.add('closing');
+        
+        setTimeout(() => {
+          mobileDropdown.classList.remove('closing');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          body.classList.remove('mobile-menu-open');
+        }, 300); // Match this with CSS transition time
+      } else {
+        // Open menu with smooth animation
+        if (menuIcon) menuIcon.style.display = 'none';
+        if (closeIcon) closeIcon.style.display = 'block';
+        body.classList.add('mobile-menu-open');
+        
+        // Force reflow before adding active class for smooth animation
+        mobileDropdown.offsetHeight;
+        mobileDropdown.classList.add('active');
+      }
+    }
+    
+    // Add click event to menu toggle
+    menuToggle.addEventListener('click', function(e) {
+      e.stopPropagation();
+      toggleMenu();
+    });
+    
+    // Close menu when clicking on the overlay (outside content)
+    mobileDropdown.addEventListener('click', function(e) {
+      if (e.target === mobileDropdown) {
+        toggleMenu();
+      }
+    });
+    
+    // Close menu when pressing Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape' && mobileDropdown.classList.contains('active')) {
+        toggleMenu();
+      }
+    });
+  }
+  
+  // Run initialization when DOM is loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileMenu);
+  } else {
+    // DOM is already ready
+    initMobileMenu();
+  }
+})();
+</script>
