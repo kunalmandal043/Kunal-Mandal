@@ -234,16 +234,21 @@
   }
 
   /* Create a container for the cropped image */
-  .banner-body::after {
-    content: "";
+  .mobile-image-container {
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 40%; /* Adjust this value to control how much of the image is visible */
-    background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: contain;
-    z-index: -1;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .mobile-image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top; /* Show the top part of the image */
   }
 
   .body-text {
@@ -301,7 +306,7 @@
     min-height: 50vh;
   }
   
-  .banner-body::after {
+  .mobile-image-container {
     height: 35%; /* Adjust image height for smaller screens */
   }
   
@@ -330,7 +335,7 @@
     min-height: 45vh;
   }
   
-  .banner-body::after {
+  .mobile-image-container {
     height: 30%; /* Further adjust image height */
   }
   
