@@ -32,6 +32,30 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Update cart count in the UI
+  function updateCartCount() {
+    // Fetch the current cart
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        // Update all elements that display cart count
+        const cartCountElements = document.querySelectorAll('.cart-count, .js-cart-count, #cart-count');
+        cartCountElements.forEach(element => {
+          element.textContent = cart.item_count;
+        });
+        
+        // If your theme uses a data attribute
+        const cartIcons = document.querySelectorAll('[data-cart-count]');
+        cartIcons.forEach(icon => {
+          icon.setAttribute('data-cart-count', cart.item_count);
+          icon.textContent = cart.item_count;
+        });
+      })
+      .catch(error => {
+        console.error('Error fetching cart:', error);
+      });
+  }
+
   // Update price when options change
   function updatePrice() {
     if (!currentProduct) return;
@@ -178,6 +202,10 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
+      
+      // Update the cart count in the UI
+      updateCartCount();
+      
       alert("Product added to cart!");
       popup.classList.add("hidden");
       document.body.style.overflow = ''; // Re-enable scrolling
