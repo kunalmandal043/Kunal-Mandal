@@ -97,40 +97,44 @@
   flex-direction: row;
   gap: 20px;
   margin-bottom: 20px;
+  align-items: flex-start;
 }
 
+/* Make all popup images the same size */
 .popup-top img#popup-image {
-  width: 50%;
-  max-width: 250px;
-  height: auto;
-  object-fit: cover;
+  width: 200px;       /* fixed width */
+  height: 200px;      /* fixed height */
+  object-fit: cover;  /* maintain aspect ratio and crop overflow */
+  border-radius: 6px;
 }
 
+/* Details section */
 .popup-details {
   flex: 1;
   text-align: left;
-  
 }
 
+/* Title */
 .popup-details h2 {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
-  
   font-size: 16px;
   line-height: 120%;
-  
   margin-bottom: 10px;
 }
 
+/* Description paragraph: fit content properly */
 .popup-details p {
   margin-bottom: 10px;
-  font-family: 'Jost', sans-serif; /* fallback to sans-serif */
-  font-weight: 300; /* Light weight */
-  font-style: normal; /* "Light" is a weight, not a style */
+  font-family: 'Jost', sans-serif;
+  font-weight: 300;
+  font-style: normal;
   font-size: 12px;
-  line-height: 110%; /* 1.1 */
-  letter-spacing: -1%;
-  
+  line-height: 1.2;       /* 120% */
+  letter-spacing: -0.01em; /* approximate -1% */
+  max-height: 200px;       /* same height as image */
+  overflow: hidden;        /* truncate overflowing text */
+  text-overflow: ellipsis;
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -203,11 +207,7 @@
     margin-bottom: 18px;
   }
 
-  .popup-content {
-    max-width: 450px;
-    max-height: 600px;
-    padding: 35px;
-  }
+ 
   
   .popup-top {
     flex-direction: column;
@@ -216,12 +216,13 @@
   }
 
   .popup-top img#popup-image {
-    width: 100%;
-    max-width: 100%;
+    width: 90%;
+    max-width: 250px;
+    height: 250px;  /* maintain consistent height */
   }
 
-  .popup-details {
-    width: 100%;
+  .popup-details p {
+    max-height: none;
   }
 
   .popup-bottom {
