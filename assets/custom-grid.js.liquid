@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", () => {
   const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
@@ -19,31 +19,23 @@ document.addEventListener("DOMContentLoaded", function() {
     popupIcon.addEventListener("click", async (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
-      if (!handle) return console.error("Missing product handle");
+      if (!handle) return;
 
       try {
-        const response = await fetch(`/products/${handle}.js`);
-        if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
-        const data = await response.json();
-
-        // Handle Shopify JSON variation
-        const product = data.product || data;
-
+        const res = await fetch(`/products/${handle}.js`);
+        const data = await res.json();
+        const product = data.product || data; // Handle Shopify JSON
         currentProduct = product;
 
-        // Image
-        popupImage.src = product.images && product.images.length > 0 
-          ? product.images[0].src 
-          : "{{ 'placeholder.png' | asset_url }}";
+        // Set image
+        popupImage.src = product.images && product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
 
-        // Title, Price, Description
+        // Set title, price, description
         popupTitle.textContent = product.title;
-        popupPrice.textContent = product.variants[0].price 
-          ? formatMoney(product.variants[0].price * 100) 
-          : "";
+        popupPrice.textContent = product.variants[0]?.price ? formatMoney(product.variants[0].price * 100) : "";
         popupDescription.innerHTML = product.body_html || "";
 
-        // Options
+        // Populate options
         sizeSelect.innerHTML = "";
         colorSelect.innerHTML = "";
         product.options.forEach(opt => {
@@ -82,17 +74,17 @@ document.addEventListener("DOMContentLoaded", function() {
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant => 
-      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
+    const variant = currentProduct.variants.find(v =>
+      v.options.includes(selectedSize) && v.options.includes(selectedColor)
     );
 
-    if (!matchedVariant) return alert("Please select valid options");
+    if (!variant) return alert("Please select valid options");
 
     try {
       await fetch("/cart/add.js", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: matchedVariant.id, quantity: 1 })
+        body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
       alert("Product added to cart!");
       popup.classList.add("hidden");
