@@ -226,24 +226,23 @@
 @media (max-width: 768px) {
   .banner-body {
     position: relative;
-    height: auto;
-    min-height: 60vh;
+    min-height: 80vh;
     justify-content: flex-start;
-    background: none; 
-    overflow: hidden; 
+    background: none;
+    overflow: hidden;
   }
 
   .banner-body::before {
     content: "";
     position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;           /* lock to extreme bottom */
+    left: 0;
     width: 100%;
-    height: 100%; /* extend full height of banner-body */
+    height: auto;
+    min-height: 264px;   /* your image’s height */
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: cover;
-    background-position: center bottom;
+    background-size: contain;  /* keeps exact proportions */
+    background-position: bottom center; /* pin bottom */
     z-index: -1;
   }
 
