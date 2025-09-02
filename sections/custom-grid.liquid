@@ -1,3 +1,4 @@
+<!-- custom-grid.liquid -->
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
@@ -30,13 +31,14 @@
           {% endif %}
 
           <!-- Popup icon -->
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup" 
-            width="22" 
-            height="22"
-          >
+          <button class="popup-icon" aria-label="View product details">
+            <img 
+              src="{{ 'circle-popup.svg' | asset_url }}" 
+              alt="Open Popup" 
+              width="22" 
+              height="22"
+            >
+          </button>
         </div>
       </div>
     {% endfor %}
@@ -46,32 +48,34 @@
 <!-- Product Popup -->
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
-    <span id="popup-close">&times;</span>
+    <span id="popup-close" class="close-button">&times;</span>
 
     <!-- Top section: Image + Details -->
     <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+      <div class="popup-image-container">
+        <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+      </div>
 
       <div class="popup-details">
         <h2 id="popup-title"></h2>
-        <p id="popup-price"></p>
-        <div id="popup-description"></div>
+        <p id="popup-price" class="price"></p>
+        <div id="popup-description" class="description"></div>
       </div>
     </div>
 
     <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
-      <div class="popup-option" id="color-option-container">
+      <div class="popup-option">
         <label for="color-select">Choose Color:</label>
-        <select id="color-select"></select>
+        <select id="color-select" class="option-select"></select>
       </div>
 
-      <div class="popup-option" id="size-option-container">
+      <div class="popup-option">
         <label for="size-select">Choose Size:</label>
-        <select id="size-select"></select>
+        <select id="size-select" class="option-select"></select>
       </div>
 
-      <button id="add-to-cart">
+      <button id="add-to-cart" class="add-to-cart-btn">
         <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
         <span>Add to Cart</span>
       </button>
