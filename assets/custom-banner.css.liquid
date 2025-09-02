@@ -224,7 +224,6 @@
 
 /* ------------------ RESPONSIVE FIXES ------------------ */
 @media (max-width: 768px) {
-  @media (max-width: 768px) {
   .banner-body {
     position: relative;
     height: auto;
@@ -235,21 +234,16 @@
   }
 
   /* Create a container for the cropped image */
-  .mobile-image-container {
+  .banner-body::after {
+    content: "";
     position: absolute;
     bottom: 0;
     left: 0;
     width: 100%;
     height: 40%; /* Adjust this value to control how much of the image is visible */
-    overflow: hidden;
-    z-index: 1;
-  }
-
-  .mobile-image-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center top; /* Show the top part of the image */
+    background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center bottom;
+    background-size: contain;
+    z-index: -1;
   }
 
   .body-text {
@@ -264,7 +258,6 @@
     padding-top: 20px;
     z-index: 2;
   }
-
 
   .banner-title {
     font-size: 1.8rem;
@@ -308,7 +301,7 @@
     min-height: 50vh;
   }
   
-  .mobile-image-container {
+  .banner-body::after {
     height: 35%; /* Adjust image height for smaller screens */
   }
   
@@ -337,7 +330,7 @@
     min-height: 45vh;
   }
   
-  .mobile-image-container {
+  .banner-body::after {
     height: 30%; /* Further adjust image height */
   }
   
