@@ -25,16 +25,22 @@ document.addEventListener("DOMContentLoaded", function() {
         const response = await fetch(`/products/${handle}.js`);
         if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
         const data = await response.json();
-        const product = data.product; // Access correct JSON structure
+
+        // Handle Shopify JSON variation
+        const product = data.product || data;
 
         currentProduct = product;
 
         // Image
-        popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
+        popupImage.src = product.images && product.images.length > 0 
+          ? product.images[0].src 
+          : "{{ 'placeholder.png' | asset_url }}";
 
         // Title, Price, Description
         popupTitle.textContent = product.title;
-        popupPrice.textContent = product.variants[0].price ? formatMoney(product.variants[0].price * 100) : "";
+        popupPrice.textContent = product.variants[0].price 
+          ? formatMoney(product.variants[0].price * 100) 
+          : "";
         popupDescription.innerHTML = product.body_html || "";
 
         // Options
@@ -66,9 +72,11 @@ document.addEventListener("DOMContentLoaded", function() {
     });
   });
 
+  // Close popup
   popupClose.addEventListener("click", () => popup.classList.add("hidden"));
   popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
 
+  // Add to Cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
     const selectedSize = sizeSelect.value;
