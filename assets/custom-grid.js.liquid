@@ -1,5 +1,5 @@
 // custom-grid.js
-document.addEventListener("DOMContentLoaded", () => {
+function initCustomGrid() {
   const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
@@ -32,30 +32,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Update cart count in the UI
-  function updateCartCount() {
-    // Fetch the current cart
-    fetch('/cart.js')
-      .then(response => response.json())
-      .then(cart => {
-        // Update all elements that display cart count
-        const cartCountElements = document.querySelectorAll('.cart-count, .js-cart-count, #cart-count');
-        cartCountElements.forEach(element => {
-          element.textContent = cart.item_count;
-        });
-        
-        // If your theme uses a data attribute
-        const cartIcons = document.querySelectorAll('[data-cart-count]');
-        cartIcons.forEach(icon => {
-          icon.setAttribute('data-cart-count', cart.item_count);
-          icon.textContent = cart.item_count;
-        });
-      })
-      .catch(error => {
-        console.error('Error fetching cart:', error);
-      });
-  }
-
   // Update price when options change
   function updatePrice() {
     if (!currentProduct) return;
@@ -82,77 +58,83 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  // Function to show product popup
+  async function showProductPopup(handle) {
+    if (!handle) return;
+
+    try {
+      const res = await fetch(`/products/${handle}.js`);
+      const data = await res.json();
+      currentProduct = data;
+      
+      // Set image
+      popupImage.src = data.images && data.images.length > 0 
+        ? data.images[0] 
+        : "{{ 'placeholder.png' | asset_url }}";
+      popupImage.alt = data.title;
+
+      // Set title, price, description
+      popupTitle.textContent = data.title;
+      
+      // Use first variant's price initially
+      if (data.variants && data.variants.length > 0) {
+        popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
+      }
+      
+      popupDescription.innerHTML = data.description || "";
+
+      // Clear previous options
+      sizeSelect.innerHTML = "";
+      colorSelect.innerHTML = "";
+      
+      // Hide option containers initially
+      colorOptionContainer.style.display = 'none';
+      sizeOptionContainer.style.display = 'none';
+
+      // Populate options
+      if (data.options) {
+        data.options.forEach(option => {
+          if (option.name.toLowerCase() === "size") {
+            sizeOptionContainer.style.display = 'block';
+            option.values.forEach(val => {
+              const optionElement = document.createElement("option");
+              optionElement.value = val;
+              optionElement.textContent = val;
+              sizeSelect.appendChild(optionElement);
+            });
+          } else if (option.name.toLowerCase() === "color") {
+            colorOptionContainer.style.display = 'block';
+            option.values.forEach(val => {
+              const optionElement = document.createElement("option");
+              optionElement.value = val;
+              optionElement.textContent = val;
+              colorSelect.appendChild(optionElement);
+            });
+          }
+        });
+      }
+
+      // Add event listeners for option changes
+      sizeSelect.addEventListener('change', updatePrice);
+      colorSelect.addEventListener('change', updatePrice);
+      
+      // Show popup
+      popup.classList.remove("hidden");
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
+    } catch (err) {
+      console.error("Error loading product:", err);
+    }
+  }
+
+  // Add event listeners to grid items
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
 
-    popupIcon.addEventListener("click", async (e) => {
+    popupIcon.addEventListener("click", (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
-      if (!handle) return;
-
-      try {
-        const res = await fetch(`/products/${handle}.js`);
-        const data = await res.json();
-        currentProduct = data;
-        
-        // Set image
-        popupImage.src = data.images && data.images.length > 0 
-          ? data.images[0] 
-          : "{{ 'placeholder.png' | asset_url }}";
-        popupImage.alt = data.title;
-
-        // Set title, price, description
-        popupTitle.textContent = data.title;
-        
-        // Use first variant's price initially
-        if (data.variants && data.variants.length > 0) {
-          popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
-        }
-        
-        popupDescription.innerHTML = data.description || "";
-
-        // Clear previous options
-        sizeSelect.innerHTML = "";
-        colorSelect.innerHTML = "";
-        
-        // Hide option containers initially
-        colorOptionContainer.style.display = 'none';
-        sizeOptionContainer.style.display = 'none';
-
-        // Populate options
-        if (data.options) {
-          data.options.forEach(option => {
-            if (option.name.toLowerCase() === "size") {
-              sizeOptionContainer.style.display = 'block';
-              option.values.forEach(val => {
-                const optionElement = document.createElement("option");
-                optionElement.value = val;
-                optionElement.textContent = val;
-                sizeSelect.appendChild(optionElement);
-              });
-            } else if (option.name.toLowerCase() === "color") {
-              colorOptionContainer.style.display = 'block';
-              option.values.forEach(val => {
-                const optionElement = document.createElement("option");
-                optionElement.value = val;
-                optionElement.textContent = val;
-                colorSelect.appendChild(optionElement);
-              });
-            }
-          });
-        }
-
-        // Add event listeners for option changes
-        sizeSelect.addEventListener('change', updatePrice);
-        colorSelect.addEventListener('change', updatePrice);
-        
-        // Show popup
-        popup.classList.remove("hidden");
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-      } catch (err) {
-        console.error("Error loading product:", err);
-      }
+      showProductPopup(handle);
     });
   });
 
@@ -202,10 +184,6 @@ document.addEventListener("DOMContentLoaded", () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
-      
-      // Update the cart count in the UI
-      updateCartCount();
-      
       alert("Product added to cart!");
       popup.classList.add("hidden");
       document.body.style.overflow = ''; // Re-enable scrolling
@@ -214,4 +192,16 @@ document.addEventListener("DOMContentLoaded", () => {
       alert("Could not add product to cart.");
     }
   });
-});
+}
+
+// Initialize when DOM is loaded
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCustomGrid);
+} else {
+  initCustomGrid();
+}
+
+// Reinitialize when Shopify's AJAX page loading completes
+if (typeof Shopify !== 'undefined') {
+  document.addEventListener('shopify:section:load', initCustomGrid);
+}
