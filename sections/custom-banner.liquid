@@ -116,7 +116,7 @@
 </section>
 
 <script>
-// Mobile menu implementation with better error handling
+// Smooth mobile menu implementation
 (function() {
   // Initialize when DOM is ready
   function initMobileMenu() {
@@ -137,17 +137,25 @@
       const isOpen = mobileDropdown.classList.contains('active');
       
       if (isOpen) {
-        // Close menu
+        // Close menu with smooth animation
         mobileDropdown.classList.remove('active');
-        if (menuIcon) menuIcon.style.display = 'block';
-        if (closeIcon) closeIcon.style.display = 'none';
-        body.classList.remove('mobile-menu-open');
+        mobileDropdown.classList.add('closing');
+        
+        setTimeout(() => {
+          mobileDropdown.classList.remove('closing');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          body.classList.remove('mobile-menu-open');
+        }, 300); // Match this with CSS transition time
       } else {
-        // Open menu
-        mobileDropdown.classList.add('active');
+        // Open menu with smooth animation
         if (menuIcon) menuIcon.style.display = 'none';
         if (closeIcon) closeIcon.style.display = 'block';
         body.classList.add('mobile-menu-open');
+        
+        // Force reflow before adding active class for smooth animation
+        mobileDropdown.offsetHeight;
+        mobileDropdown.classList.add('active');
       }
     }
     
