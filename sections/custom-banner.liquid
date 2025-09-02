@@ -14,74 +14,103 @@
 }
 {% endschema %}
 
-
 {{ 'custom-banner.css' | asset_url | stylesheet_tag }}
+<script src ="{{ 'custom-banner.js' | asset_url | asset_url }}" defer></script>
+
 <section class="custom-banner">
   <!-- Header bar -->
   <div class="banner-head">
-  <!-- Mobile: Taskbar Icon -->
-  <div class="banner-taskbar">
-    <img 
-      src="{{ 'taskbar.svg' | asset_url }}" 
-      alt="Taskbar icon" 
-      width="24" 
-      height="24" 
-      loading="lazy" 
-      decoding="async"
-    />
-  </div>
-
-  <!-- Brand text -->
-  <div class="banner-head__left">
-    <span class="brand">{{ section.settings.brand_text }}</span>
-  </div>
-
-  <!-- Center text (desktop only) -->
-  <p class="banner-head__center">{{ section.settings.top_note }}</p>
-
-  <!-- Right CTA (desktop only) -->
-  <div class="banner-head__right">
-    <a href="{{ section.settings.button_link }}" class="banner-cta">
-      {{ section.settings.top_cta_label }}
+    <!-- Mobile: Taskbar Icon -->
+    <div class="banner-taskbar" id="mobile-menu-toggle">
       <img 
-        src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
-        alt="Arrow icon" 
-        class="btn-icon"
-        width="20" 
-        height="20" 
+        src="{{ 'taskbar.svg' | asset_url }}" 
+        alt="Menu icon" 
+        width="24" 
+        height="24" 
         loading="lazy" 
         decoding="async"
+        class="menu-icon"
       />
-    </a>
-  </div>
-</div>
+      <img 
+        src="{{ 'close.svg' | asset_url }}" 
+        alt="Close menu icon" 
+        width="24" 
+        height="24" 
+        loading="lazy" 
+        decoding="async"
+        class="close-icon"
+        style="display: none;"
+      />
+    </div>
 
+    <!-- Brand text -->
+    <div class="banner-head__left">
+      <span class="brand">{{ section.settings.brand_text }}</span>
+    </div>
 
-<!-- Body -->
-<div class="banner-body"> 
-  <div class="body-text"> 
-    <h1 class="banner-title">{{ section.settings.title }}</h1> 
-    <p class="banner-sub">{{ section.settings.subtitle }}</p> 
-    <div class="banner-head__bottom">
-      <a href="{{ section.settings.button_link }}" class="bottom-banner-cta">
-        {{ section.settings.button_link }}
+    <!-- Center text (desktop only) -->
+    <p class="banner-head__center">{{ section.settings.top_note }}</p>
+
+    <!-- Right CTA (desktop only) -->
+    <div class="banner-head__right">
+      <a href="{{ section.settings.button_link }}" class="banner-cta">
+        {{ section.settings.top_cta_label }}
         <img 
-          src="{{ 'shop-now-arrow.svg' | asset_url }}" 
+          src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
           alt="Arrow icon" 
-          class="bottom-btn-icon"
+          class="btn-icon"
           width="20" 
           height="20" 
           loading="lazy" 
           decoding="async"
         />
       </a>
+    </div>
+  </div>
 
+  <!-- Mobile Dropdown Menu -->
+  <div class="mobile-dropdown" id="mobile-dropdown">
+    <div class="mobile-dropdown__content">
+      <p class="mobile-dropdown__center">{{ section.settings.top_note }}</p>
+      <a href="{{ section.settings.button_link }}" class="mobile-dropdown__cta">
+        {{ section.settings.top_cta_label }}
+        <img 
+          src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
+          alt="Arrow icon" 
+          class="btn-icon"
+          width="20" 
+          height="20" 
+          loading="lazy" 
+          decoding="async"
+        />
+      </a>
+    </div>
+  </div>
+
+  <!-- Body -->
+  <div class="banner-body"> 
+    <div class="body-text"> 
+      <h1 class="banner-title">{{ section.settings.title }}</h1> 
+      <p class="banner-sub">{{ section.settings.subtitle }}</p> 
+      <div class="banner-head__bottom">
+        <a href="{{ section.settings.button_link }}" class="bottom-banner-cta">
+          {{ section.settings.button_link }}
+          <img 
+            src="{{ 'shop-now-arrow.svg' | asset_url }}" 
+            alt="Arrow icon" 
+            class="bottom-btn-icon"
+            width="20" 
+            height="20" 
+            loading="lazy" 
+            decoding="async"
+          />
+        </a>
+      </div> 
     </div> 
-  </div> 
-</div>
+  </div>
 
   <!--footer-->
   <div class="banner-footer">
     <p class="banner-bottom">{{ section.settings.bottom_note }}</p>
-    </div>
+  </div>
 </section>
