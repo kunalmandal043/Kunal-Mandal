@@ -227,8 +227,8 @@
   .banner-body {
     position: relative;
     height: auto;
-    min-height: 80%;
-    padding: 20px;
+    min-height: 80vh;
+    /* padding: 20px; */
     justify-content: flex-start;
     background: none; /* Remove background from banner-body */
   }
@@ -240,10 +240,10 @@
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 100%; 
+    height: 80%; 
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
     background-size: 180%; /* zoom effect, adjust value as needed */
-    background-position:bottom, center;
+    background-position: center bottom;
     z-index: -1;
   }
 
