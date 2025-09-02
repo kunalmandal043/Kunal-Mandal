@@ -32,6 +32,29 @@ function initCustomGrid() {
     });
   }
 
+  // Update cart count in header
+  function updateCartCount() {
+    fetch('/cart.js')
+      .then(response => response.json())
+      .then(cart => {
+        // Update all cart count elements
+        const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
+        cartCounts.forEach(element => {
+          element.textContent = cart.item_count;
+        });
+        
+        // Dispatch event for other parts of the theme
+        document.dispatchEvent(new CustomEvent('cart:updated', {
+          detail: {
+            cart: cart
+          }
+        }));
+      })
+      .catch(error => {
+        console.error('Error updating cart count:', error);
+      });
+  }
+
   // Update price when options change
   function updatePrice() {
     if (!currentProduct) return;
@@ -179,17 +202,36 @@ function initCustomGrid() {
     }
 
     try {
-      await fetch("/cart/add.js", {
+      // Show loading state
+      addToCartBtn.disabled = true;
+      addToCartBtn.querySelector('span').textContent = 'Adding...';
+      
+      const response = await fetch("/cart/add.js", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest"
+        },
         body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
-      alert("Product added to cart!");
-      popup.classList.add("hidden");
-      document.body.style.overflow = ''; // Re-enable scrolling
+      
+      if (response.ok) {
+        // Update cart count
+        updateCartCount();
+        
+        alert("Product added to cart!");
+        popup.classList.add("hidden");
+        document.body.style.overflow = ''; // Re-enable scrolling
+      } else {
+        throw new Error('Failed to add to cart');
+      }
     } catch (err) {
       console.error(err);
       alert("Could not add product to cart.");
+    } finally {
+      // Reset button state
+      addToCartBtn.disabled = false;
+      addToCartBtn.querySelector('span').textContent = 'Add to Cart';
     }
   });
 }
