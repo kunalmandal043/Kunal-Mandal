@@ -16,6 +16,7 @@
               width="433" 
               height="444"
               class="grid-image"
+              loading="lazy"
             >
           {% else %}
             <img 
@@ -24,6 +25,7 @@
               width="433" 
               height="444"
               class="grid-image"
+              loading="lazy"
             >
           {% endif %}
 
@@ -59,18 +61,19 @@
 
     <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
-      <div class="popup-option">
+      <div class="popup-option" id="color-option-container">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
       </div>
 
-      <div class="popup-option">
+      <div class="popup-option" id="size-option-container">
         <label for="size-select">Choose Size:</label>
         <select id="size-select"></select>
       </div>
 
       <button id="add-to-cart">
         <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
+        <span>Add to Cart</span>
       </button>
     </div>
   </div>

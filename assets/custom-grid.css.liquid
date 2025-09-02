@@ -1,3 +1,8 @@
+/* custom-grid.css */
+.hidden {
+  display: none !important;
+}
+
 .custom-grid {
   padding: 40px 20px;
   text-align: center;
@@ -22,16 +27,23 @@
 
 .grid-item {
   position: relative;
+  cursor: pointer;
 }
 
 .grid-image-wrapper {
   position: relative;
+  overflow: hidden;
 }
 
 .grid-image {
   width: 100%;
   height: auto;
   object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover .grid-image {
+  transform: scale(1.05);
 }
 
 .popup-icon {
@@ -42,13 +54,44 @@
   height: 22px;
   cursor: pointer;
   z-index: 2;
+  background: white;
+  border-radius: 50%;
+  padding: 4px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-@media (max-width: 768px) {
-  .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .popup-icon { width: 16px; height: 16px; }
+/* Popup Styles */
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: white;
+  padding: 30px;
+  border-radius: 10px;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+#popup-close {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  cursor: pointer;
+  color: #333;
 }
 
 /* Popup Top Section: Image + Details */
@@ -79,6 +122,8 @@
 
 .popup-details p {
   margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 18px;
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -99,6 +144,13 @@
   font-weight: 500;
 }
 
+.popup-option select {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
 #add-to-cart {
   display: flex;
   align-items: center;
@@ -112,6 +164,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: background 0.3s ease;
+  margin-top: 15px;
 }
 
 #add-to-cart:hover {
@@ -120,6 +173,15 @@
 
 /* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {
+  .grid-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .popup-icon { 
+    width: 16px; 
+    height: 16px; 
+  }
+  
   .popup-top {
     flex-direction: column;
     align-items: center;
