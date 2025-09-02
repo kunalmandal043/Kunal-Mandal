@@ -54,24 +54,24 @@
 
       <div class="popup-details">
         <h2 id="popup-title"></h2>
-        <p id="popup-price" class="price"></p>
-        <div id="popup-description" class="description"></div>
+        <p id="popup-price"></p>
+        <div id="popup-description"></div>
       </div>
     </div>
 
     <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
-      <div class="popup-option">
+      <div class="popup-option" id="color-option-container">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
       </div>
 
-      <div class="popup-option">
+      <div class="popup-option" id="size-option-container">
         <label for="size-select">Choose Size:</label>
         <select id="size-select"></select>
       </div>
 
-      <button id="add-to-cart" class="add-to-cart-btn">
+      <button id="add-to-cart">
         <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
         <span>Add to Cart</span>
       </button>
@@ -91,36 +91,3 @@
   ]
 }
 {% endschema %}
-
-<style>
-  /* Hidden class for popup */
-  .hidden {
-    display: none !important;
-  }
-  
-  /* Loading indicator */
-  .loading {
-    opacity: 0.7;
-    pointer-events: none;
-    position: relative;
-  }
-  
-  .loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 30px;
-    height: 30px;
-    margin: -15px 0 0 -15px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-</style>
