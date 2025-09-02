@@ -1,4 +1,5 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
+  const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
   const popupImage = document.getElementById("popup-image");
@@ -11,73 +12,66 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentProduct = null;
 
-  // Event delegation: handle popup click for all products
-  document.querySelector(".grid-container").addEventListener("click", async (e) => {
-    const popupIcon = e.target.closest(".popup-icon");
+  // Open popup when icon is clicked
+  gridItems.forEach(item => {
+    const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
 
-    const gridItem = e.target.closest(".grid-item");
-    if (!gridItem) return;
+    popupIcon.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const handle = item.dataset.handle;
+      if (!handle) return console.error("Missing product handle");
 
-    const handle = gridItem.dataset.handle;
-    if (!handle) return console.error("Missing product handle");
+      try {
+        const response = await fetch(`/products/${handle}.js`);
+        if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
+        const product = await response.json();
+        currentProduct = product;
 
-    try {
-      const response = await fetch(`/products/${handle}.js`);
-      if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
-      const product = await response.json();
-      currentProduct = product;
+        // Fill popup
+        popupImage.src = product.images.length > 0 ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
+        popupImage.width = 400;
+        popupImage.height = 400;
 
-      // Product Image
-      popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
+        popupTitle.textContent = product.title;
+        popupPrice.textContent = formatMoney(product.variants[0].price * 100);
+        popupDescription.innerHTML = product.body_html || "";
 
-      // Product Info
-      popupTitle.textContent = product.title;
-      popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100);
-      popupDescription.innerHTML = product.body_html || "";
+        // Populate size & color
+        sizeSelect.innerHTML = "";
+        colorSelect.innerHTML = "";
 
-      // Options
-      sizeSelect.innerHTML = "";
-      colorSelect.innerHTML = "";
-
-      product.options.forEach((opt, i) => {
-        if (opt.name.toLowerCase() === "size") {
-          opt.values.forEach(value => {
+        product.options.forEach((optName, i) => {
+          const select = optName.toLowerCase() === "size" ? sizeSelect : colorSelect;
+          const uniqueValues = new Set(product.variants.map(v => v.options[i]));
+          select.innerHTML = "";
+          uniqueValues.forEach(val => {
             const option = document.createElement("option");
-            option.value = value;
-            option.textContent = value;
-            sizeSelect.appendChild(option);
+            option.value = val;
+            option.textContent = val;
+            select.appendChild(option);
           });
-        }
-        if (opt.name.toLowerCase() === "color") {
-          opt.values.forEach(value => {
-            const option = document.createElement("option");
-            option.value = value;
-            option.textContent = value;
-            colorSelect.appendChild(option);
-          });
-        }
-      });
+        });
 
-      // Show popup
-      popup.classList.remove("hidden");
-    } catch (err) {
-      console.error(err);
-    }
+        popup.classList.remove("hidden");
+      } catch (err) {
+        console.error(err);
+      }
+    });
   });
 
   // Close popup
   popupClose.addEventListener("click", () => popup.classList.add("hidden"));
   popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
 
-  // Add to cart
+  // Add to Cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(v => 
-      v.options.includes(selectedSize) && v.options.includes(selectedColor)
+    const matchedVariant = currentProduct.variants.find(variant => 
+      variant.options[0] === selectedSize && variant.options[1] === selectedColor
     );
 
     if (!matchedVariant) return alert("Please select valid options");
