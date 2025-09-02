@@ -236,12 +236,15 @@
   .banner-body::before {
     content: "";
     position: absolute;
-    ; 
+    bottom: 0;
+    left: 50%; /* start from center */
+    transform: translateX(-50%); /* align center horizontally */
+    width: 100%; /* make it wider than container to create "overflow" */
+    height: 80%; 
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-      width: 686px;
-  height: 264px;
-  top: 157px;
-  left: -140px;
+    background-size: cover; /* ensures it fills */
+    background-position: center bottom;
+    z-index: -1;
   }
 
   .body-text {
