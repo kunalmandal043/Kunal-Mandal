@@ -1,4 +1,3 @@
-/* custom-grid.css */
 .custom-grid {
   padding: 40px 20px;
   text-align: center;
@@ -24,6 +23,11 @@
 .grid-item {
   position: relative;
   cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.grid-item:hover {
+  transform: translateY(-5px);
 }
 
 .grid-image-wrapper {
@@ -35,7 +39,6 @@
 .grid-image {
   width: 100%;
   height: auto;
-  aspect-ratio: 433/444;
   object-fit: cover;
   transition: transform 0.3s ease;
 }
@@ -48,27 +51,19 @@
   position: absolute;
   bottom: 10px;
   right: 10px;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: white;
-  border: none;
+  width: 22px;
+  height: 22px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-  z-index: 10;
+  z-index: 2;
+  background: white;
+  border-radius: 50%;
+  padding: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s ease;
 }
 
 .popup-icon:hover {
   transform: scale(1.1);
-}
-
-.popup-icon img {
-  width: 22px;
-  height: 22px;
 }
 
 /* Popup Styles */
@@ -87,14 +82,10 @@
   box-sizing: border-box;
 }
 
-.popup.hidden {
-  display: none;
-}
-
 .popup-content {
   background: white;
-  border-radius: 12px;
   padding: 30px;
+  border-radius: 12px;
   max-width: 800px;
   width: 100%;
   max-height: 90vh;
@@ -103,38 +94,31 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-.close-button {
+#popup-close {
   position: absolute;
   top: 15px;
   right: 15px;
   font-size: 28px;
   cursor: pointer;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.2s;
+  color: #666;
+  z-index: 10;
 }
 
-.close-button:hover {
-  background-color: #f5f5f5;
+#popup-close:hover {
+  color: #000;
 }
 
-/* Popup Top Section */
+/* Popup Top Section: Image + Details */
 .popup-top {
   display: flex;
+  flex-direction: row;
   gap: 30px;
   margin-bottom: 25px;
 }
 
-.popup-image-container {
-  flex: 0 0 40%;
-}
-
-.popup-image-container img {
-  width: 100%;
+.popup-top img#popup-image {
+  width: 45%;
+  max-width: 350px;
   height: auto;
   border-radius: 8px;
   object-fit: cover;
@@ -153,8 +137,8 @@
 
 .price {
   font-size: 20px;
-  font-weight: 600;
-  color: #2c5aa0;
+  font-weight: bold;
+  color: #000;
   margin: 0 0 15px 0;
 }
 
@@ -167,15 +151,13 @@
   margin: 0 0 15px 0;
 }
 
-.description p:last-child {
-  margin-bottom: 0;
-}
-
-/* Popup Bottom Section */
+/* Bottom Section: Options + Add to Cart */
 .popup-bottom {
   display: flex;
   flex-direction: column;
   gap: 15px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
 }
 
 .popup-option {
@@ -190,8 +172,8 @@
   color: #333;
 }
 
-.option-select {
-  padding: 12px 15px;
+.popup-option select {
+  padding: 12px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 16px;
@@ -220,26 +202,16 @@
   background: #333;
 }
 
-/* Responsive Design */
-@media (max-width: 900px) {
-  .popup-top {
-    flex-direction: column;
-  }
-  
-  .popup-image-container {
-    flex: none;
-    max-width: 300px;
-    margin: 0 auto;
-  }
-}
-
+/* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
   }
   
-  .heading {
-    font-size: 28px;
+  .popup-icon { 
+    width: 18px; 
+    height: 18px; 
+    padding: 6px;
   }
   
   .popup-content {
@@ -247,34 +219,34 @@
   }
   
   .popup-top {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 20px;
   }
+
+  .popup-top img#popup-image {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .popup-details {
+    width: 100%;
+    text-align: center;
+  }
   
-  .popup-details h2 {
-    font-size: 20px;
+  .popup-bottom {
+    width: 100%;
   }
 }
 
 @media (max-width: 480px) {
-  .custom-grid {
-    padding: 20px 15px;
-  }
-  
   .grid-container {
     grid-template-columns: 1fr;
-    gap: 15px;
   }
   
-  .popup-content {
-    padding: 15px;
-  }
-  
-  .add-to-cart-btn {
-    padding: 12px 20px;
-  }
-  
-  .add-to-cart-btn img {
-    width: 24px;
-    height: 24px;
+  .heading {
+    font-size: 28px;
+    text-align: center;
   }
 }
