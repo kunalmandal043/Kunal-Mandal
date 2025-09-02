@@ -1,40 +1,19 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
-<script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
-
-{% assign all_products_collection = collections['all-products'] %}
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
+    {% assign all_products_collection = collections['all-products'] %}
     {% for product in all_products_collection.products %}
       <div class="grid-item" data-handle="{{ product.handle }}">
         <div class="grid-image-wrapper">
           {% if product.featured_image %}
-            <img 
-              src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
-              alt="{{ product.title }}" 
-              width="433" 
-              height="444"
-              class="grid-image"
-            >
+            <img src="{{ product.featured_image | image_url: width: 433, height: 444, crop: 'center' }}" 
+                 alt="{{ product.title }}" width="433" height="444" class="grid-image">
           {% else %}
-            <img 
-              src="{{ 'placeholder.png' | asset_url }}" 
-              alt="Placeholder" 
-              width="433" 
-              height="444"
-              class="grid-image"
-            >
+            <img src="{{ 'placeholder.png' | asset_url }}" alt="Placeholder" width="433" height="444" class="grid-image">
           {% endif %}
-
-          <!-- Popup icon -->
-          <img 
-            class="popup-icon" 
-            src="{{ 'circle-popup.svg' | asset_url }}" 
-            alt="Open Popup" 
-            width="22" 
-            height="22"
-          >
+          <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
         </div>
       </div>
     {% endfor %}
@@ -45,30 +24,23 @@
 <div id="product-popup" class="popup hidden">
   <div class="popup-content">
     <span id="popup-close">&times;</span>
-
-    <!-- Top section: Image + Details -->
     <div class="popup-top">
-      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
-
+      <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400">
       <div class="popup-details">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
         <p id="popup-description"></p>
       </div>
     </div>
-
-    <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
       <div class="popup-option">
         <label for="color-select">Choose Color:</label>
         <select id="color-select"></select>
       </div>
-
       <div class="popup-option">
         <label for="size-select">Choose Size:</label>
         <select id="size-select"></select>
       </div>
-
       <button id="add-to-cart">
         <img src="{{ 'add-to-cart.svg' | asset_url }}" alt="Add to Cart" width="32" height="32">
       </button>
@@ -81,10 +53,90 @@
   "name": "Custom Grid",
   "settings": [],
   "blocks": [],
-  "presets": [
-    {
-      "name": "Custom Grid"
-    }
-  ]
+  "presets": [{"name": "Custom Grid"}]
 }
 {% endschema %}
+
+{% comment %}
+  Load JS here as inline script
+{% endcomment %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const gridItems = document.querySelectorAll(".grid-item");
+  const popup = document.getElementById("product-popup");
+  const popupClose = document.getElementById("popup-close");
+  const popupImage = document.getElementById("popup-image");
+  const popupTitle = document.getElementById("popup-title");
+  const popupPrice = document.getElementById("popup-price");
+  const popupDescription = document.getElementById("popup-description");
+  const sizeSelect = document.getElementById("size-select");
+  const colorSelect = document.getElementById("color-select");
+  const addToCartBtn = document.getElementById("add-to-cart");
+
+  let currentProduct = null;
+
+  gridItems.forEach(item => {
+    const popupIcon = item.querySelector(".popup-icon");
+    if (!popupIcon) return;
+
+    popupIcon.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const handle = item.dataset.handle;
+      if (!handle) return console.error("Missing product handle");
+
+      try {
+        const response = await fetch(`/products/${handle}.js`);
+        if (!response.ok) throw new Error(`Product fetch failed`);
+        const product = await response.json();
+        currentProduct = product;
+
+        popupImage.src = product.images.length ? product.images[0] : "{{ 'placeholder.png' | asset_url }}";
+        popupTitle.textContent = product.title;
+        popupPrice.textContent = `$${parseFloat(product.variants[0].price).toFixed(2)}`;
+        popupDescription.innerHTML = product.body_html;
+
+        sizeSelect.innerHTML = "";
+        colorSelect.innerHTML = "";
+
+        product.options.forEach((optName, i) => {
+          const select = optName.toLowerCase() === "size" ? sizeSelect : colorSelect;
+          const uniqueValues = new Set(product.variants.map(v => v.options[i]));
+          uniqueValues.forEach(val => {
+            const option = document.createElement("option");
+            option.value = val;
+            option.textContent = val;
+            select.appendChild(option);
+          });
+        });
+
+        popup.classList.remove("hidden");
+      } catch(err) { console.error(err); }
+    });
+  });
+
+  popupClose.addEventListener("click", () => popup.classList.add("hidden"));
+  popup.addEventListener("click", e => { if(e.target===popup) popup.classList.add("hidden"); });
+
+  addToCartBtn.addEventListener("click", async () => {
+    if (!currentProduct) return;
+    const selectedSize = sizeSelect.value;
+    const selectedColor = colorSelect.value;
+
+    const matchedVariant = currentProduct.variants.find(v => 
+      v.options[0] === selectedSize && v.options[1] === selectedColor
+    );
+
+    if(!matchedVariant) return alert("Please select valid options");
+
+    try {
+      await fetch("/cart/add.js", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({id: matchedVariant.id, quantity:1})
+      });
+      alert("Product added to cart!");
+      popup.classList.add("hidden");
+    } catch(err){ console.error(err); alert("Could not add product to cart."); }
+  });
+});
+</script>
