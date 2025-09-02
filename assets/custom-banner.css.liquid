@@ -225,11 +225,25 @@
 /* ------------------ RESPONSIVE FIXES ------------------ */
 @media (max-width: 768px) {
   .banner-body {
-    background-position: center bottom; /* Position image at bottom */
-    background-size: 100% 50%; /* Show only top half of the image */
-    height: 70vh; /* Adjust height to accommodate content */
+    position: relative;
+    height: auto;
+    min-height: 60vh;
     padding: 20px;
     justify-content: flex-start;
+    background: none; /* Remove background from banner-body */
+  }
+
+  /* Create a container for the cropped image */
+  .banner-body::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%; /* Adjust this value to control how much of the image is visible */
+    background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center bottom;
+    background-size: contain;
+    z-index: -1;
   }
 
   .body-text {
@@ -242,6 +256,7 @@
     text-align: center;
     gap: 15px;
     padding-top: 20px;
+    z-index: 2;
   }
 
   .banner-title {
@@ -283,8 +298,11 @@
 
 @media (max-width: 480px) {
   .banner-body {
-    height: 60vh;
-    background-size: 100% 45%; /* Adjust image height for smaller screens */
+    min-height: 50vh;
+  }
+  
+  .banner-body::after {
+    height: 35%; /* Adjust image height for smaller screens */
   }
   
   .banner-title {
@@ -309,8 +327,11 @@
 /* Additional media query for very small screens */
 @media (max-width: 320px) {
   .banner-body {
-    height: 55vh;
-    background-size: 100% 40%; /* Further adjust image height */
+    min-height: 45vh;
+  }
+  
+  .banner-body::after {
+    height: 30%; /* Further adjust image height */
   }
   
   .banner-title {
