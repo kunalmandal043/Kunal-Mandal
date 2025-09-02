@@ -1,9 +1,11 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
+
+{% assign all_products_collection = collections['all-products'] %}
 
 <section class="custom-grid">
   <h2 class="heading">Tisso vision in the wild</h2>
   <div class="grid-container">
-    {% assign all_products_collection = collections['all-products'] %}
     {% for product in all_products_collection.products %}
       <div class="grid-item" data-handle="{{ product.handle }}">
         <div class="grid-image-wrapper">
@@ -14,14 +16,25 @@
               width="433" 
               height="444"
               class="grid-image"
-            />
-
+            >
           {% else %}
-            <img src="{{ 'placeholder.png' | asset_url }}" alt="Placeholder" width="433" height="444"class="grid-image">
+            <img 
+              src="{{ 'placeholder.png' | asset_url }}" 
+              alt="Placeholder" 
+              width="433" 
+              height="444"
+              class="grid-image"
+            >
           {% endif %}
 
           <!-- Popup icon -->
-          <img class="popup-icon" src="{{ 'circle-popup.svg' | asset_url }}" alt="Open Popup" width="22" height="22">
+          <img 
+            class="popup-icon" 
+            src="{{ 'circle-popup.svg' | asset_url }}" 
+            alt="Open Popup" 
+            width="22" 
+            height="22"
+          >
         </div>
       </div>
     {% endfor %}
@@ -33,15 +46,18 @@
   <div class="popup-content">
     <span id="popup-close">&times;</span>
 
+    <!-- Top section: Image + Details -->
     <div class="popup-top">
       <img id="popup-image" src="{{ 'placeholder.png' | asset_url }}" alt="Product preview" width="400" height="400" loading="lazy">
+
       <div class="popup-details">
         <h2 id="popup-title"></h2>
         <p id="popup-price"></p>
-        <div id="popup-description"></div>
+        <p id="popup-description"></p>
       </div>
     </div>
 
+    <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
       <div class="popup-option">
         <label for="color-select">Choose Color:</label>
@@ -60,7 +76,6 @@
   </div>
 </div>
 
-<script src="{{ 'custom-grid.js.liquid' | asset_url }}" defer></script>
 {% schema %}
 {
   "name": "Custom Grid",
@@ -73,4 +88,3 @@
   ]
 }
 {% endschema %}
-
