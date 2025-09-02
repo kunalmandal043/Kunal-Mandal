@@ -1,3 +1,4 @@
+// custom-grid.js
 document.addEventListener("DOMContentLoaded", () => {
   const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
@@ -9,39 +10,53 @@ document.addEventListener("DOMContentLoaded", () => {
   const sizeSelect = document.getElementById("size-select");
   const colorSelect = document.getElementById("color-select");
   const addToCartBtn = document.getElementById("add-to-cart");
+  const colorOptionContainer = document.getElementById("color-option-container");
+  const sizeOptionContainer = document.getElementById("size-option-container");
 
   let currentProduct = null;
-  let currentVariant = null;
 
-  // Function to format currency
+  // Format money function
   function formatMoney(cents) {
-    return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+    return (cents / 100).toLocaleString("en-US", { 
+      style: "currency", 
+      currency: "USD" 
+    });
   }
 
-  // Function to update variant based on selections
-  function updateVariant() {
+  // Find variant based on selected options
+  function findVariant(product, selectedOptions) {
+    return product.variants.find(variant => {
+      return variant.options.every((option, index) => {
+        return selectedOptions[index] === option;
+      });
+    });
+  }
+
+  // Update price when options change
+  function updatePrice() {
     if (!currentProduct) return;
     
-    const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
+    const selectedSize = sizeSelect.value;
     
-    // Find the variant that matches both selected options
-    currentVariant = currentProduct.variants.find(v => {
-      return (
-        (selectedSize ? v.option1 === selectedSize || v.option2 === selectedSize : true) &&
-        (selectedColor ? v.option1 === selectedColor || v.option2 === selectedColor : true)
-      );
+    // Create options array in the correct order
+    const selectedOptions = [];
+    currentProduct.options.forEach(option => {
+      if (option.name.toLowerCase() === "color") {
+        selectedOptions.push(selectedColor);
+      } else if (option.name.toLowerCase() === "size") {
+        selectedOptions.push(selectedSize);
+      } else {
+        // For other options, use the first available value
+        selectedOptions.push(option.values[0]);
+      }
     });
     
-    // Update price if variant found
-    if (currentVariant) {
-      popupPrice.textContent = formatMoney(currentVariant.price * 100);
+    const variant = findVariant(currentProduct, selectedOptions);
+    if (variant) {
+      popupPrice.textContent = formatMoney(parseFloat(variant.price) * 100);
     }
   }
-
-  // Event listeners for option changes
-  sizeSelect.addEventListener("change", updateVariant);
-  colorSelect.addEventListener("change", updateVariant);
 
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
@@ -53,77 +68,66 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!handle) return;
 
       try {
-        // Show loading state
-        popup.classList.add('loading');
-        
         const res = await fetch(`/products/${handle}.js`);
-        const product = await res.json();
-        currentProduct = product;
-
+        const data = await res.json();
+        currentProduct = data;
+        
         // Set image
-        if (product.images && product.images.length > 0) {
-          popupImage.src = product.images[0].src;
-          popupImage.alt = product.title;
-        }
+        popupImage.src = data.images && data.images.length > 0 
+          ? data.images[0] 
+          : "{{ 'placeholder.png' | asset_url }}";
+        popupImage.alt = data.title;
 
         // Set title, price, description
-        popupTitle.textContent = product.title;
-        popupPrice.textContent = product.variants[0]?.price ? formatMoney(product.variants[0].price * 100) : "";
+        popupTitle.textContent = data.title;
         
-        // Clean up description HTML
-        if (product.body_html) {
-          popupDescription.innerHTML = product.body_html;
-        } else {
-          popupDescription.innerHTML = "<p>No description available.</p>";
+        // Use first variant's price initially
+        if (data.variants && data.variants.length > 0) {
+          popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
         }
+        
+        popupDescription.innerHTML = data.description || "";
 
-        // Populate options
+        // Clear previous options
         sizeSelect.innerHTML = "";
         colorSelect.innerHTML = "";
         
-        // Add default option
-        const defaultOption = document.createElement("option");
-        defaultOption.value = "";
-        defaultOption.textContent = "Select an option";
-        defaultOption.disabled = true;
-        defaultOption.selected = true;
-        
-        const sizeDefault = defaultOption.cloneNode(true);
-        const colorDefault = defaultOption.cloneNode(true);
-        
-        sizeSelect.appendChild(sizeDefault);
-        colorSelect.appendChild(colorDefault);
+        // Hide option containers initially
+        colorOptionContainer.style.display = 'none';
+        sizeOptionContainer.style.display = 'none';
 
-        // Process product options
-        product.options.forEach(opt => {
-          if (opt.name.toLowerCase() === "size") {
-            opt.values.forEach(val => {
-              const option = document.createElement("option");
-              option.value = val;
-              option.textContent = val;
-              sizeSelect.appendChild(option);
-            });
-          }
-          if (opt.name.toLowerCase() === "color") {
-            opt.values.forEach(val => {
-              const option = document.createElement("option");
-              option.value = val;
-              option.textContent = val;
-              colorSelect.appendChild(option);
-            });
-          }
-        });
+        // Populate options
+        if (data.options) {
+          data.options.forEach(option => {
+            if (option.name.toLowerCase() === "size") {
+              sizeOptionContainer.style.display = 'block';
+              option.values.forEach(val => {
+                const optionElement = document.createElement("option");
+                optionElement.value = val;
+                optionElement.textContent = val;
+                sizeSelect.appendChild(optionElement);
+              });
+            } else if (option.name.toLowerCase() === "color") {
+              colorOptionContainer.style.display = 'block';
+              option.values.forEach(val => {
+                const optionElement = document.createElement("option");
+                optionElement.value = val;
+                optionElement.textContent = val;
+                colorSelect.appendChild(optionElement);
+              });
+            }
+          });
+        }
 
-        // Set initial variant
-        currentVariant = product.variants[0];
+        // Add event listeners for option changes
+        sizeSelect.addEventListener('change', updatePrice);
+        colorSelect.addEventListener('change', updatePrice);
         
         // Show popup
         popup.classList.remove("hidden");
-        popup.classList.remove('loading');
+        document.body.style.overflow = 'hidden'; // Prevent scrolling
       } catch (err) {
         console.error("Error loading product:", err);
-        alert("Could not load product details.");
-        popup.classList.remove('loading');
       }
     });
   });
@@ -131,45 +135,52 @@ document.addEventListener("DOMContentLoaded", () => {
   // Close popup
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
+    document.body.style.overflow = ''; // Re-enable scrolling
   });
   
   popup.addEventListener("click", e => {
-    if (e.target === popup) popup.classList.add("hidden");
+    if (e.target === popup) {
+      popup.classList.add("hidden");
+      document.body.style.overflow = ''; // Re-enable scrolling
+    }
   });
 
   // Add to Cart
   addToCartBtn.addEventListener("click", async () => {
-    if (!currentVariant) {
-      alert("Please select product options");
+    if (!currentProduct) return;
+    
+    const selectedColor = colorSelect.value;
+    const selectedSize = sizeSelect.value;
+    
+    // Create options array in the correct order
+    const selectedOptions = [];
+    currentProduct.options.forEach(option => {
+      if (option.name.toLowerCase() === "color") {
+        selectedOptions.push(selectedColor);
+      } else if (option.name.toLowerCase() === "size") {
+        selectedOptions.push(selectedSize);
+      } else {
+        // For other options, use the first available value
+        selectedOptions.push(option.values[0]);
+      }
+    });
+    
+    const variant = findVariant(currentProduct, selectedOptions);
+    
+    if (!variant) {
+      alert("Please select valid options");
       return;
     }
 
     try {
-      const res = await fetch("/cart/add.js", {
+      await fetch("/cart/add.js", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-          items: [{
-            id: currentVariant.id,
-            quantity: 1
-          }]
-        })
+        body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
-      
-      if (res.ok) {
-        alert("Product added to cart!");
-        popup.classList.add("hidden");
-        
-        // Update cart count if needed
-        fetch('/cart.js')
-          .then(response => response.json())
-          .then(cart => {
-            // You can update a cart counter element here if you have one
-            console.log('Cart updated:', cart);
-          });
-      } else {
-        throw new Error('Failed to add to cart');
-      }
+      alert("Product added to cart!");
+      popup.classList.add("hidden");
+      document.body.style.overflow = ''; // Re-enable scrolling
     } catch (err) {
       console.error(err);
       alert("Could not add product to cart.");
