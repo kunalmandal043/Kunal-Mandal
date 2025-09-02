@@ -114,6 +114,7 @@
   top: 400px;   /* fixed 489px from top */
   left: 67px;   /* same as your design */
   max-width: 600px;
+
   display: flex;
   flex-direction: column; /* stack title and subtitle */
   gap: 20px; /* space between title and sub text */
@@ -226,9 +227,8 @@
   .banner-body {
     background-position: center top;
     background-size: cover;
-    height: 50vh;
+    height: 60vh;
     padding: 20px;
-    text-align: center;
     justify-content: flex-start;
   }
 
@@ -238,7 +238,7 @@
     left: auto;
     transform: none;
     max-width: 100%;
-    margin: 40px auto 0;
+    margin: 20px auto 0;
     text-align: center;
     gap: 12px;
   }
@@ -255,14 +255,20 @@
   .banner-sub {
     font-size: 1rem;
     line-height: 1.5;
-    margin: 0 auto 1rem auto;
+    margin: 0 auto;
     max-width: 90%;
     text-align: center;
+    /* Show only the first part of the text */
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limit to 2 lines */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .banner-head__bottom {
     width: 100%;
-    margin: 0 auto;
+    margin: 20px auto 0;
     text-align: center;
     display: flex;
     justify-content: center;
@@ -276,7 +282,7 @@
 
 @media (max-width: 480px) {
   .banner-body {
-    height: 40vh;
+    height: 50vh;
   }
   
   .banner-title {
@@ -285,6 +291,7 @@
 
   .banner-sub {
     font-size: 0.9rem;
+    -webkit-line-clamp: 2; /* Limit to 2 lines on very small screens */
   }
 
   .banner-head__bottom {
@@ -292,6 +299,6 @@
   }
   
   .body-text {
-    margin-top: 20px;
+    margin-top: 15px;
   }
 }
