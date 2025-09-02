@@ -8,7 +8,8 @@
     { "type": "textarea", "id": "subtitle", "label": "Subtitle", "default": "Discover Joy: Your Ultimate Holiday Gift Destination. Explore our curated selection and find the perfect gifts to delight your loved ones this holiday season" },
     { "type": "text", "id": "bottom_note", "label": "Bottom Note", "default": "SUSTAINABLE, ETHICALLY MADE CLOTHES IN SIZES XXS TO 6XL" },
     { "type": "text", "id": "top_cta_label", "label": "Top-right button label", "default": "CHOOSE GIFT" },
-    { "type": "text",  "id": "button_link", "label": "Bottom button label","default":"SHOP NOW" }
+    { "type": "url", "id": "button_url", "label": "Button URL" },
+    { "type": "text", "id": "button_text", "label": "Bottom button text", "default": "SHOP NOW" }
   ],
   "presets": [{ "name": "Custom Banner" }]
 }
@@ -52,7 +53,7 @@
 
     <!-- Right CTA (desktop only) -->
     <div class="banner-head__right">
-      <a href="{{ section.settings.button_link }}" class="banner-cta">
+      <a href="{{ section.settings.button_url }}" class="banner-cta">
         {{ section.settings.top_cta_label }}
         <img 
           src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
@@ -71,7 +72,7 @@
   <div class="mobile-dropdown" id="mobile-dropdown">
     <div class="mobile-dropdown__content">
       <p class="mobile-dropdown__center">{{ section.settings.top_note }}</p>
-      <a href="{{ section.settings.button_link }}" class="mobile-dropdown__cta">
+      <a href="{{ section.settings.button_url }}" class="mobile-dropdown__cta">
         {{ section.settings.top_cta_label }}
         <img 
           src="{{ 'choose-gift-arrow.svg' | asset_url }}" 
@@ -92,8 +93,8 @@
       <h1 class="banner-title">{{ section.settings.title }}</h1> 
       <p class="banner-sub">{{ section.settings.subtitle }}</p> 
       <div class="banner-head__bottom">
-        <a href="{{ section.settings.button_link }}" class="bottom-banner-cta">
-          {{ section.settings.button_link }}
+        <a href="{{ section.settings.button_url }}" class="bottom-banner-cta">
+          {{ section.settings.button_text }}
           <img 
             src="{{ 'shop-now-arrow.svg' | asset_url }}" 
             alt="Arrow icon" 
@@ -114,4 +115,4 @@
   </div>
 </section>
 
-<script src="{{ 'custom-banner.js' | asset_url }}" defer></script>
+<script src="{{ 'custom-banner.js' | asset_url }}" defer="defer"></script>
