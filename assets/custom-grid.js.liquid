@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
   const popupImage = document.getElementById("popup-image");
@@ -12,66 +11,73 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentProduct = null;
 
-  // Open popup when icon is clicked
-  gridItems.forEach(item => {
-    const popupIcon = item.querySelector(".popup-icon");
+  // Event delegation: handle popup click for all products
+  document.querySelector(".grid-container").addEventListener("click", async (e) => {
+    const popupIcon = e.target.closest(".popup-icon");
     if (!popupIcon) return;
 
-    popupIcon.addEventListener("click", (e) => {
-  e.stopPropagation();
-  const product = JSON.parse(item.dataset.json); // get product JSON directly
-  currentProduct = product;
+    const gridItem = e.target.closest(".grid-item");
+    if (!gridItem) return;
 
-  // Fill popup
-  popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
-  popupTitle.textContent = product.title;
-  popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100);
-  popupDescription.innerHTML = product.body_html || "";
+    const handle = gridItem.dataset.handle;
+    if (!handle) return console.error("Missing product handle");
 
-  // Populate size & color
-  sizeSelect.innerHTML = "";
-  colorSelect.innerHTML = "";
-  const sizes = new Set();
-  const colors = new Set();
+    try {
+      const response = await fetch(`/products/${handle}.js`);
+      if (!response.ok) throw new Error(`Product fetch failed for ${handle}`);
+      const product = await response.json();
+      currentProduct = product;
 
-  product.variants.forEach(variant => {
-    variant.options.forEach((opt, i) => {
-      const optName = product.options[i].name.toLowerCase();
-      if (optName === "size") sizes.add(opt);
-      if (optName === "color") colors.add(opt);
-    });
+      // Product Image
+      popupImage.src = product.images.length > 0 ? product.images[0].src : "{{ 'placeholder.png' | asset_url }}";
+
+      // Product Info
+      popupTitle.textContent = product.title;
+      popupPrice.textContent = formatMoney(parseFloat(product.variants[0].price) * 100);
+      popupDescription.innerHTML = product.body_html || "";
+
+      // Options
+      sizeSelect.innerHTML = "";
+      colorSelect.innerHTML = "";
+
+      product.options.forEach((opt, i) => {
+        if (opt.name.toLowerCase() === "size") {
+          opt.values.forEach(value => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            sizeSelect.appendChild(option);
+          });
+        }
+        if (opt.name.toLowerCase() === "color") {
+          opt.values.forEach(value => {
+            const option = document.createElement("option");
+            option.value = value;
+            option.textContent = value;
+            colorSelect.appendChild(option);
+          });
+        }
+      });
+
+      // Show popup
+      popup.classList.remove("hidden");
+    } catch (err) {
+      console.error(err);
+    }
   });
-
-  sizes.forEach(size => {
-    const option = document.createElement("option");
-    option.value = size;
-    option.textContent = size;
-    sizeSelect.appendChild(option);
-  });
-
-  colors.forEach(color => {
-    const option = document.createElement("option");
-    option.value = color;
-    option.textContent = color;
-    colorSelect.appendChild(option);
-  });
-
-  popup.classList.remove("hidden");
-});
-
 
   // Close popup
   popupClose.addEventListener("click", () => popup.classList.add("hidden"));
   popup.addEventListener("click", e => { if (e.target === popup) popup.classList.add("hidden"); });
 
-  // Add to Cart
+  // Add to cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
     const selectedSize = sizeSelect.value;
     const selectedColor = colorSelect.value;
 
-    const matchedVariant = currentProduct.variants.find(variant => 
-      variant.options.includes(selectedSize) && variant.options.includes(selectedColor)
+    const matchedVariant = currentProduct.variants.find(v => 
+      v.options.includes(selectedSize) && v.options.includes(selectedColor)
     );
 
     if (!matchedVariant) return alert("Please select valid options");
@@ -90,8 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  function formatMoney(price) {
-    // Shopify Liquid already gives price as integer (cents)
-    return (price / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+  function formatMoney(cents) {
+    return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
   }
 });
