@@ -203,13 +203,21 @@ if (addToCartBtn) {
     if (!currentProduct) return;
 
     const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
-    const selectedOptions = [];
-    (currentProduct.options || []).forEach(option => {
-      const name = option.name.toLowerCase();
-      if (name === "color") selectedOptions.push(selectedColor);
-      else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
-      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
-    });
+
+// Require size selection
+if (!selectedSizeValue) {
+  alert("Please select a size before adding to cart.");
+  return; // STOP here, do not proceed to build options or add to cart
+}
+
+const selectedOptions = [];
+(currentProduct.options || []).forEach(option => {
+  const name = option.name.toLowerCase();
+  if (name === "color") selectedOptions.push(selectedColor);
+  else if (name === "size") selectedOptions.push(selectedSizeValue); // no fallback
+  else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+});
+
 
     const variant = findVariant(currentProduct, selectedOptions);
     if (!variant) { alert("Please select valid options"); return; }
