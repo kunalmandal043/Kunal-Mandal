@@ -186,7 +186,7 @@ function initCustomGrid() {
   alert("Could not add product to cart.");
 } finally {
   addToCartBtn.disabled = false;
-      addToCartIcon.src = "add-to-cart.svg"; // revert to original icon
+      addToCartIcon.src = "{{ 'add-to-cart.svg' | asset_url }}";
     }
   });
   }
