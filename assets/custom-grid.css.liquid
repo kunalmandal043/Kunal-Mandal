@@ -277,7 +277,8 @@
   -moz-appearance: none;
   width: 100%;
   padding-right: 30px; /* leave space for arrow */
-  
+  text-align: center;       /* center the selected value */
+  text-align-last: center;  /* center the value in Firefox */
 
   
 }
@@ -307,7 +308,11 @@
 }
 
 
-
+@media not all and (min-resolution:.001dpcm) {
+  .size-select-wrapper select {
+    text-align-last: center;
+  }
+}
 /* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {
   .grid-container {
