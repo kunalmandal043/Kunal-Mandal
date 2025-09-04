@@ -13,13 +13,44 @@ function initCustomGrid() {
   const sizeOptionContainer = document.getElementById("size-option-container");
   const colorSwatchesContainer = document.getElementById("color-swatches");
   const hiddenColorSelect = document.getElementById("color-select");
-  const sizeArrow = document.querySelector(".size-arrow");
 
   const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
 
   let currentProduct = null;
   let selectedColor = null;
 
+  // SVG paths for arrow toggle
+  const lowerArrow = '/assets/choose-size-lower.svg';
+  const upperArrow = '/assets/choose-size-upper.svg';
+
+  // Create arrow span inside size wrapper
+  let sizeWrapper = document.querySelector(".size-select-wrapper");
+  if (!sizeWrapper) {
+    sizeWrapper = document.createElement("div");
+    sizeWrapper.classList.add("size-select-wrapper");
+    sizeSelect.parentNode.insertBefore(sizeWrapper, sizeSelect);
+    sizeWrapper.appendChild(sizeSelect);
+
+    const arrowSpan = document.createElement("span");
+    arrowSpan.classList.add("size-arrow");
+    arrowSpan.innerHTML = `<img src="${lowerArrow}" alt="Dropdown arrow">`;
+    sizeWrapper.appendChild(arrowSpan);
+  }
+
+  const sizeArrow = sizeWrapper.querySelector(".size-arrow");
+
+  // Toggle arrow when size select is clicked
+  sizeWrapper.addEventListener("click", () => {
+    const img = sizeArrow.querySelector("img");
+    const currentSrc = img.src;
+    if (currentSrc.includes("choose-size-lower.svg")) {
+      img.src = upperArrow;
+    } else {
+      img.src = lowerArrow;
+    }
+  });
+
+  // Format money function (expects cents)
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", {
       style: "currency",
@@ -56,28 +87,30 @@ function initCustomGrid() {
       .then(response => response.json())
       .then(cart => {
         const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
-        cartCounts.forEach(el => el.textContent = cart.item_count);
-        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
+        cartCounts.forEach(element => {
+          element.textContent = cart.item_count;
+        });
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
       })
-      .catch(console.error);
+      .catch(error => {
+        console.error('Error updating cart count:', error);
+      });
   }
 
   function updatePrice() {
     if (!currentProduct) return;
-    const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
+    const selectedSizeVal = sizeSelect ? sizeSelect.value : null;
     const selectedOptions = [];
 
     (currentProduct.options || []).forEach(option => {
       const name = option.name.toLowerCase();
       if (name === "color") selectedOptions.push(selectedColor);
-      else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
+      else if (name === "size") selectedOptions.push(selectedSizeVal || option.values[0]);
       else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
     });
 
     const variant = findVariant(currentProduct, selectedOptions);
-    if (variant) {
-      popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
-    }
+    if (variant) popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
   }
 
   async function showProductPopup(handle) {
@@ -90,18 +123,19 @@ function initCustomGrid() {
       popupImage.src = (data.images && data.images.length > 0) ? data.images[0] : placeholderSrc;
       popupImage.alt = data.title || "Product preview";
       popupTitle.textContent = data.title || "";
-      popupPrice.textContent = (data.variants && data.variants.length > 0) 
-        ? formatMoney(Math.round(parseFloat(data.variants[0].price) * 100)) 
+      popupPrice.textContent = (data.variants && data.variants.length > 0)
+        ? formatMoney(Math.round(parseFloat(data.variants[0].price) * 100))
         : "";
       popupDescription.innerHTML = data.description || "";
 
-      // Reset options
+      // Clear old options
       sizeSelect.innerHTML = '<option value="" selected disabled hidden>Choose your size</option>';
       hiddenColorSelect.innerHTML = '';
       colorSwatchesContainer.innerHTML = '';
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
       selectedColor = null;
+      sizeArrow.querySelector("img").src = lowerArrow;
 
       if (Array.isArray(data.options)) {
         data.options.forEach(option => {
@@ -114,25 +148,7 @@ function initCustomGrid() {
               optionElement.textContent = val;
               sizeSelect.appendChild(optionElement);
             });
-
             sizeSelect.onchange = updatePrice;
-
-            // Arrow toggle on click
-            const lowerArrow = 'choose-size-lower.svg';
-            const upperArrow = 'choose-size-upper.svg';
-            
-            const wrapper = document.querySelector(".size-select-wrapper");
-            const sizeArrow = wrapper.querySelector(".size-arrow");
-
-            // Set default arrow
-            sizeArrow.innerHTML = `<img src="${lowerArrow}" alt="Dropdown arrow">`;
-            wrapper.addEventListener("click", () => {
-              const currentSrc = sizeArrow.querySelector("img").src;
-              if (currentSrc.includes("choose-size-lower.svg")) {
-                sizeArrow.querySelector("img").src = upperArrow;
-              } else {
-                sizeArrow.querySelector("img").src = lowerArrow;
-              });
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
             option.values.forEach(val => {
@@ -145,10 +161,8 @@ function initCustomGrid() {
             option.values.forEach((val, index) => {
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
-              const cleaned = (val || "").toString().trim().toLowerCase();
-              if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") {
-                colorOption.classList.add("is-white");
-              }
+              const cleaned = (val || "").toLowerCase().trim();
+              if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") colorOption.classList.add("is-white");
               colorOption.style.setProperty("--color-bar", val);
 
               const colorName = document.createElement("span");
@@ -162,12 +176,8 @@ function initCustomGrid() {
               }
 
               colorOption.addEventListener("click", () => {
-                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => {
-                  opt.classList.remove("selected");
-                  opt.setAttribute("aria-selected", "false");
-                });
+                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
                 colorOption.classList.add("selected");
-                colorOption.setAttribute("aria-selected", "true");
                 selectedColor = val;
                 hiddenColorSelect.value = val;
                 updatePrice();
@@ -175,6 +185,7 @@ function initCustomGrid() {
 
               colorSwatchesContainer.appendChild(colorOption);
             });
+
             updatePrice();
           }
         });
@@ -182,7 +193,6 @@ function initCustomGrid() {
 
       popup.classList.remove("hidden");
       document.body.style.overflow = 'hidden';
-
     } catch (err) {
       console.error("Error loading product:", err);
     }
@@ -193,7 +203,8 @@ function initCustomGrid() {
     if (!popupIcon) return;
     popupIcon.addEventListener("click", e => {
       e.stopPropagation();
-      showProductPopup(item.dataset.handle);
+      const handle = item.dataset.handle;
+      showProductPopup(handle);
     });
   });
 
@@ -216,13 +227,13 @@ function initCustomGrid() {
   if (addToCartBtn) {
     addToCartBtn.addEventListener("click", async () => {
       if (!currentProduct) return;
-
-      const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
+      const selectedSizeVal = sizeSelect ? sizeSelect.value : null;
       const selectedOptions = [];
+
       (currentProduct.options || []).forEach(option => {
         const name = option.name.toLowerCase();
         if (name === "color") selectedOptions.push(selectedColor);
-        else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
+        else if (name === "size") selectedOptions.push(selectedSizeVal || option.values[0]);
         else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
       });
 
@@ -237,7 +248,10 @@ function initCustomGrid() {
         addToCartBtn.querySelector('span').textContent = 'Adding...';
         const response = await fetch("/cart/add.js", {
           method: "POST",
-          headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          },
           body: JSON.stringify({ id: variant.id, quantity: 1 })
         });
 
