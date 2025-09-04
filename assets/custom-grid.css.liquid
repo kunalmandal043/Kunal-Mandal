@@ -256,7 +256,7 @@ body.popup-open {
 
 .dropdown-button {
   width: 100%;
-  padding: 12px 40px 12px 20px; /* Right padding for arrow */
+  padding: 12px 20px;
   border: 1px solid #ddd;
   background: white;
   text-align: left;
@@ -265,30 +265,16 @@ body.popup-open {
   justify-content: space-between;
   align-items: center;
   font-size: 16px;
-  position: relative;
 }
 
 .dropdown-button.placeholder {
   color: #999;
 }
 
-.dropdown-arrow {
-  position: absolute;
-  right: 15px;
-  top: 50%;
-  transform: translateY(-50%);
-  transition: transform 0.2s ease;
-  pointer-events: none;
-}
-
-.dropdown-arrow.rotated {
-  transform: translateY(-50%) rotate(180deg);
-}
-
 .dropdown-options {
   position: absolute;
   top: 100%;
-  left: 0;
+  right: 0;
   width: 100%;
   border: 1px solid #ddd;
   border-top: none;
@@ -297,6 +283,7 @@ body.popup-open {
   max-height: 200px;
   overflow-y: auto;
   display: none;
+  /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
 }
 
@@ -321,9 +308,14 @@ body.popup-open {
   color: white;
 }
 
-/* Hide the original arrow when custom dropdown is active */
-.size-select-wrapper .size-arrow {
-  display: none;
+/* Size dropdown specific styles */
+.size-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.size-select-wrapper select {
+  display: none; /* Hide the native select */
 }
 
 .size-arrow {

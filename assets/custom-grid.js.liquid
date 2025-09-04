@@ -11,6 +11,7 @@ function initCustomGrid() {
   const sizeOptionContainer = document.getElementById("size-option-container");
   const colorSwatchesContainer = document.getElementById("color-swatches");
   const hiddenColorSelect = document.getElementById("color-select");
+  const sizeArrow = document.querySelector('.size-arrow');
 
   const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
   const lowerArrow = popup.dataset.arrowLower;
@@ -20,7 +21,7 @@ function initCustomGrid() {
   let selectedColor = null;
   let selectedSize = null;
   let currentDropdown = null;
-  let currentCustomDropdown = null;
+  let currentCustomDropdown = null; // Track the current custom dropdown
 
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -86,17 +87,6 @@ function initCustomGrid() {
     button.className = 'dropdown-button placeholder';
     button.textContent = placeholder;
     
-    // Create the arrow element for this dropdown
-    const arrowElement = document.createElement('img');
-    arrowElement.className = 'dropdown-arrow';
-    arrowElement.src = lowerArrow;
-    arrowElement.alt = "Dropdown arrow";
-    arrowElement.width = 16;
-    arrowElement.height = 16;
-    
-    // Add arrow to button
-    button.appendChild(arrowElement);
-    
     const optionsContainer = document.createElement('div');
     optionsContainer.className = 'dropdown-options';
     
@@ -123,8 +113,10 @@ function initCustomGrid() {
         
         // Close dropdown
         optionsContainer.style.display = 'none';
-        arrowElement.src = lowerArrow;
-        arrowElement.classList.remove('rotated');
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
         
@@ -143,21 +135,19 @@ function initCustomGrid() {
       // Close any other open dropdown
       if (currentDropdown && currentDropdown !== optionsContainer) {
         currentDropdown.style.display = 'none';
-        document.querySelectorAll('.dropdown-arrow').forEach(arrow => {
-          arrow.src = lowerArrow;
-          arrow.classList.remove('rotated');
-        });
       }
       
       optionsContainer.style.display = isVisible ? 'none' : 'block';
       
       // Update arrow
-      if (optionsContainer.style.display === 'block') {
-        arrowElement.src = upperArrow;
-        arrowElement.classList.add('rotated');
-      } else {
-        arrowElement.src = lowerArrow;
-        arrowElement.classList.remove('rotated');
+      if (sizeArrow) {
+        if (optionsContainer.style.display === 'block') {
+          sizeArrow.classList.add('rotated');
+          sizeArrow.src = upperArrow;
+        } else {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
       }
       
       // Prevent body scrolling when dropdown is open
@@ -174,8 +164,10 @@ function initCustomGrid() {
     document.addEventListener('click', (e) => {
       if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
         optionsContainer.style.display = 'none';
-        arrowElement.src = lowerArrow;
-        arrowElement.classList.remove('rotated');
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
       }
@@ -185,8 +177,10 @@ function initCustomGrid() {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && optionsContainer.style.display === 'block') {
         optionsContainer.style.display = 'none';
-        arrowElement.src = lowerArrow;
-        arrowElement.classList.remove('rotated');
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
       }
@@ -198,13 +192,8 @@ function initCustomGrid() {
     
     // Replace the existing select with our custom dropdown
     const select = container.querySelector('select');
-    const existingArrow = container.querySelector('.size-arrow');
-    if (existingArrow) {
-      existingArrow.style.display = 'none'; // Hide the original arrow
-    }
-    
     if (select) {
-      container.insertBefore(dropdownContainer, select.nextSibling);
+      container.replaceChild(dropdownContainer, select);
     } else {
       container.appendChild(dropdownContainer);
     }
@@ -238,14 +227,6 @@ function initCustomGrid() {
       if (currentCustomDropdown) {
         currentCustomDropdown.remove();
         currentCustomDropdown = null;
-      }
-
-      // Show the original arrow
-      const sizeArrow = document.querySelector('.size-arrow');
-      if (sizeArrow) {
-        sizeArrow.style.display = 'block';
-        sizeArrow.src = lowerArrow;
-        sizeArrow.classList.remove('rotated');
       }
 
       if (Array.isArray(data.options)) {
@@ -328,14 +309,6 @@ function initCustomGrid() {
       currentCustomDropdown.remove();
       currentCustomDropdown = null;
     }
-    
-    // Show the original arrow
-    const sizeArrow = document.querySelector('.size-arrow');
-    if (sizeArrow) {
-      sizeArrow.style.display = 'block';
-      sizeArrow.src = lowerArrow;
-      sizeArrow.classList.remove('rotated');
-    }
   });
 
   if (popup) popup.addEventListener("click", e => { 
@@ -348,14 +321,6 @@ function initCustomGrid() {
       if (currentCustomDropdown) {
         currentCustomDropdown.remove();
         currentCustomDropdown = null;
-      }
-      
-      // Show the original arrow
-      const sizeArrow = document.querySelector('.size-arrow');
-      if (sizeArrow) {
-        sizeArrow.style.display = 'block';
-        sizeArrow.src = lowerArrow;
-        sizeArrow.classList.remove('rotated');
       }
     } 
   });
@@ -407,14 +372,6 @@ function initCustomGrid() {
           if (currentCustomDropdown) {
             currentCustomDropdown.remove();
             currentCustomDropdown = null;
-          }
-          
-          // Show the original arrow
-          const sizeArrow = document.querySelector('.size-arrow');
-          if (sizeArrow) {
-            sizeArrow.style.display = 'block';
-            sizeArrow.src = lowerArrow;
-            sizeArrow.classList.remove('rotated');
           }
         } else throw new Error('Failed to add to cart');
       } catch (err) {
