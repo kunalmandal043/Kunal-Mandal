@@ -85,7 +85,12 @@
       </div>
 
       <button id="add-to-cart">
-        <span>ADD TO CART ➜ </span>
+        <img class="size-arrow" 
+          src="{{ 'add-to-cart.svg' | asset_url }}" 
+          alt="Dropdown arrow"
+          width="16" 
+          height="16">
+        {% comment %} <span>ADD TO CART ➜ </span> {% endcomment %}
       </button>
     </div>
   </div>

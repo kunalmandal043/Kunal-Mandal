@@ -147,26 +147,49 @@ function initCustomGrid() {
   }
 
   if (addToCartBtn) {
-    addToCartBtn.addEventListener("click", async () => {
-      if (!currentProduct) return;
-      const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
-      const selectedOptions = [];
-      (currentProduct.options || []).forEach(option => {
-        const name = option.name.toLowerCase();
-        if (name === "color") selectedOptions.push(selectedColor);
-        else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
-        else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
-      });
-      const variant = findVariant(currentProduct, selectedOptions);
-      if (!variant) { alert("Please select valid options"); return; }
-      try {
-        addToCartBtn.disabled = true; addToCartBtn.querySelector('span').textContent = 'Adding...';
-        const response = await fetch("/cart/add.js", { method: "POST", headers: { "Content-Type":"application/json","X-Requested-With":"XMLHttpRequest" }, body: JSON.stringify({ id: variant.id, quantity: 1 }) });
-        if (response.ok) { updateCartCount(); alert("Product added to cart!"); popup.classList.add("hidden"); document.body.style.overflow = ''; }
-        else throw new Error('Failed to add to cart');
-      } catch (err) { console.error(err); alert("Could not add product to cart."); }
-      finally { addToCartBtn.disabled = false; addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜'; }
+  const addToCartIcon = addToCartBtn.querySelector('.add-to-cart-icon');
+
+  addToCartBtn.addEventListener("click", async () => {
+    if (!currentProduct) return;
+
+    const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
+    const selectedOptions = [];
+    (currentProduct.options || []).forEach(option => {
+      const name = option.name.toLowerCase();
+      if (name === "color") selectedOptions.push(selectedColor);
+      else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
+      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
     });
+
+    const variant = findVariant(currentProduct, selectedOptions);
+    if (!variant) { alert("Please select valid options"); return; }
+
+    try {
+      addToCartBtn.disabled = true;
+      // Optional: show a loading SVG
+      addToCartIcon.src = "add-to-cart-loading.svg";
+
+      const response = await fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type":"application/json","X-Requested-With":"XMLHttpRequest" },
+        body: JSON.stringify({ id: variant.id, quantity: 1 })
+      });
+
+      if (response.ok) {
+        updateCartCount();
+        alert("Product added to cart!");
+        popup.classList.add("hidden");
+        document.body.style.overflow = '';
+      } else throw new Error('Failed to add to cart');
+
+    } catch (err) {
+      console.error(err);
+      alert("Could not add product to cart.");
+    } finally {
+      addToCartBtn.disabled = false;
+      addToCartIcon.src = "add-to-cart.svg"; // revert to original icon
+    }
+  });
   }
 
   function updateCartCount() {
