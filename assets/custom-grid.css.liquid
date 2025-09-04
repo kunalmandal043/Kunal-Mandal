@@ -278,7 +278,8 @@
   width: 100%;
   padding-right: 30px; /* leave space for arrow */
   
-
+  text-align: left;          /* default left alignment */
+  text-align-last: center; 
   
 }
 
@@ -295,6 +296,9 @@
   pointer-events: none;
   font-size: 16px;
   transition: transform 0.2s ease;
+}
+.size-select-wrapper select:not(:invalid) {
+  text-align: center;        /* center selected value */
 }
 
 /* Size select: placeholder left, selected value center */
