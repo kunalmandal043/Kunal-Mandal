@@ -13,13 +13,13 @@ function initCustomGrid() {
   const sizeOptionContainer = document.getElementById("size-option-container");
   const colorSwatchesContainer = document.getElementById("color-swatches");
   const hiddenColorSelect = document.getElementById("color-select");
+  const sizeArrow = document.querySelector(".size-arrow");
 
   const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
 
   let currentProduct = null;
   let selectedColor = null;
 
-  // Format money function (expects cents)
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", {
       style: "currency",
@@ -27,13 +27,11 @@ function initCustomGrid() {
     });
   }
 
-  // Helper to get variant options as array regardless of format
   function getVariantOptionsArray(variant) {
     if (!variant) return [];
     if (Array.isArray(variant.options) && variant.options.length) {
       return variant.options;
     } else {
-      // fallback to option1/option2/option3 fields
       const arr = [];
       if (variant.option1) arr.push(variant.option1);
       if (variant.option2) arr.push(variant.option2);
@@ -42,148 +40,117 @@ function initCustomGrid() {
     }
   }
 
-  // Find variant based on selected options array (order must match product.options order)
   function findVariant(product, selectedOptions) {
     if (!product || !product.variants) return null;
     return product.variants.find(variant => {
       const vOpts = getVariantOptionsArray(variant);
       if (vOpts.length !== selectedOptions.length) {
-        // Some variant structures may differ; compare as far as possible
         return selectedOptions.every((sel, i) => sel === vOpts[i]);
       }
       return vOpts.every((opt, idx) => selectedOptions[idx] === opt);
     });
   }
 
-  // Update cart count in header
   function updateCartCount() {
     fetch('/cart.js')
       .then(response => response.json())
       .then(cart => {
         const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
-        cartCounts.forEach(element => {
-          element.textContent = cart.item_count;
-        });
-
-        document.dispatchEvent(new CustomEvent('cart:updated', {
-          detail: { cart: cart }
-        }));
+        cartCounts.forEach(el => el.textContent = cart.item_count);
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
       })
-      .catch(error => {
-        console.error('Error updating cart count:', error);
-      });
+      .catch(console.error);
   }
 
-  // Update price when options change
   function updatePrice() {
     if (!currentProduct) return;
-
-    const selectedSize = sizeSelect ? sizeSelect.value : null;
-
+    const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
     const selectedOptions = [];
-    // Build selectedOptions array in the same order as product.options
+
     (currentProduct.options || []).forEach(option => {
       const name = option.name.toLowerCase();
-      if (name === "color") {
-        selectedOptions.push(selectedColor);
-      } else if (name === "size") {
-        selectedOptions.push(selectedSize || option.values[0]);
-      } else {
-        // fallback to the first available value
-        selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
-      }
+      if (name === "color") selectedOptions.push(selectedColor);
+      else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
+      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
     });
 
     const variant = findVariant(currentProduct, selectedOptions);
     if (variant) {
-      // Shopify variant.price is usually a string like "29.99"
       popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
     }
   }
 
-  // Show product popup by handle
   async function showProductPopup(handle) {
     if (!handle) return;
-
     try {
       const res = await fetch(`/products/${handle}.js`);
       const data = await res.json();
       currentProduct = data;
 
-      // Image
       popupImage.src = (data.images && data.images.length > 0) ? data.images[0] : placeholderSrc;
       popupImage.alt = data.title || "Product preview";
-
-      // Title, price, description
       popupTitle.textContent = data.title || "";
-      if (data.variants && data.variants.length > 0) {
-        popupPrice.textContent = formatMoney(Math.round(parseFloat(data.variants[0].price) * 100));
-      } else {
-        popupPrice.textContent = "";
-      }
+      popupPrice.textContent = (data.variants && data.variants.length > 0) 
+        ? formatMoney(Math.round(parseFloat(data.variants[0].price) * 100)) 
+        : "";
       popupDescription.innerHTML = data.description || "";
 
-      // Clear old options
-      sizeSelect.innerHTML = "";
-      hiddenColorSelect.innerHTML = "";
-      colorSwatchesContainer.innerHTML = "";
+      // Reset options
+      sizeSelect.innerHTML = '<option value="" selected disabled hidden>Choose your size</option>';
+      hiddenColorSelect.innerHTML = '';
+      colorSwatchesContainer.innerHTML = '';
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
       selectedColor = null;
 
-      // Build options
       if (Array.isArray(data.options)) {
         data.options.forEach(option => {
           const name = option.name.toLowerCase();
           if (name === "size") {
             sizeOptionContainer.style.display = 'block';
-            // populate size <select>
-            option.values.forEach((val, idx) => {
+            option.values.forEach(val => {
               const optionElement = document.createElement("option");
               optionElement.value = val;
               optionElement.textContent = val;
-              if (idx === 0) optionElement.selected = true;
               sizeSelect.appendChild(optionElement);
             });
-            // ensure onchange is set only once (avoids duplicate listeners)
+
             sizeSelect.onchange = updatePrice;
+
+            // Arrow toggle on click
+            const wrapper = document.querySelector(".size-select-wrapper");
+            wrapper.addEventListener("click", () => {
+              sizeArrow.textContent = sizeArrow.textContent === 'v' ? '^' : 'v';
+            });
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
-            // populate hidden color select (keeps compatibility)
-            option.values.forEach((val) => {
+            option.values.forEach(val => {
               const opt = document.createElement("option");
               opt.value = val;
               opt.textContent = val;
               hiddenColorSelect.appendChild(opt);
             });
 
-            // create visible rows with permanent left bar
             option.values.forEach((val, index) => {
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
-              // special class for white to allow border visibility
               const cleaned = (val || "").toString().trim().toLowerCase();
               if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") {
                 colorOption.classList.add("is-white");
               }
-              // set CSS variable for the left bar color
-              // Use the actual value (hex or name). If invalid color, the browser will ignore it.
               colorOption.style.setProperty("--color-bar", val);
 
               const colorName = document.createElement("span");
               colorName.classList.add("color-name");
               colorName.textContent = val;
-
               colorOption.appendChild(colorName);
 
-              // default selected first
               if (index === 0) {
                 colorOption.classList.add("selected");
                 selectedColor = val;
               }
 
               colorOption.addEventListener("click", () => {
-                // scope the query to this container to avoid touching other popups if any
                 colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => {
                   opt.classList.remove("selected");
                   opt.setAttribute("aria-selected", "false");
@@ -191,43 +158,34 @@ function initCustomGrid() {
                 colorOption.classList.add("selected");
                 colorOption.setAttribute("aria-selected", "true");
                 selectedColor = val;
-                // update hidden select to keep parity
                 hiddenColorSelect.value = val;
                 updatePrice();
               });
 
               colorSwatchesContainer.appendChild(colorOption);
             });
-
-            // initial price update after creating color options
             updatePrice();
-          } else {
-            // other option types (not implemented visually) — leave default selection
-            // This keeps arrays aligned in updatePrice/findVariant
           }
         });
       }
 
-      // Show popup
       popup.classList.remove("hidden");
       document.body.style.overflow = 'hidden';
+
     } catch (err) {
       console.error("Error loading product:", err);
     }
   }
 
-  // Attach click handlers to each grid item's popup icon
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
-    popupIcon.addEventListener("click", (e) => {
+    popupIcon.addEventListener("click", e => {
       e.stopPropagation();
-      const handle = item.dataset.handle;
-      showProductPopup(handle);
+      showProductPopup(item.dataset.handle);
     });
   });
 
-  // Close popup handlers
   if (popupClose) {
     popupClose.addEventListener("click", () => {
       popup.classList.add("hidden");
@@ -235,7 +193,6 @@ function initCustomGrid() {
     });
   }
 
-  // close when clicking outside content
   if (popup) {
     popup.addEventListener("click", e => {
       if (e.target === popup) {
@@ -245,23 +202,17 @@ function initCustomGrid() {
     });
   }
 
-  // Add to Cart
   if (addToCartBtn) {
     addToCartBtn.addEventListener("click", async () => {
       if (!currentProduct) return;
 
-      const selectedSize = sizeSelect ? sizeSelect.value : null;
+      const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
       const selectedOptions = [];
-
       (currentProduct.options || []).forEach(option => {
         const name = option.name.toLowerCase();
-        if (name === "color") {
-          selectedOptions.push(selectedColor);
-        } else if (name === "size") {
-          selectedOptions.push(selectedSize || option.values[0]);
-        } else {
-          selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
-        }
+        if (name === "color") selectedOptions.push(selectedColor);
+        else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
+        else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
       });
 
       const variant = findVariant(currentProduct, selectedOptions);
@@ -273,13 +224,9 @@ function initCustomGrid() {
       try {
         addToCartBtn.disabled = true;
         addToCartBtn.querySelector('span').textContent = 'Adding...';
-
         const response = await fetch("/cart/add.js", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-Requested-With": "XMLHttpRequest"
-          },
+          headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
           body: JSON.stringify({ id: variant.id, quantity: 1 })
         });
 

@@ -266,6 +266,29 @@
 #add-to-cart:disabled:hover {
   background: #000;
 }
+.size-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.size-select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding-right: 30px; /* leave space for arrow */
+}
+
+.size-select-wrapper .size-arrow {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
 
 /* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {

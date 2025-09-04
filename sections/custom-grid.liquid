@@ -72,7 +72,12 @@
 
       <div class="popup-option" id="size-option-container" style="display:none;">
         <label for="size-select">Size:</label>
-        <select id="size-select"></select>
+        <div class="size-select-wrapper">
+          <select id="size-select">
+            <option value="" selected disabled hidden>Choose your size</option>
+          </select>
+          <span class="size-arrow">v</span>
+        </div>
       </div>
 
       <button id="add-to-cart">
