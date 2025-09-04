@@ -134,26 +134,31 @@
 /* Color Options - Updated to match ADD TO CART button style */
 .color-swatches {
   display: flex;
-  flex-wrap: wrap; /* allow wrap if too many */
-  gap: 8px;
+  flex-wrap: wrap;
+  width: 100%; /* same width as button */
   margin-top: 8px;
-  width: 100%;
 }
-
 
 .color-option {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-  padding: 8px 12px;
-  transition: all 0.2s ease;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+  flex: 1 1 50%; /* if 2 → 50% each, if more → auto-fit */
   box-sizing: border-box;
-  margin: 0; /* remove negative margin stacking trick */
-  text-align: left;
-  flex: 0 1 auto; /* allow inline-flex layout */
+  border: 1px solid #ddd;
+  padding: 12px;
+  text-align: left; /* left-aligned text */
+  cursor: pointer;
+  transition: background 0.2s ease, border 0.2s ease;
+  border-radius: 0; /* no rounded corners */
 }
+
+.color-option:hover {
+  background: #f9f9f9;
+}
+
+.color-option.selected {
+  border: 2px solid #000;
+  background: #f0f0f0;
+}
+
 
 
 .color-option:first-child {
@@ -167,14 +172,14 @@
   margin-bottom: 0;
 }
 
-.color-option:hover {
+/* .color-option:hover {
   background-color: #f5f5f5;
 }
 
 .color-option.selected {
   background-color: #000;
   border-color: #000;
-}
+} */
 
 .color-option.selected .color-name {
   color: #fff;
