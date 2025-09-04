@@ -18,9 +18,9 @@ function initCustomGrid() {
 
   // Format money function
   function formatMoney(cents) {
-    return (cents / 100).toLocaleString("en-US", {
-      style: "currency",
-      currency: "USD"
+    return (cents / 100).toLocaleString("en-US", { 
+      style: "currency", 
+      currency: "USD" 
     });
   }
 
@@ -38,13 +38,17 @@ function initCustomGrid() {
     fetch('/cart.js')
       .then(response => response.json())
       .then(cart => {
+        // Update all cart count elements
         const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
         cartCounts.forEach(element => {
           element.textContent = cart.item_count;
         });
-
+        
+        // Dispatch event for other parts of the theme
         document.dispatchEvent(new CustomEvent('cart:updated', {
-          detail: { cart: cart }
+          detail: {
+            cart: cart
+          }
         }));
       })
       .catch(error => {
@@ -55,9 +59,10 @@ function initCustomGrid() {
   // Update price when options change
   function updatePrice() {
     if (!currentProduct) return;
-
+    
     const selectedSize = sizeSelect.value;
-
+    
+    // Create options array in the correct order
     const selectedOptions = [];
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
@@ -65,17 +70,18 @@ function initCustomGrid() {
       } else if (option.name.toLowerCase() === "size") {
         selectedOptions.push(selectedSize);
       } else {
+        // For other options, use the first available value
         selectedOptions.push(option.values[0]);
       }
     });
-
+    
     const variant = findVariant(currentProduct, selectedOptions);
     if (variant) {
       popupPrice.textContent = formatMoney(parseFloat(variant.price) * 100);
     }
   }
 
-  // Show product popup
+  // Function to show product popup
   async function showProductPopup(handle) {
     if (!handle) return;
 
@@ -83,27 +89,32 @@ function initCustomGrid() {
       const res = await fetch(`/products/${handle}.js`);
       const data = await res.json();
       currentProduct = data;
-
-      // Image
-      popupImage.src = data.images && data.images.length > 0
-        ? data.images[0]
+      
+      // Set image
+      popupImage.src = data.images && data.images.length > 0 
+        ? data.images[0] 
         : "{{ 'placeholder.png' | asset_url }}";
       popupImage.alt = data.title;
 
-      // Title, price, description
+      // Set title, price, description
       popupTitle.textContent = data.title;
+      
+      // Use first variant's price initially
       if (data.variants && data.variants.length > 0) {
         popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
       }
+      
       popupDescription.innerHTML = data.description || "";
 
-      // Clear old options
+      // Clear previous options
       sizeSelect.innerHTML = "";
       colorSwatchesContainer.innerHTML = "";
+      
+      // Hide option containers initially
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
 
-      // Options
+      // Populate options
       if (data.options) {
         data.options.forEach(option => {
           if (option.name.toLowerCase() === "size") {
@@ -115,62 +126,106 @@ function initCustomGrid() {
               sizeSelect.appendChild(optionElement);
             });
           } else if (option.name.toLowerCase() === "color") {
-              colorOptionContainer.style.display = 'block';
-
-              // Clear both
-              colorSwatchesContainer.innerHTML = "";
-              document.getElementById("color-strip").innerHTML = "";
-
-              option.values.forEach((val, index) => {
-                // --- permanent strip ---
-                const stripSwatch = document.createElement("div");
-                stripSwatch.classList.add("strip-swatch");
-                try {
-                  stripSwatch.style.backgroundColor = val;
-                } catch (e) {
-                    stripSwatch.style.backgroundColor = "#ccc";
-                  }
-                  document.getElementById("color-strip").appendChild(stripSwatch);
-
-                  // --- clickable option ---
-                  const colorOption = document.createElement("div");
-                  colorOption.classList.add("color-option");
-
-                  const colorName = document.createElement("span");
-                  colorName.classList.add("color-name");
-                  colorName.textContent = val;
-
-                  colorOption.appendChild(colorName);
-
-                  if (index === 0) {
-                    colorOption.classList.add("selected");
-                    selectedColor = val;
-                  }
-
-                  colorOption.addEventListener("click", () => {
-                    document.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
-                    colorOption.classList.add("selected");
-                    selectedColor = val;
-                    updatePrice();
-                  });
-
-                  colorSwatchesContainer.appendChild(colorOption);
+            colorOptionContainer.style.display = 'block';
+            
+            // Create color options with left strip swatches
+            option.values.forEach((val, index) => {
+              // Create container for color option
+              const colorOption = document.createElement("div");
+              colorOption.classList.add("color-option");
+              
+              // Create color swatch (left strip)
+              const swatch = document.createElement("div");
+              swatch.classList.add("color-swatch");
+              
+              // Add specific class for white/black colors
+              if (val.toLowerCase() === "white") {
+                swatch.classList.add("white");
+              } else if (val.toLowerCase() === "black") {
+                swatch.classList.add("black");
+              } else {
+                // For other colors, try to set background color based on name
+                const colorMap = {
+                  'navy': '#000080',
+                  'gray': '#808080',
+                  'grey': '#808080',
+                  'red': '#FF0000',
+                  'blue': '#0000FF',
+                  'green': '#008000',
+                  'yellow': '#FFFF00',
+                  'purple': '#800080',
+                  'pink': '#FFC0CB',
+                  'orange': '#FFA500',
+                  'brown': '#A52A2A',
+                  'beige': '#F5F5DC',
+                  'khaki': '#F0E68C',
+                  'olive': '#808000',
+                  'tan': '#D2B48C',
+                  'burgundy': '#800020',
+                  'maroon': '#800000',
+                  'teal': '#008080',
+                  'turquoise': '#40E0D0',
+                  'lavender': '#E6E6FA',
+                  'mustard': '#FFDB58'
+                };
+                
+                // Normalize the color name
+                const normalizedColor = val.toLowerCase().trim();
+                swatch.style.backgroundColor = colorMap[normalizedColor] || '#ccc';
+              }
+              
+              // Create color name label
+              const colorName = document.createElement("span");
+              colorName.classList.add("color-name");
+              colorName.textContent = val;
+              
+              // Add elements to container
+              colorOption.appendChild(swatch);
+              colorOption.appendChild(colorName);
+              
+              // Select first color by default
+              if (index === 0) {
+                colorOption.classList.add("selected");
+                selectedColor = val;
+              }
+              
+              colorOption.addEventListener("click", () => {
+                // Remove selected class from all options
+                document.querySelectorAll(".color-option").forEach(opt => {
+                  opt.classList.remove("selected");
                 });
+                
+                // Add selected class to clicked option
+                colorOption.classList.add("selected");
+                selectedColor = val;
+                updatePrice();
+              });
+              
+              colorSwatchesContainer.appendChild(colorOption);
+            });
+            
+            // Trigger initial price update after creating color options
+            updatePrice();
+          }
+        });
       }
 
+      // Add event listeners for option changes
       sizeSelect.addEventListener('change', updatePrice);
-
+      
+      // Show popup
       popup.classList.remove("hidden");
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = 'hidden'; // Prevent scrolling
     } catch (err) {
       console.error("Error loading product:", err);
     }
   }
 
-  // Grid items
+  // Add event listeners to grid items
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
+
     popupIcon.addEventListener("click", (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
@@ -181,21 +236,23 @@ function initCustomGrid() {
   // Close popup
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
-    document.body.style.overflow = '';
+    document.body.style.overflow = ''; // Re-enable scrolling
   });
-
+  
   popup.addEventListener("click", e => {
     if (e.target === popup) {
       popup.classList.add("hidden");
-      document.body.style.overflow = '';
+      document.body.style.overflow = ''; // Re-enable scrolling
     }
   });
 
   // Add to Cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
-
+    
     const selectedSize = sizeSelect.value;
+    
+    // Create options array in the correct order
     const selectedOptions = [];
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
@@ -203,34 +260,39 @@ function initCustomGrid() {
       } else if (option.name.toLowerCase() === "size") {
         selectedOptions.push(selectedSize);
       } else {
+        // For other options, use the first available value
         selectedOptions.push(option.values[0]);
       }
     });
-
+    
     const variant = findVariant(currentProduct, selectedOptions);
+    
     if (!variant) {
       alert("Please select valid options");
       return;
     }
 
     try {
+      // Show loading state
       addToCartBtn.disabled = true;
       addToCartBtn.querySelector('span').textContent = 'Adding...';
-
+      
       const response = await fetch("/cart/add.js", {
         method: "POST",
-        headers: {
+        headers: { 
           "Content-Type": "application/json",
           "X-Requested-With": "XMLHttpRequest"
         },
         body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
-
+      
       if (response.ok) {
+        // Update cart count
         updateCartCount();
+        
         alert("Product added to cart!");
         popup.classList.add("hidden");
-        document.body.style.overflow = '';
+        document.body.style.overflow = ''; // Re-enable scrolling
       } else {
         throw new Error('Failed to add to cart');
       }
@@ -238,18 +300,21 @@ function initCustomGrid() {
       console.error(err);
       alert("Could not add product to cart.");
     } finally {
+      // Reset button state
       addToCartBtn.disabled = false;
       addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
     }
   });
 }
 
-// Init
+// Initialize when DOM is loaded
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initCustomGrid);
 } else {
   initCustomGrid();
 }
+
+// Reinitialize when Shopify's AJAX page loading completes
 if (typeof Shopify !== 'undefined') {
   document.addEventListener('shopify:section:load', initCustomGrid);
 }
