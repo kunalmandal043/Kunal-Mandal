@@ -128,45 +128,54 @@ function initCustomGrid() {
           } else if (option.name.toLowerCase() === "color") {
             colorOptionContainer.style.display = 'block';
             
-            // Create color swatches instead of dropdown
+            // Create color swatches with names
             option.values.forEach((val, index) => {
+              // Create container for color option
+              const colorOption = document.createElement("div");
+              colorOption.classList.add("color-swatch-option");
+              
+              // Create color swatch
               const swatch = document.createElement("div");
               swatch.classList.add("color-swatch");
               
               // Add specific class for white/black colors
               if (val.toLowerCase() === "white") {
                 swatch.classList.add("white");
-                swatch.style.backgroundColor = "#fff";
               } else if (val.toLowerCase() === "black") {
                 swatch.classList.add("black");
-                swatch.style.backgroundColor = "#000";
               } else {
                 // For other colors, try to set background color based on name
                 swatch.style.backgroundColor = val.toLowerCase();
               }
               
-              swatch.dataset.value = val;
-              swatch.title = val;
+              // Create color name label
+              const colorName = document.createElement("span");
+              colorName.classList.add("color-name");
+              colorName.textContent = val;
+              
+              // Add elements to container
+              colorOption.appendChild(swatch);
+              colorOption.appendChild(colorName);
               
               // Select first color by default
               if (index === 0) {
-                swatch.classList.add("selected");
+                colorOption.classList.add("selected");
                 selectedColor = val;
               }
               
-              swatch.addEventListener("click", () => {
-                // Remove selected class from all swatches
-                document.querySelectorAll(".color-swatch").forEach(s => {
-                  s.classList.remove("selected");
+              colorOption.addEventListener("click", () => {
+                // Remove selected class from all options
+                document.querySelectorAll(".color-swatch-option").forEach(opt => {
+                  opt.classList.remove("selected");
                 });
                 
-                // Add selected class to clicked swatch
-                swatch.classList.add("selected");
+                // Add selected class to clicked option
+                colorOption.classList.add("selected");
                 selectedColor = val;
                 updatePrice();
               });
               
-              colorSwatchesContainer.appendChild(swatch);
+              colorSwatchesContainer.appendChild(colorOption);
             });
           }
         });
