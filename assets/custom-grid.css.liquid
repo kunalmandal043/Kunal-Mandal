@@ -271,13 +271,13 @@
   width: 100%;
 }
 
-.size-select-wrapper select {
+/* .size-select-wrapper select {
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   width: 100%;
   padding-right: 30px; /* leave space for arrow */
-}
+} */
 
 .size-select-wrapper .size-arrow {
   border-left: 1px solid #ccc; /* change color as needed */
@@ -288,13 +288,23 @@
   position: absolute;
   right: 20px;
   top: 50%;
-  cursor:pointer;
   transform: translateY(-50%);
-  /* pointer-events: none; */
+  pointer-events: none;
   font-size: 16px;
   transition: transform 0.2s ease;
 }
-
+.size-select-wrapper select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding: 12px 30px 12px 20px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  cursor: pointer; /* arrow will also have pointer */
+  background-color: white;
+  color: black;
+}
 
 
 
