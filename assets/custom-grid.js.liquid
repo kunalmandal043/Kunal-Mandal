@@ -128,13 +128,13 @@ function initCustomGrid() {
           } else if (option.name.toLowerCase() === "color") {
             colorOptionContainer.style.display = 'block';
             
-            // Create color options with full width
+            // Create color options with left strip swatches
             option.values.forEach((val, index) => {
               // Create container for color option
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
               
-              // Create color swatch
+              // Create color swatch (left strip)
               const swatch = document.createElement("div");
               swatch.classList.add("color-swatch");
               
@@ -176,7 +176,6 @@ function initCustomGrid() {
               // Select first color by default
               if (index === 0) {
                 colorOption.classList.add("selected");
-                swatch.classList.add("selected");
                 selectedColor = val;
               }
               
@@ -185,13 +184,9 @@ function initCustomGrid() {
                 document.querySelectorAll(".color-option").forEach(opt => {
                   opt.classList.remove("selected");
                 });
-                document.querySelectorAll(".color-swatch").forEach(sw => {
-                  sw.classList.remove("selected");
-                });
                 
                 // Add selected class to clicked option
                 colorOption.classList.add("selected");
-                swatch.classList.add("selected");
                 selectedColor = val;
                 updatePrice();
               });
