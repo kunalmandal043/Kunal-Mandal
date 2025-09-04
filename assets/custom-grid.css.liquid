@@ -134,25 +134,27 @@
 /* Color Options - Updated to match ADD TO CART button style */
 .color-swatches {
   display: flex;
-  flex-direction: column;
-  gap: 0; /* Remove gap between options */
+  flex-wrap: wrap; /* allow wrap if too many */
+  gap: 8px;
   margin-top: 8px;
   width: 100%;
 }
+
 
 .color-option {
   display: flex;
   align-items: center;
   cursor: pointer;
-  padding: 12px 20px;
+  padding: 8px 12px;
   transition: all 0.2s ease;
   border: 1px solid #ddd;
-  width: 100%;
+  border-radius: 4px;
   box-sizing: border-box;
-  margin-bottom: -1px; /* Remove gap between options */
-  text-align: left; /* Align text to left */
-  border-radius: 0; /* Remove rounded corners */
+  margin: 0; /* remove negative margin stacking trick */
+  text-align: left;
+  flex: 0 1 auto; /* allow inline-flex layout */
 }
+
 
 .color-option:first-child {
   border-top-left-radius: 0;
@@ -231,7 +233,7 @@
 
 .popup-option {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   text-align: left;
 }
 
