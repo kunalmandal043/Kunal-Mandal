@@ -273,8 +273,8 @@ body.popup-open {
 
 .dropdown-options {
   position: absolute;
-  top: 100%; /* fallback if JS fails */
-  left: 0;
+  top: 100%;
+  right: 0;
   width: 100%;
   border: 1px solid #ddd;
   border-top: none;
@@ -283,19 +283,21 @@ body.popup-open {
   max-height: 200px;
   overflow-y: auto;
   display: none;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  /* Hide scrollbar */
+  scrollbar-width: none; /* Firefox */
 }
 
-/* hide scrollbar */
-.dropdown-options::-webkit-scrollbar { display: none; }
-
-
-.dropdown-options {
-  position: absolute;
-  width: 100%;
-  z-index: 1001;
-  display: none;
+.dropdown-options::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
 }
+
+.dropdown-option {
+  padding: 12px 20px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
 .dropdown-option:hover {
   background-color: black;
   color: white;
@@ -309,7 +311,7 @@ body.popup-open {
 /* Size dropdown specific styles */
 .size-select-wrapper {
   position: relative;
-  /* width: 100%; */
+  width: 100%;
 }
 
 .size-select-wrapper select {

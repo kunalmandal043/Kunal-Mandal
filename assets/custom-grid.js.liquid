@@ -133,38 +133,24 @@ function initCustomGrid() {
     }
   }
 
-  if (isVisible) {
-    optionsContainer.style.display = 'none';
-    if (sizeArrow) {
-      sizeArrow.classList.remove('rotated');
-      sizeArrow.src = lowerArrow;
-    }
-    preventBodyScroll(false);
-    currentDropdown = null;
-    return;
-  }
+  // Toggle current dropdown
+  optionsContainer.style.display = isVisible ? 'none' : 'block';
 
-  // Show dropdown
-  optionsContainer.style.display = 'block';
-
-  // Force dropdown directly under the size button, even on scroll
-  const buttonRect = button.getBoundingClientRect();
-  const scrollTop = window.scrollY || document.documentElement.scrollTop;
-  const offsetLeft = button.offsetLeft;
-  optionsContainer.style.position = 'absolute';
-  optionsContainer.style.top = `${buttonRect.height}px`;
+  // Always force dropdown below the block
+  const rect = button.getBoundingClientRect();
+  optionsContainer.style.top = `${button.offsetHeight}px`; // always below
   optionsContainer.style.left = '0';
 
   // Update arrow
   if (sizeArrow) {
-    sizeArrow.classList.add('rotated');
-    sizeArrow.src = upperArrow;
+    if (optionsContainer.style.display === 'block') {
+      sizeArrow.classList.add('rotated');
+      sizeArrow.src = upperArrow;
+    } else {
+      sizeArrow.classList.remove('rotated');
+      sizeArrow.src = lowerArrow;
+    }
   }
-
-  preventBodyScroll(true);
-  currentDropdown = optionsContainer;
-});
-
 
   // Prevent body scroll when open
   if (optionsContainer.style.display === 'block') {
