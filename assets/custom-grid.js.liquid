@@ -121,36 +121,46 @@ function initCustomGrid() {
     
     // Toggle dropdown on button click
     button.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isVisible = optionsContainer.style.display === 'block';
-      
-      // Close any other open dropdown
-      if (currentDropdown && currentDropdown !== optionsContainer) {
-        currentDropdown.style.display = 'none';
-      }
-      
-      optionsContainer.style.display = isVisible ? 'none' : 'block';
-      
-      // Update arrow
-      if (sizeArrow) {
-        if (optionsContainer.style.display === 'block') {
-          sizeArrow.classList.add('rotated');
-          sizeArrow.src = upperArrow;
-        } else {
-          sizeArrow.classList.remove('rotated');
-          sizeArrow.src = lowerArrow;
-        }
-      }
-      
-      // Prevent body scrolling when dropdown is open
-      if (optionsContainer.style.display === 'block') {
-        preventBodyScroll(true);
-        currentDropdown = optionsContainer;
-      } else {
-        preventBodyScroll(false);
-        currentDropdown = null;
-      }
-    });
+  e.stopPropagation();
+  const isVisible = optionsContainer.style.display === 'block';
+
+  // Close any other open dropdown
+  if (currentDropdown && currentDropdown !== optionsContainer) {
+    currentDropdown.style.display = 'none';
+    if (sizeArrow) {
+      sizeArrow.classList.remove('rotated');
+      sizeArrow.src = lowerArrow;
+    }
+  }
+
+  // Toggle current dropdown
+  optionsContainer.style.display = isVisible ? 'none' : 'block';
+
+  // Always force dropdown below the block
+  const rect = button.getBoundingClientRect();
+  optionsContainer.style.top = `${button.offsetHeight}px`; // always below
+  optionsContainer.style.left = '0';
+
+  // Update arrow
+  if (sizeArrow) {
+    if (optionsContainer.style.display === 'block') {
+      sizeArrow.classList.add('rotated');
+      sizeArrow.src = upperArrow;
+    } else {
+      sizeArrow.classList.remove('rotated');
+      sizeArrow.src = lowerArrow;
+    }
+  }
+
+  // Prevent body scroll when open
+  if (optionsContainer.style.display === 'block') {
+    preventBodyScroll(true);
+    currentDropdown = optionsContainer;
+  } else {
+    preventBodyScroll(false);
+    currentDropdown = null;
+  }
+});
     
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {

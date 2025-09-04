@@ -273,8 +273,8 @@ body.popup-open {
 
 .dropdown-options {
   position: absolute;
-  top: 100%;
-  right: 0;
+  top: 100%; /* fallback if JS fails */
+  left: 0;
   width: 100%;
   border: 1px solid #ddd;
   border-top: none;
@@ -283,13 +283,12 @@ body.popup-open {
   max-height: 200px;
   overflow-y: auto;
   display: none;
-  /* Hide scrollbar */
-  scrollbar-width: none; /* Firefox */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.dropdown-options::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Edge */
-}
+/* hide scrollbar */
+.dropdown-options::-webkit-scrollbar { display: none; }
+
 
 .dropdown-option {
   padding: 12px 20px;
