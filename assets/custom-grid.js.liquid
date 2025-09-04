@@ -138,7 +138,10 @@ function initCustomGrid() {
           if (name === "size") {
   sizeOptionContainer.style.display = 'block';
   
-  // Add placeholder option
+  // Clear any previous options
+  sizeSelect.innerHTML = '';
+
+  // Add placeholder as first option
   const placeholderOption = document.createElement("option");
   placeholderOption.value = "";
   placeholderOption.textContent = "Choose your size";
@@ -146,15 +149,15 @@ function initCustomGrid() {
   placeholderOption.selected = true;
   sizeSelect.appendChild(placeholderOption);
 
-  // populate actual size options
+  // Add real size options
   option.values.forEach((val) => {
     const optionElement = document.createElement("option");
     optionElement.value = val;
     optionElement.textContent = val;
-    // REMOVE any 'selected = true' here
     sizeSelect.appendChild(optionElement);
   });
 
+  // Update price when user selects a size
   sizeSelect.onchange = updatePrice;
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
