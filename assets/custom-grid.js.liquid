@@ -8,12 +8,13 @@ function initCustomGrid() {
   const popupPrice = document.getElementById("popup-price");
   const popupDescription = document.getElementById("popup-description");
   const sizeSelect = document.getElementById("size-select");
-  const colorSelect = document.getElementById("color-select");
   const addToCartBtn = document.getElementById("add-to-cart");
   const colorOptionContainer = document.getElementById("color-option-container");
   const sizeOptionContainer = document.getElementById("size-option-container");
+  const colorSwatchesContainer = document.getElementById("color-swatches");
 
   let currentProduct = null;
+  let selectedColor = null;
 
   // Format money function
   function formatMoney(cents) {
@@ -37,13 +38,11 @@ function initCustomGrid() {
     fetch('/cart.js')
       .then(response => response.json())
       .then(cart => {
-        // Update all cart count elements
         const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
         cartCounts.forEach(element => {
           element.textContent = cart.item_count;
         });
         
-        // Dispatch event for other parts of the theme
         document.dispatchEvent(new CustomEvent('cart:updated', {
           detail: {
             cart: cart
@@ -59,7 +58,6 @@ function initCustomGrid() {
   function updatePrice() {
     if (!currentProduct) return;
     
-    const selectedColor = colorSelect.value;
     const selectedSize = sizeSelect.value;
     
     // Create options array in the correct order
@@ -108,7 +106,7 @@ function initCustomGrid() {
 
       // Clear previous options
       sizeSelect.innerHTML = "";
-      colorSelect.innerHTML = "";
+      colorSwatchesContainer.innerHTML = "";
       
       // Hide option containers initially
       colorOptionContainer.style.display = 'none';
@@ -127,11 +125,46 @@ function initCustomGrid() {
             });
           } else if (option.name.toLowerCase() === "color") {
             colorOptionContainer.style.display = 'block';
-            option.values.forEach(val => {
-              const optionElement = document.createElement("option");
-              optionElement.value = val;
-              optionElement.textContent = val;
-              colorSelect.appendChild(optionElement);
+            
+            // Create color swatches instead of dropdown
+            option.values.forEach((val, index) => {
+              const swatch = document.createElement("div");
+              swatch.classList.add("color-swatch");
+              
+              // Add specific class for white/black colors
+              if (val.toLowerCase() === "white") {
+                swatch.classList.add("white");
+                swatch.style.backgroundColor = "#fff";
+              } else if (val.toLowerCase() === "black") {
+                swatch.classList.add("black");
+                swatch.style.backgroundColor = "#000";
+              } else {
+                // For other colors, try to set background color based on name
+                swatch.style.backgroundColor = val.toLowerCase();
+              }
+              
+              swatch.dataset.value = val;
+              swatch.title = val;
+              
+              // Select first color by default
+              if (index === 0) {
+                swatch.classList.add("selected");
+                selectedColor = val;
+              }
+              
+              swatch.addEventListener("click", () => {
+                // Remove selected class from all swatches
+                document.querySelectorAll(".color-swatch").forEach(s => {
+                  s.classList.remove("selected");
+                });
+                
+                // Add selected class to clicked swatch
+                swatch.classList.add("selected");
+                selectedColor = val;
+                updatePrice();
+              });
+              
+              colorSwatchesContainer.appendChild(swatch);
             });
           }
         });
@@ -139,7 +172,6 @@ function initCustomGrid() {
 
       // Add event listeners for option changes
       sizeSelect.addEventListener('change', updatePrice);
-      colorSelect.addEventListener('change', updatePrice);
       
       // Show popup
       popup.classList.remove("hidden");
@@ -178,7 +210,6 @@ function initCustomGrid() {
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
     
-    const selectedColor = colorSelect.value;
     const selectedSize = sizeSelect.value;
     
     // Create options array in the correct order
