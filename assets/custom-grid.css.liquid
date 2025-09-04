@@ -148,7 +148,7 @@
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ddd;
-  
+  /* padding: 0 15px 0 0; leave space for left bar via ::before and margin-right */
   text-align: left;
   cursor: pointer;
   transition: background 0.15s ease, color 0.15s ease;
@@ -166,7 +166,7 @@
 .color-option::before {
   content: "";
   display: block;
-  width: 6px;         /* adjust width if you want thicker bar */
+  width: 10px;         /* adjust width if you want thicker bar */
   height: 100%;        /* full height of the option block */
   flex-shrink: 0;
   margin-right: 12px;  /* space between bar and text */
