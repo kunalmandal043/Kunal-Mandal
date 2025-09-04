@@ -1,8 +1,6 @@
 {{ 'custom-grid.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'custom-grid.js' | asset_url }}" defer></script>
 
-
-
 {% assign all_products_collection = collections['all-products'] %}
 
 <section class="custom-grid">
@@ -46,8 +44,10 @@
 </section>
 
 <!-- Product Popup -->
-<!-- provide placeholder image url via data-placeholder so external JS doesn't need Liquid -->
-<div id="product-popup" class="popup hidden" data-placeholder="{{ 'placeholder.png' | asset_url }}">
+<div id="product-popup" class="popup hidden" 
+     data-placeholder="{{ 'placeholder.png' | asset_url }}"
+     data-arrow-lower="{{ 'choose-size-lower.svg' | asset_url }}"
+     data-arrow-upper="{{ 'choose-size-upper.svg' | asset_url }}">
   <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="popup-title">
     <button id="popup-close" aria-label="Close popup">&times;</button>
 
@@ -66,9 +66,7 @@
     <div class="popup-bottom">
       <div class="popup-option" id="color-option-container" style="display:none;">
         <label for="color-select">Color:</label>
-        <!-- Hidden select (optional, keeps compatibility with logic that expects a select) -->
         <select id="color-select" style="display:none;"></select>
-        <!-- Visible color rows with permanent left bar -->
         <div id="color-swatches" class="color-swatches"></div>
       </div>
 
@@ -78,7 +76,11 @@
           <select id="size-select">
             <option value="" selected disabled hidden>Choose your size</option>
           </select>
-          <span class="size-arrow">v</span>
+          <img class="size-arrow" 
+          src="{{ 'choose-size-lower.svg' | asset_url }}" 
+          alt="Dropdown arrow"
+          width="16" 
+          height="16">
         </div>
       </div>
 
