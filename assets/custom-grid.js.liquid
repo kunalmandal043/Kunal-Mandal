@@ -16,7 +16,7 @@ function initCustomGrid() {
   let currentProduct = null;
   let selectedColor = null;
 
-  // Format money function
+  // Format money
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", {
       style: "currency",
@@ -24,7 +24,7 @@ function initCustomGrid() {
     });
   }
 
-  // Find variant based on selected options
+  // Find variant
   function findVariant(product, selectedOptions) {
     return product.variants.find(variant => {
       return variant.options.every((option, index) => {
@@ -33,7 +33,7 @@ function initCustomGrid() {
     });
   }
 
-  // Update cart count in header
+  // Update cart count
   function updateCartCount() {
     fetch('/cart.js')
       .then(response => response.json())
@@ -42,23 +42,18 @@ function initCustomGrid() {
         cartCounts.forEach(element => {
           element.textContent = cart.item_count;
         });
-
-        document.dispatchEvent(new CustomEvent('cart:updated', {
-          detail: { cart: cart }
-        }));
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
       })
-      .catch(error => {
-        console.error('Error updating cart count:', error);
-      });
+      .catch(error => console.error('Error updating cart count:', error));
   }
 
-  // Update price when options change
+  // Update price
   function updatePrice() {
     if (!currentProduct) return;
 
     const selectedSize = sizeSelect.value;
-
     const selectedOptions = [];
+
     currentProduct.options.forEach(option => {
       if (option.name.toLowerCase() === "color") {
         selectedOptions.push(selectedColor);
@@ -75,7 +70,7 @@ function initCustomGrid() {
     }
   }
 
-  // Show product popup
+  // Show popup
   async function showProductPopup(handle) {
     if (!handle) return;
 
@@ -84,20 +79,16 @@ function initCustomGrid() {
       const data = await res.json();
       currentProduct = data;
 
-      // Image
-      popupImage.src = data.images && data.images.length > 0
-        ? data.images[0]
-        : "{{ 'placeholder.png' | asset_url }}";
+      popupImage.src = data.images?.[0] || "{{ 'placeholder.png' | asset_url }}";
       popupImage.alt = data.title;
 
-      // Title, price, description
       popupTitle.textContent = data.title;
-      if (data.variants && data.variants.length > 0) {
+      if (data.variants?.length > 0) {
         popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
       }
       popupDescription.innerHTML = data.description || "";
 
-      // Clear old options
+      // Reset options
       sizeSelect.innerHTML = "";
       colorSwatchesContainer.innerHTML = "";
       colorOptionContainer.style.display = 'none';
@@ -109,10 +100,10 @@ function initCustomGrid() {
           if (option.name.toLowerCase() === "size") {
             sizeOptionContainer.style.display = 'block';
             option.values.forEach(val => {
-              const optionElement = document.createElement("option");
-              optionElement.value = val;
-              optionElement.textContent = val;
-              sizeSelect.appendChild(optionElement);
+              const opt = document.createElement("option");
+              opt.value = val;
+              opt.textContent = val;
+              sizeSelect.appendChild(opt);
             });
           } else if (option.name.toLowerCase() === "color") {
             colorOptionContainer.style.display = 'block';
@@ -124,14 +115,12 @@ function initCustomGrid() {
               const swatch = document.createElement("div");
               swatch.classList.add("color-swatch");
 
-              // Use color name/hex directly
               try {
                 swatch.style.backgroundColor = val;
-              } catch (e) {
-                swatch.style.backgroundColor = "#ccc"; // fallback
+              } catch {
+                swatch.style.backgroundColor = "#ccc";
               }
 
-              // Special case for white so it's visible
               if (val.toLowerCase() === "white") {
                 swatch.style.border = "1px solid #aaa";
               }
@@ -163,10 +152,10 @@ function initCustomGrid() {
         });
       }
 
-      sizeSelect.addEventListener('change', updatePrice);
+      sizeSelect.addEventListener("change", updatePrice);
 
       popup.classList.remove("hidden");
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
     } catch (err) {
       console.error("Error loading product:", err);
     }
@@ -176,27 +165,26 @@ function initCustomGrid() {
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
-    popupIcon.addEventListener("click", (e) => {
+    popupIcon.addEventListener("click", e => {
       e.stopPropagation();
-      const handle = item.dataset.handle;
-      showProductPopup(handle);
+      showProductPopup(item.dataset.handle);
     });
   });
 
   // Close popup
   popupClose.addEventListener("click", () => {
     popup.classList.add("hidden");
-    document.body.style.overflow = '';
+    document.body.style.overflow = "";
   });
 
   popup.addEventListener("click", e => {
     if (e.target === popup) {
       popup.classList.add("hidden");
-      document.body.style.overflow = '';
+      document.body.style.overflow = "";
     }
   });
 
-  // Add to Cart
+  // Add to cart
   addToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
 
@@ -220,9 +208,9 @@ function initCustomGrid() {
 
     try {
       addToCartBtn.disabled = true;
-      addToCartBtn.querySelector('span').textContent = 'Adding...';
+      addToCartBtn.querySelector("span").textContent = "Adding...";
 
-      const response = await fetch("/cart/add.js", {
+      const res = await fetch("/cart/add.js", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -231,30 +219,30 @@ function initCustomGrid() {
         body: JSON.stringify({ id: variant.id, quantity: 1 })
       });
 
-      if (response.ok) {
+      if (res.ok) {
         updateCartCount();
         alert("Product added to cart!");
         popup.classList.add("hidden");
-        document.body.style.overflow = '';
+        document.body.style.overflow = "";
       } else {
-        throw new Error('Failed to add to cart');
+        throw new Error("Failed to add to cart");
       }
     } catch (err) {
       console.error(err);
       alert("Could not add product to cart.");
     } finally {
       addToCartBtn.disabled = false;
-      addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
+      addToCartBtn.querySelector("span").textContent = "ADD TO CART ➜";
     }
   });
 }
 
 // Init
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', initCustomGrid);
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initCustomGrid);
 } else {
   initCustomGrid();
 }
-if (typeof Shopify !== 'undefined') {
-  document.addEventListener('shopify:section:load', initCustomGrid);
+if (typeof Shopify !== "undefined") {
+  document.addEventListener("shopify:section:load", initCustomGrid);
 }
