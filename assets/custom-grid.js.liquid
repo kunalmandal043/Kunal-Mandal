@@ -79,6 +79,36 @@ function initCustomGrid() {
       } else {
         this.style.textAlign = "center";
       }
+      updatePrice();
+    });
+  }
+
+  // Function to add hover effects to size options
+  function addSizeOptionHoverEffects() {
+    if (!sizeSelect) return;
+    
+    // Add event listener for when the dropdown is opened
+    sizeSelect.addEventListener('mousedown', function() {
+      // Add hover effect to options when dropdown is open
+      const options = this.querySelectorAll('option');
+      options.forEach(option => {
+        // Skip the placeholder option
+        if (option.value === "") return;
+        
+        // Add event listeners for mouseenter and mouseleave
+        option.addEventListener('mouseenter', function() {
+          this.style.backgroundColor = 'black';
+          this.style.color = 'white';
+        });
+        
+        option.addEventListener('mouseleave', function() {
+          // Reset to default styles unless it's the selected option
+          if (!this.selected) {
+            this.style.backgroundColor = '';
+            this.style.color = '';
+          }
+        });
+      });
     });
   }
 
@@ -116,10 +146,14 @@ function initCustomGrid() {
               optEl.textContent = val; 
               sizeSelect.appendChild(optEl);
             });
-            sizeSelect.onchange = updatePrice;
             
             // Set up text alignment for the size dropdown
             updateSizeSelectAlignment();
+            
+            // Add hover effects to size options
+            addSizeOptionHoverEffects();
+            
+            sizeSelect.onchange = updatePrice;
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
             option.values.forEach(val => {
