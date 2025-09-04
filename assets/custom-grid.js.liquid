@@ -198,6 +198,9 @@ function initCustomGrid() {
               
               colorSwatchesContainer.appendChild(colorOption);
             });
+            
+            // Trigger initial price update after creating color options
+            updatePrice();
           }
         });
       }
@@ -294,7 +297,7 @@ function initCustomGrid() {
     } finally {
       // Reset button state
       addToCartBtn.disabled = false;
-      addToCartBtn.querySelector('span').textContent = 'Add to Cart';
+      addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
     }
   });
 }
