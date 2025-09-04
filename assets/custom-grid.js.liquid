@@ -40,6 +40,9 @@ function initCustomGrid() {
     if (!product || !product.variants) return null;
     return product.variants.find(variant => {
       const vOpts = getVariantOptionsArray(variant);
+      if (vOpts.length !== selectedOptions.length) {
+        return selectedOptions.every((sel, i) => sel === vOpts[i]);
+      }
       return vOpts.every((opt, idx) => selectedOptions[idx] === opt);
     });
   }
@@ -90,16 +93,6 @@ function initCustomGrid() {
               const optEl = document.createElement("option");
               optEl.value = val; optEl.textContent = val; sizeSelect.appendChild(optEl);
             });
-
-            // Show first 3 and scroll rest
-            if(option.values.length > 3){
-              sizeSelect.size = 3;
-              sizeSelect.style.overflowY = 'auto';
-            }
-
-            // Focus automatically to show dropdown
-            sizeSelect.focus();
-
             sizeSelect.onchange = updatePrice;
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
@@ -139,10 +132,7 @@ function initCustomGrid() {
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
-    popupIcon.addEventListener("click", e => { 
-      e.stopPropagation(); 
-      showProductPopup(item.dataset.handle); 
-    });
+    popupIcon.addEventListener("click", e => { e.stopPropagation(); showProductPopup(item.dataset.handle); });
   });
 
   if (popupClose) popupClose.addEventListener("click", () => { popup.classList.add("hidden"); document.body.style.overflow = ''; });
