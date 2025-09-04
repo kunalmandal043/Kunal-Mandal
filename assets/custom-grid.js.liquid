@@ -71,89 +71,127 @@ function initCustomGrid() {
 
   // Function to create custom dropdown
   function createCustomDropdown(container, options, placeholder) {
-  const dropdownContainer = document.createElement('div');
-  dropdownContainer.className = 'custom-dropdown';
-
-  const button = document.createElement('button');
-  button.className = 'dropdown-button placeholder';
-  button.textContent = placeholder;
-
-  const optionsContainer = document.createElement('div');
-  optionsContainer.className = 'dropdown-options';
-
-  // Add options
-  options.forEach(option => {
-    const optionElement = document.createElement('div');
-    optionElement.className = 'dropdown-option';
-    optionElement.textContent = option;
-    optionElement.dataset.value = option;
-
-    optionElement.addEventListener('click', () => {
-      // Select option
-      optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
-      optionElement.classList.add('selected');
-      button.textContent = option;
-      button.classList.remove('placeholder');
-      selectedSize = option;
-
-      optionsContainer.style.display = 'none';
-      const arrow = button.querySelector('img.size-arrow');
-      if (arrow) arrow.src = lowerArrow;
-      preventBodyScroll(false);
-      currentDropdown = null;
-      updatePrice();
+    // Create dropdown elements
+    const dropdownContainer = document.createElement('div');
+    dropdownContainer.className = 'custom-dropdown';
+    
+    const button = document.createElement('button');
+    button.className = 'dropdown-button placeholder';
+    button.textContent = placeholder;
+    
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'dropdown-options';
+    
+    // Add options
+    options.forEach(option => {
+      const optionElement = document.createElement('div');
+      optionElement.className = 'dropdown-option';
+      optionElement.textContent = option;
+      optionElement.dataset.value = option;
+      
+      optionElement.addEventListener('click', () => {
+        // Update selected option
+        optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => {
+          opt.classList.remove('selected');
+        });
+        optionElement.classList.add('selected');
+        
+        // Update button text
+        button.textContent = option;
+        button.classList.remove('placeholder');
+        
+        // Set selected value
+        selectedSize = option;
+        
+        // Close dropdown
+        optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
+        preventBodyScroll(false);
+        currentDropdown = null;
+        
+        // Update price
+        updatePrice();
+      });
+      
+      optionsContainer.appendChild(optionElement);
     });
-
-    optionsContainer.appendChild(optionElement);
-  });
-
-  // Add arrow icon inside button
-  const arrow = document.createElement('img');
-  arrow.className = 'size-arrow';
-  arrow.src = lowerArrow;
-  arrow.width = 16;
-  arrow.height = 16;
-  arrow.style.pointerEvents = 'none';
-  button.appendChild(arrow);
-
-  // Toggle dropdown on button click
-  button.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isVisible = optionsContainer.style.display === 'block';
-
-    // Close other dropdowns
-    if (currentDropdown && currentDropdown !== optionsContainer) {
-      currentDropdown.style.display = 'none';
-      const otherArrow = currentDropdown.parentElement.querySelector('.size-arrow');
-      if (otherArrow) otherArrow.src = lowerArrow;
+    
+    // Toggle dropdown on button click
+    button.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isVisible = optionsContainer.style.display === 'block';
+      
+      // Close any other open dropdown
+      if (currentDropdown && currentDropdown !== optionsContainer) {
+        currentDropdown.style.display = 'none';
+      }
+      
+      optionsContainer.style.display = isVisible ? 'none' : 'block';
+      
+      // Update arrow
+      if (sizeArrow) {
+        if (optionsContainer.style.display === 'block') {
+          sizeArrow.classList.add('rotated');
+          sizeArrow.src = upperArrow;
+        } else {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
+      }
+      
+      // Prevent body scrolling when dropdown is open
+      if (optionsContainer.style.display === 'block') {
+        preventBodyScroll(true);
+        currentDropdown = optionsContainer;
+      } else {
+        preventBodyScroll(false);
+        currentDropdown = null;
+      }
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
+        optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
+        preventBodyScroll(false);
+        currentDropdown = null;
+      }
+    });
+    
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && optionsContainer.style.display === 'block') {
+        optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
+        preventBodyScroll(false);
+        currentDropdown = null;
+      }
+    });
+    
+    // Assemble dropdown
+    dropdownContainer.appendChild(button);
+    dropdownContainer.appendChild(optionsContainer);
+    
+    // Replace the existing select with our custom dropdown
+    const select = container.querySelector('select');
+    if (select) {
+      container.replaceChild(dropdownContainer, select);
+    } else {
+      container.appendChild(dropdownContainer);
     }
-
-    optionsContainer.style.display = isVisible ? 'none' : 'block';
-    arrow.src = isVisible ? lowerArrow : upperArrow;
-    preventBodyScroll(!isVisible);
-    currentDropdown = isVisible ? null : optionsContainer;
-  });
-
-  // Close dropdown when clicking outside
-  document.addEventListener('click', (e) => {
-    if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
-      optionsContainer.style.display = 'none';
-      arrow.src = lowerArrow;
-      preventBodyScroll(false);
-      currentDropdown = null;
-    }
-  });
-
-  dropdownContainer.appendChild(button);
-  dropdownContainer.appendChild(optionsContainer);
-
-  const select = container.querySelector('select');
-  if (select) container.replaceChild(dropdownContainer, select);
-  else container.appendChild(dropdownContainer);
-
-  return dropdownContainer;
-}
-
+    
+    return dropdownContainer;
+  }
 
   async function showProductPopup(handle) {
     if (!handle) return;
