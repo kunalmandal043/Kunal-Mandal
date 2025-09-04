@@ -16,39 +16,11 @@ function initCustomGrid() {
 
   const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
 
+  const lowerArrow = `${Shopify?.theme?.assetsUrl || ''}choose-size-lower.svg`;
+  const upperArrow = `${Shopify?.theme?.assetsUrl || ''}choose-size-upper.svg`;
+
   let currentProduct = null;
   let selectedColor = null;
-
-  // SVG paths for arrow toggle
-  const lowerArrow = '/assets/choose-size-lower.svg';
-  const upperArrow = '/assets/choose-size-upper.svg';
-
-  // Create arrow span inside size wrapper
-  let sizeWrapper = document.querySelector(".size-select-wrapper");
-  if (!sizeWrapper) {
-    sizeWrapper = document.createElement("div");
-    sizeWrapper.classList.add("size-select-wrapper");
-    sizeSelect.parentNode.insertBefore(sizeWrapper, sizeSelect);
-    sizeWrapper.appendChild(sizeSelect);
-
-    const arrowSpan = document.createElement("span");
-    arrowSpan.classList.add("size-arrow");
-    arrowSpan.innerHTML = `<img src="${lowerArrow}" alt="Dropdown arrow">`;
-    sizeWrapper.appendChild(arrowSpan);
-  }
-
-  const sizeArrow = sizeWrapper.querySelector(".size-arrow");
-
-  // Toggle arrow when size select is clicked
-  sizeWrapper.addEventListener("click", () => {
-    const img = sizeArrow.querySelector("img");
-    const currentSrc = img.src;
-    if (currentSrc.includes("choose-size-lower.svg")) {
-      img.src = upperArrow;
-    } else {
-      img.src = lowerArrow;
-    }
-  });
 
   // Format money function (expects cents)
   function formatMoney(cents) {
@@ -87,45 +59,42 @@ function initCustomGrid() {
       .then(response => response.json())
       .then(cart => {
         const cartCounts = document.querySelectorAll('.cart-count, [data-cart-count], #cart-count');
-        cartCounts.forEach(element => {
-          element.textContent = cart.item_count;
-        });
-        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart: cart } }));
+        cartCounts.forEach(el => el.textContent = cart.item_count);
+        document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
       })
-      .catch(error => {
-        console.error('Error updating cart count:', error);
-      });
+      .catch(err => console.error(err));
   }
 
   function updatePrice() {
     if (!currentProduct) return;
-    const selectedSizeVal = sizeSelect ? sizeSelect.value : null;
+    const selectedSize = sizeSelect ? sizeSelect.value : null;
     const selectedOptions = [];
 
     (currentProduct.options || []).forEach(option => {
       const name = option.name.toLowerCase();
       if (name === "color") selectedOptions.push(selectedColor);
-      else if (name === "size") selectedOptions.push(selectedSizeVal || option.values[0]);
-      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+      else if (name === "size") selectedOptions.push(selectedSize || option.values[0]);
+      else selectedOptions.push(option.values?.[0] || null);
     });
 
     const variant = findVariant(currentProduct, selectedOptions);
-    if (variant) popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
+    if (variant) {
+      popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
+    }
   }
 
   async function showProductPopup(handle) {
     if (!handle) return;
+
     try {
       const res = await fetch(`/products/${handle}.js`);
       const data = await res.json();
       currentProduct = data;
 
-      popupImage.src = (data.images && data.images.length > 0) ? data.images[0] : placeholderSrc;
+      popupImage.src = data.images?.[0] || placeholderSrc;
       popupImage.alt = data.title || "Product preview";
       popupTitle.textContent = data.title || "";
-      popupPrice.textContent = (data.variants && data.variants.length > 0)
-        ? formatMoney(Math.round(parseFloat(data.variants[0].price) * 100))
-        : "";
+      popupPrice.textContent = formatMoney(Math.round(parseFloat(data.variants?.[0]?.price || 0) * 100));
       popupDescription.innerHTML = data.description || "";
 
       // Clear old options
@@ -135,22 +104,50 @@ function initCustomGrid() {
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
       selectedColor = null;
-      sizeArrow.querySelector("img").src = lowerArrow;
 
+      // Remove old wrapper if exists
+      const oldWrapper = sizeSelect.parentNode;
+      if (oldWrapper.classList.contains('size-select-wrapper')) {
+        oldWrapper.replaceWith(sizeSelect);
+      }
+
+      // Build options dynamically
       if (Array.isArray(data.options)) {
         data.options.forEach(option => {
           const name = option.name.toLowerCase();
+
           if (name === "size") {
             sizeOptionContainer.style.display = 'block';
-            option.values.forEach(val => {
-              const optionElement = document.createElement("option");
-              optionElement.value = val;
-              optionElement.textContent = val;
-              sizeSelect.appendChild(optionElement);
+
+            option.values.forEach((val, idx) => {
+              const optEl = document.createElement("option");
+              optEl.value = val;
+              optEl.textContent = val;
+              sizeSelect.appendChild(optEl);
             });
+
+            // Wrap select with arrow span
+            const wrapper = document.createElement("div");
+            wrapper.classList.add("size-select-wrapper");
+            sizeSelect.parentNode.insertBefore(wrapper, sizeSelect);
+            wrapper.appendChild(sizeSelect);
+
+            const arrowSpan = document.createElement("span");
+            arrowSpan.classList.add("size-arrow");
+            arrowSpan.innerHTML = `<img src="${lowerArrow}" alt="Dropdown arrow">`;
+            wrapper.appendChild(arrowSpan);
+
+            const arrowImg = wrapper.querySelector("img");
+            wrapper.addEventListener("click", (e) => {
+              e.stopPropagation();
+              arrowImg.src = arrowImg.src.includes("choose-size-lower.svg") ? upperArrow : lowerArrow;
+            });
+
             sizeSelect.onchange = updatePrice;
+
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
+
             option.values.forEach(val => {
               const opt = document.createElement("option");
               opt.value = val;
@@ -161,8 +158,9 @@ function initCustomGrid() {
             option.values.forEach((val, index) => {
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
-              const cleaned = (val || "").toLowerCase().trim();
-              if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") colorOption.classList.add("is-white");
+              if (["white", "#fff", "#ffffff"].includes(val.toLowerCase())) {
+                colorOption.classList.add("is-white");
+              }
               colorOption.style.setProperty("--color-bar", val);
 
               const colorName = document.createElement("span");
@@ -176,8 +174,12 @@ function initCustomGrid() {
               }
 
               colorOption.addEventListener("click", () => {
-                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
+                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => {
+                  opt.classList.remove("selected");
+                  opt.setAttribute("aria-selected", "false");
+                });
                 colorOption.classList.add("selected");
+                colorOption.setAttribute("aria-selected", "true");
                 selectedColor = val;
                 hiddenColorSelect.value = val;
                 updatePrice();
@@ -198,10 +200,11 @@ function initCustomGrid() {
     }
   }
 
+  // Grid popup icons
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
-    popupIcon.addEventListener("click", e => {
+    popupIcon.addEventListener("click", (e) => {
       e.stopPropagation();
       const handle = item.dataset.handle;
       showProductPopup(handle);
@@ -227,14 +230,15 @@ function initCustomGrid() {
   if (addToCartBtn) {
     addToCartBtn.addEventListener("click", async () => {
       if (!currentProduct) return;
-      const selectedSizeVal = sizeSelect ? sizeSelect.value : null;
+
+      const selectedSize = sizeSelect.value;
       const selectedOptions = [];
 
       (currentProduct.options || []).forEach(option => {
         const name = option.name.toLowerCase();
         if (name === "color") selectedOptions.push(selectedColor);
-        else if (name === "size") selectedOptions.push(selectedSizeVal || option.values[0]);
-        else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+        else if (name === "size") selectedOptions.push(selectedSize || option.values[0]);
+        else selectedOptions.push(option.values?.[0] || null);
       });
 
       const variant = findVariant(currentProduct, selectedOptions);
@@ -246,6 +250,7 @@ function initCustomGrid() {
       try {
         addToCartBtn.disabled = true;
         addToCartBtn.querySelector('span').textContent = 'Adding...';
+
         const response = await fetch("/cart/add.js", {
           method: "POST",
           headers: {
@@ -260,9 +265,7 @@ function initCustomGrid() {
           alert("Product added to cart!");
           popup.classList.add("hidden");
           document.body.style.overflow = '';
-        } else {
-          throw new Error('Failed to add to cart');
-        }
+        } else throw new Error('Failed to add to cart');
       } catch (err) {
         console.error(err);
         alert("Could not add product to cart.");
