@@ -115,52 +115,47 @@ function initCustomGrid() {
               sizeSelect.appendChild(optionElement);
             });
           } else if (option.name.toLowerCase() === "color") {
-            colorOptionContainer.style.display = 'block';
+              colorOptionContainer.style.display = 'block';
 
-            option.values.forEach((val, index) => {
-              const colorOption = document.createElement("div");
-              colorOption.classList.add("color-option");
+              // Clear both
+              colorSwatchesContainer.innerHTML = "";
+              document.getElementById("color-strip").innerHTML = "";
 
-              const swatch = document.createElement("div");
-              swatch.classList.add("color-swatch");
+              option.values.forEach((val, index) => {
+                // --- permanent strip ---
+                const stripSwatch = document.createElement("div");
+                stripSwatch.classList.add("strip-swatch");
+                try {
+                  stripSwatch.style.backgroundColor = val;
+                } catch (e) {
+                    stripSwatch.style.backgroundColor = "#ccc";
+                  }
+                  document.getElementById("color-strip").appendChild(stripSwatch);
 
-              // Use color name/hex directly
-              try {
-                swatch.style.backgroundColor = val;
-              } catch (e) {
-                swatch.style.backgroundColor = "#ccc"; // fallback
-              }
+                  // --- clickable option ---
+                  const colorOption = document.createElement("div");
+                  colorOption.classList.add("color-option");
 
-              // Special case for white so it's visible
-              if (val.toLowerCase() === "white") {
-                swatch.style.border = "1px solid #aaa";
-              }
+                  const colorName = document.createElement("span");
+                  colorName.classList.add("color-name");
+                  colorName.textContent = val;
 
-              const colorName = document.createElement("span");
-              colorName.classList.add("color-name");
-              colorName.textContent = val;
+                  colorOption.appendChild(colorName);
 
-              colorOption.appendChild(swatch);
-              colorOption.appendChild(colorName);
+                  if (index === 0) {
+                    colorOption.classList.add("selected");
+                    selectedColor = val;
+                  }
 
-              if (index === 0) {
-                colorOption.classList.add("selected");
-                selectedColor = val;
-              }
+                  colorOption.addEventListener("click", () => {
+                    document.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
+                    colorOption.classList.add("selected");
+                    selectedColor = val;
+                    updatePrice();
+                  });
 
-              colorOption.addEventListener("click", () => {
-                document.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
-                colorOption.classList.add("selected");
-                selectedColor = val;
-                updatePrice();
-              });
-
-              colorSwatchesContainer.appendChild(colorOption);
-            });
-
-            updatePrice();
-          }
-        });
+                  colorSwatchesContainer.appendChild(colorOption);
+                });
       }
 
       sizeSelect.addEventListener('change', updatePrice);
