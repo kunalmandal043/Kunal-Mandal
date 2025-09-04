@@ -144,16 +144,15 @@
   display: flex;
   align-items: center;
   width: 100%;
-  box-sizing: border-box;
   border: 1px solid #ddd;
   padding: 12px 15px;
-  text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  border-radius: 0;
   margin: 0;
+  overflow: hidden; /* keep strip contained */
 }
+
 
 /* For exactly 2 colors, split 50/50 */
 .color-option:nth-child(1):nth-last-child(2),
@@ -172,19 +171,16 @@
 }
 
 /* Left strip swatch - always visible and prominent */
+/* Left strip swatch - full height, not square */
 .color-swatch {
-  width: 24px;
-  height: 24px;
-  margin-right: 15px;
+  width: 10px;                /* thin strip */
+  height: 100%;               /* full height of option */
+  margin-right: 15px;         /* spacing before text */
   flex-shrink: 0;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  /* Ensure the swatch is always visible */
-  position: relative;
-  z-index: 2;
-  /* Default background for swatches */
-  background-color: #ccc;
+  background-color: #ccc;     /* fallback if no color */
+  border: none;               /* clean edge */
 }
+
 
 .color-swatch.white {
   background-color: #fff;
