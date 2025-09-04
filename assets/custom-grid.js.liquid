@@ -167,7 +167,7 @@ function initCustomGrid() {
     try {
       addToCartBtn.disabled = true;
       // Optional: show a loading SVG
-      addToCartIcon.src = "add-to-cart-loading.svg";
+      // addToCartIcon.src = "add-to-cart-loading.svg";
 
       const response = await fetch("/cart/add.js", {
         method: "POST",
