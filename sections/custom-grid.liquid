@@ -71,13 +71,17 @@
       </div>
 
       <div class="popup-option" id="size-option-container" style="display:none;">
-          <label for="size-select">Size:</label>
-          <div class="size-select-wrapper">
-            <select id="size-select">
-              <option value="" selected disabled hidden>Choose your size</option>
-            </select>
-            <span class="size-arrow" style="background-image: url('{{ "choose-size-lower.svg" | asset_url }}');"></span>
-          </div>
+        <label for="size-select">Size:</label>
+        <div class="size-select-wrapper">
+          <select id="size-select">
+            <option value="" selected disabled hidden>Choose your size</option>
+          </select>
+          <img class="size-arrow" 
+          src="{{ 'choose-size-lower.svg' | asset_url }}" 
+          alt="Dropdown arrow"
+          width="16" 
+          height="16">
+        </div>
       </div>
 
       <button id="add-to-cart">
