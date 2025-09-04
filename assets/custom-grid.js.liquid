@@ -21,6 +21,7 @@ function initCustomGrid() {
   let selectedColor = null;
   let selectedSize = null;
   let currentDropdown = null;
+  let currentCustomDropdown = null; // Track the current custom dropdown
 
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -71,9 +72,16 @@ function initCustomGrid() {
 
   // Function to create custom dropdown
   function createCustomDropdown(container, options, placeholder) {
+    // Remove any existing custom dropdown first
+    if (currentCustomDropdown) {
+      currentCustomDropdown.remove();
+      currentCustomDropdown = null;
+    }
+    
     // Create dropdown elements
     const dropdownContainer = document.createElement('div');
     dropdownContainer.className = 'custom-dropdown';
+    currentCustomDropdown = dropdownContainer;
     
     const button = document.createElement('button');
     button.className = 'dropdown-button placeholder';
@@ -215,6 +223,12 @@ function initCustomGrid() {
       selectedColor = null;
       selectedSize = null;
 
+      // Remove any existing custom dropdown
+      if (currentCustomDropdown) {
+        currentCustomDropdown.remove();
+        currentCustomDropdown = null;
+      }
+
       if (Array.isArray(data.options)) {
         data.options.forEach(option => {
           const name = option.name.toLowerCase();
@@ -289,6 +303,12 @@ function initCustomGrid() {
     popup.classList.add("hidden"); 
     document.body.classList.remove('popup-open');
     preventBodyScroll(false);
+    
+    // Clean up custom dropdown when closing popup
+    if (currentCustomDropdown) {
+      currentCustomDropdown.remove();
+      currentCustomDropdown = null;
+    }
   });
 
   if (popup) popup.addEventListener("click", e => { 
@@ -296,6 +316,12 @@ function initCustomGrid() {
       popup.classList.add("hidden"); 
       document.body.classList.remove('popup-open');
       preventBodyScroll(false);
+      
+      // Clean up custom dropdown when closing popup
+      if (currentCustomDropdown) {
+        currentCustomDropdown.remove();
+        currentCustomDropdown = null;
+      }
     } 
   });
 
@@ -341,6 +367,12 @@ function initCustomGrid() {
           popup.classList.add("hidden");
           document.body.classList.remove('popup-open');
           preventBodyScroll(false);
+          
+          // Clean up custom dropdown when adding to cart
+          if (currentCustomDropdown) {
+            currentCustomDropdown.remove();
+            currentCustomDropdown = null;
+          }
         } else throw new Error('Failed to add to cart');
       } catch (err) {
         console.error(err);
