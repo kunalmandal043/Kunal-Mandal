@@ -280,6 +280,11 @@
 }
 
 .size-select-wrapper .size-arrow {
+  border-left: 1px solid #ccc; /* change color as needed */
+  padding-left: 16px; /* optional, space between arrow and border */
+  height: 100%;        /* ensure it matches arrow image height */
+  width: 16px;         /* ensure it matches arrow image width */
+  box-sizing: content-box;
   position: absolute;
   right: 20px;
   top: 50%;
@@ -289,13 +294,7 @@
   transition: transform 0.2s ease;
 }
 
-.size-select-wrapper .size-arrow {
-  border-left: 1px solid #ccc; /* change color as needed */
-  padding-left: 16px; /* optional, space between arrow and border */
-  height: 100%;        /* ensure it matches arrow image height */
-  width: 16px;         /* ensure it matches arrow image width */
-  box-sizing: content-box;
-}
+
 
 /* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {
