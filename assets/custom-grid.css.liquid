@@ -131,13 +131,13 @@
   letter-spacing: -0.01em;
 }
 
-/* Color Options - FIXED: Ensure color strips are always visible */
+/* Color Options - Updated with visible left strip swatches */
 .color-swatches {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   margin-top: 8px;
-  gap: 8px; /* Add some gap between options */
+  gap: 0; /* No gaps between options */
 }
 
 .color-option {
@@ -146,20 +146,19 @@
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ddd;
-  padding: 12px 15px 12px 12px; /* Adjust left padding for strip */
+  padding: 12px 15px;
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  border-radius: 4px;
+  border-radius: 0;
   margin: 0;
-  overflow: hidden; /* Ensure the strip doesn't overflow */
 }
 
 /* For exactly 2 colors, split 50/50 */
 .color-option:nth-child(1):nth-last-child(2),
 .color-option:nth-child(2):nth-last-child(1) {
-  width: calc(50% - 4px); /* Account for gap */
+  width: 50%;
 }
 
 .color-option:hover {
@@ -172,54 +171,39 @@
   border-color: #000;
 }
 
-/* Color strip - always visible on the left side */
-.color-option::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  height: 100%;
-  width: 8px; /* Width of the color strip */
-  z-index: 1; /* Ensure it's above the background */
+/* Left strip swatch - always visible and prominent */
+.color-swatch {
+  width: 24px;
+  height: 24px;
+  margin-right: 15px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  /* Ensure the swatch is always visible */
+  position: relative;
+  z-index: 2;
+  /* Default background for swatches */
+  background-color: #ccc;
 }
 
-/* Set the color for the strip based on the color name */
-.color-option[data-color="white"]::before { background-color: #fff; border-right: 1px solid #ddd; }
-.color-option[data-color="black"]::before { background-color: #000; }
-.color-option[data-color="navy"]::before { background-color: #000080; }
-.color-option[data-color="gray"]::before,
-.color-option[data-color="grey"]::before { background-color: #808080; }
-.color-option[data-color="red"]::before { background-color: #FF0000; }
-.color-option[data-color="blue"]::before { background-color: #0000FF; }
-.color-option[data-color="green"]::before { background-color: #008000; }
-.color-option[data-color="yellow"]::before { background-color: #FFFF00; }
-.color-option[data-color="purple"]::before { background-color: #800080; }
-.color-option[data-color="pink"]::before { background-color: #FFC0CB; }
-.color-option[data-color="orange"]::before { background-color: #FFA500; }
-.color-option[data-color="brown"]::before { background-color: #A52A2A; }
-.color-option[data-color="beige"]::before { background-color: #F5F5DC; }
-.color-option[data-color="khaki"]::before { background-color: #F0E68C; }
-.color-option[data-color="olive"]::before { background-color: #808000; }
-.color-option[data-color="tan"]::before { background-color: #D2B48C; }
-.color-option[data-color="burgundy"]::before { background-color: #800020; }
-.color-option[data-color="maroon"]::before { background-color: #800000; }
-.color-option[data-color="teal"]::before { background-color: #008080; }
-.color-option[data-color="turquoise"]::before { background-color: #40E0D0; }
-.color-option[data-color="lavender"]::before { background-color: #E6E6FA; }
-.color-option[data-color="mustard"]::before { background-color: #FFDB58; }
+.color-swatch.white {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
 
-/* For any other color, use a default */
-.color-option:not([data-color])::before { background-color: #ccc; }
+.color-swatch.black {
+  background-color: #000;
+  border: 1px solid #000;
+}
 
-/* Make sure the strip remains visible when option is selected */
-.color-option.selected::before {
-  border-right: 1px solid rgba(255, 255, 255, 0.3); /* Add subtle separator */
+/* Make sure swatch remains visible when option is selected */
+.color-option.selected .color-swatch {
+  border-color: #fff;
 }
 
 .color-name {
   font-size: 14px;
   font-weight: 400;
-  margin-left: 12px; /* Space after the color strip */
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -247,7 +231,7 @@
   font-size: 16px;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 #add-to-cart {
@@ -265,7 +249,7 @@
   margin-top: 15px;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 4px;
+  border-radius: 0;
 }
 
 #add-to-cart:hover {
@@ -337,16 +321,13 @@
   }
   
   .color-option {
-    padding: 10px 15px 10px 10px;
+    padding: 10px 15px;
   }
   
-  .color-option::before {
-    width: 6px; /* Slightly thinner strip on mobile */
-  }
-  
-  .color-name {
-    margin-left: 10px;
-    font-size: 13px;
+  .color-swatch {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
   }
 }
 
@@ -367,12 +348,13 @@
     font-size: 11px;
   }
   
-  .color-option::before {
-    width: 5px;
+  .color-swatch {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
   }
   
   .color-name {
-    margin-left: 8px;
     font-size: 12px;
   }
 }
