@@ -138,41 +138,40 @@ function initCustomGrid() {
               const swatch = document.createElement("div");
               swatch.classList.add("color-swatch");
               
-              // Add specific class for white/black colors
-              if (val.toLowerCase() === "white") {
-                swatch.classList.add("white");
-              } else if (val.toLowerCase() === "black") {
-                swatch.classList.add("black");
-              } else {
-                // For other colors, try to set background color based on name
-                const colorMap = {
-                  'navy': '#000080',
-                  'gray': '#808080',
-                  'grey': '#808080',
-                  'red': '#FF0000',
-                  'blue': '#0000FF',
-                  'green': '#008000',
-                  'yellow': '#FFFF00',
-                  'purple': '#800080',
-                  'pink': '#FFC0CB',
-                  'orange': '#FFA500',
-                  'brown': '#A52A2A',
-                  'beige': '#F5F5DC',
-                  'khaki': '#F0E68C',
-                  'olive': '#808000',
-                  'tan': '#D2B48C',
-                  'burgundy': '#800020',
-                  'maroon': '#800000',
-                  'teal': '#008080',
-                  'turquoise': '#40E0D0',
-                  'lavender': '#E6E6FA',
-                  'mustard': '#FFDB58'
-                };
-                
-                // Normalize the color name
-                const normalizedColor = val.toLowerCase().trim();
-                swatch.style.backgroundColor = colorMap[normalizedColor] || '#ccc';
-              }
+              // Set background color based on color name
+              const colorMap = {
+                'white': '#ffffff',
+                'black': '#000000',
+                'navy': '#000080',
+                'gray': '#808080',
+                'grey': '#808080',
+                'red': '#FF0000',
+                'blue': '#0000FF',
+                'green': '#008000',
+                'yellow': '#FFFF00',
+                'purple': '#800080',
+                'pink': '#FFC0CB',
+                'orange': '#FFA500',
+                'brown': '#A52A2A',
+                'beige': '#F5F5DC',
+                'khaki': '#F0E68C',
+                'olive': '#808000',
+                'tan': '#D2B48C',
+                'burgundy': '#800020',
+                'maroon': '#800000',
+                'teal': '#008080',
+                'turquoise': '#40E0D0',
+                'lavender': '#E6E6FA',
+                'mustard': '#FFDB58'
+              };
+              
+              // Normalize the color name
+              const normalizedColor = val.toLowerCase().trim();
+              const hexColor = colorMap[normalizedColor] || '#ccc';
+              swatch.style.backgroundColor = hexColor;
+              
+              // Add debug border to ensure visibility
+              swatch.style.border = '1px solid #ddd';
               
               // Create color name label
               const colorName = document.createElement("span");
