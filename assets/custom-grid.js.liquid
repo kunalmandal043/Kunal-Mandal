@@ -118,10 +118,21 @@ function initCustomGrid() {
             sizeSelect.onchange = updatePrice;
 
             // Arrow toggle on click
+            const lowerArrow = '/assets/choose-size-lower.svg';
+            const upperArrow = '/assets/choose-size-upper.svg';
+            
             const wrapper = document.querySelector(".size-select-wrapper");
+            const sizeArrow = wrapper.querySelector(".size-arrow");
+
+            // Set default arrow
+            sizeArrow.innerHTML = `<img src="${lowerArrow}" alt="Dropdown arrow">`;
             wrapper.addEventListener("click", () => {
-              sizeArrow.textContent = sizeArrow.textContent === 'v' ? '^' : 'v';
-            });
+              const currentSrc = sizeArrow.querySelector("img").src;
+              if (currentSrc.includes("choose-size-lower.svg")) {
+                sizeArrow.querySelector("img").src = upperArrow;
+              } else {
+                sizeArrow.querySelector("img").src = lowerArrow;
+              }
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
             option.values.forEach(val => {
