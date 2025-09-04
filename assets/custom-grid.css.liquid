@@ -131,27 +131,38 @@
   letter-spacing: -0.01em;
 }
 
-/* Color Options - Updated for single row layout */
+/* Color Options - Updated to match ADD TO CART button style */
 .color-swatches {
   display: flex;
-  flex-direction: row;
-  gap: 8px;
+  flex-direction: column;
+  gap: 0; /* Remove gap between options */
   margin-top: 8px;
   width: 100%;
-  overflow-x: auto;
 }
 
 .color-option {
   display: flex;
-  flex-direction: column;
   align-items: center;
   cursor: pointer;
-  padding: 8px;
+  padding: 12px 20px;
   transition: all 0.2s ease;
   border: 1px solid #ddd;
+  width: 100%;
   box-sizing: border-box;
-  min-width: 70px;
+  margin-bottom: -1px; /* Remove gap between options */
+  text-align: left; /* Align text to left */
   border-radius: 0; /* Remove rounded corners */
+}
+
+.color-option:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.color-option:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
 }
 
 .color-option:hover {
@@ -172,12 +183,14 @@
   height: 30px;
   border: 1px solid #ddd;
   position: relative;
-  margin-bottom: 6px;
+  margin-right: 12px;
+  flex-shrink: 0;
   border-radius: 0; /* Remove rounded corners */
 }
 
 .color-swatch.white {
   background-color: #fff;
+  border: 1px solid #ddd;
 }
 
 .color-swatch.black {
@@ -203,9 +216,10 @@
 }
 
 .color-name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  text-align: center;
+  flex-grow: 1;
+  text-align: left; /* Ensure text is left-aligned */
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -227,12 +241,13 @@
 }
 
 .popup-option select {
-  padding: 8px;
+  padding: 12px 20px;
   border: 1px solid #ddd;
   cursor: pointer;
   font-size: 16px;
   width: 100%;
   box-sizing: border-box;
+  border-radius: 0; /* Match ADD TO CART button style */
 }
 
 #add-to-cart {
@@ -250,6 +265,7 @@
   margin-top: 15px;
   width: 100%;
   box-sizing: border-box;
+  border-radius: 0; /* Ensure consistent border radius */
 }
 
 #add-to-cart:hover {
@@ -311,6 +327,7 @@
   
   .popup-option select {
     font-size: 14px;
+    padding: 10px 15px;
   }
   
   #add-to-cart {
@@ -318,9 +335,8 @@
     padding: 10px 15px;
   }
   
-  .color-swatches {
-    flex-wrap: wrap;
-    justify-content: center;
+  .color-option {
+    padding: 10px 15px;
   }
 }
 
@@ -347,11 +363,6 @@
   }
   
   .color-name {
-    font-size: 10px;
-  }
-  
-  .color-option {
-    min-width: 60px;
-    padding: 6px;
+    font-size: 12px;
   }
 }
