@@ -266,7 +266,6 @@
   object-fit: contain;
 }
 
-/* Size dropdown styling */
 .size-select-wrapper {
   position: relative;
   width: 100%;
@@ -278,31 +277,11 @@
   -moz-appearance: none;
   width: 100%;
   padding-right: 40px; /* Increased space for arrow */
-  text-align: left; /* Default to left alignment */
-  cursor: pointer;
-  background-color: white;
-  transition: all 0.2s ease;
+  text-align: left; /* Placeholder is left-aligned */
 }
-
-/* Center the dropdown options */
 .size-select-wrapper select option {
   text-align: center;
-  padding: 10px;
 }
-
-/* Style for hovered options (requires JavaScript) */
-.size-select-wrapper select option:hover {
-  background-color: black !important;
-  color: white !important;
-}
-
-/* Style for selected option */
-.size-select-wrapper select option:checked {
-  background-color: black;
-  color: white;
-}
-
-/* When the dropdown is open and has a selected value, center the text */
 .size-select-wrapper select:focus,
 .size-select-wrapper select:not([value=""]):not(:focus) {
   text-align: center;
@@ -321,20 +300,6 @@
   pointer-events: none;
   font-size: 16px;
   transition: transform 0.2s ease;
-}
-
-/* Custom dropdown styling for better appearance */
-.size-select-wrapper select {
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 12px 20px;
-  font-size: 16px;
-  background-image: none;
-}
-
-.size-select-wrapper select:focus {
-  outline: none;
-  border-color: #000;
 }
 
 
