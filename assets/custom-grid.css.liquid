@@ -131,23 +131,25 @@
   letter-spacing: -0.01em;
 }
 
-/* Horizontal Color Swatches with Text */
+/* Full-width Color Options */
 .color-swatches {
   display: flex;
-  flex-wrap: wrap;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 8px;
+  width: 100%;
 }
 
 .color-option {
   display: flex;
-  flex-direction: column;
   align-items: center;
   cursor: pointer;
-  padding: 8px;
+  padding: 12px;
   border-radius: 4px;
   transition: all 0.2s ease;
-  min-width: 60px;
+  border: 1px solid #ddd;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .color-option:hover {
@@ -155,16 +157,21 @@
 }
 
 .color-option.selected {
-  background-color: #f0f0f0;
-  border: 1px solid #ddd;
+  background-color: #000;
+  border-color: #000;
+}
+
+.color-option.selected .color-name {
+  color: #fff;
 }
 
 .color-swatch {
-  width: 40px;
-  height: 40px;
+  width: 30px;
+  height: 30px;
   border: 1px solid #ddd;
   position: relative;
-  margin-bottom: 5px;
+  margin-right: 12px;
+  flex-shrink: 0;
 }
 
 .color-swatch.white {
@@ -194,11 +201,10 @@
 }
 
 .color-name {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 400;
-  text-align: center;
-  max-width: 60px;
-  word-break: break-word;
+  flex-grow: 1;
+  text-align: left;
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -310,24 +316,6 @@
     font-size: 14px;
     padding: 10px 15px;
   }
-  
-  .color-swatches {
-    justify-content: center;
-  }
-  
-  .color-option {
-    min-width: 50px;
-  }
-  
-  .color-swatch {
-    width: 30px;
-    height: 30px;
-  }
-  
-  .color-name {
-    font-size: 10px;
-    max-width: 50px;
-  }
 }
 
 @media (max-width: 480px) {
@@ -347,22 +335,12 @@
     font-size: 11px;
   }
   
-  .color-swatches {
-    gap: 8px;
-  }
-  
-  .color-option {
-    min-width: 45px;
-    padding: 5px;
-  }
-  
   .color-swatch {
     width: 25px;
     height: 25px;
   }
   
   .color-name {
-    font-size: 9px;
-    max-width: 45px;
+    font-size: 12px;
   }
 }
