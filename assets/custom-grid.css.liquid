@@ -3,6 +3,10 @@
   display: none !important;
 }
 
+body.popup-open {
+  overflow: hidden;
+}
+
 .custom-grid {
   padding: 40px 20px;
   text-align: center;
@@ -66,6 +70,7 @@
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.7);
   transition: opacity 0.4s ease;
+  overflow-y: auto;
 }
 
 .popup-content {
@@ -269,12 +274,12 @@
 .dropdown-options {
   position: absolute;
   top: 100%;
-  right: 0; /* Align to the right */
-  width: 100%; /* Same width as button */
+  right: 0;
+  width: 100%;
   border: 1px solid #ddd;
   border-top: none;
   background: white;
-  z-index: 10;
+  z-index: 1001;
   max-height: 200px;
   overflow-y: auto;
   display: none;
@@ -314,11 +319,16 @@
 }
 
 .size-arrow {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
   transition: transform 0.2s ease;
 }
 
 .size-arrow.rotated {
-  transform: rotate(180deg);
+  transform: translateY(-50%) rotate(180deg);
 }
 
 /* Class to prevent body scrolling when dropdown is open */

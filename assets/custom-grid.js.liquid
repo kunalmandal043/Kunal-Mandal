@@ -11,6 +11,7 @@ function initCustomGrid() {
   const sizeOptionContainer = document.getElementById("size-option-container");
   const colorSwatchesContainer = document.getElementById("color-swatches");
   const hiddenColorSelect = document.getElementById("color-select");
+  const sizeArrow = document.querySelector('.size-arrow');
 
   const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
   const lowerArrow = popup.dataset.arrowLower;
@@ -62,9 +63,9 @@ function initCustomGrid() {
   // Function to prevent body scrolling
   function preventBodyScroll(prevent) {
     if (prevent) {
-      document.body.classList.add('body-no-scroll');
+      document.body.classList.add('popup-open', 'body-no-scroll');
     } else {
-      document.body.classList.remove('body-no-scroll');
+      document.body.classList.remove('popup-open', 'body-no-scroll');
     }
   }
 
@@ -104,6 +105,10 @@ function initCustomGrid() {
         
         // Close dropdown
         optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
         
@@ -126,6 +131,17 @@ function initCustomGrid() {
       
       optionsContainer.style.display = isVisible ? 'none' : 'block';
       
+      // Update arrow
+      if (sizeArrow) {
+        if (optionsContainer.style.display === 'block') {
+          sizeArrow.classList.add('rotated');
+          sizeArrow.src = upperArrow;
+        } else {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
+      }
+      
       // Prevent body scrolling when dropdown is open
       if (optionsContainer.style.display === 'block') {
         preventBodyScroll(true);
@@ -140,6 +156,10 @@ function initCustomGrid() {
     document.addEventListener('click', (e) => {
       if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
         optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
       }
@@ -149,6 +169,10 @@ function initCustomGrid() {
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && optionsContainer.style.display === 'block') {
         optionsContainer.style.display = 'none';
+        if (sizeArrow) {
+          sizeArrow.classList.remove('rotated');
+          sizeArrow.src = lowerArrow;
+        }
         preventBodyScroll(false);
         currentDropdown = null;
       }
@@ -245,7 +269,8 @@ function initCustomGrid() {
       }
 
       popup.classList.remove("hidden"); 
-      document.body.style.overflow = 'hidden';
+      document.body.classList.add('popup-open');
+      preventBodyScroll(true);
     } catch (err) { 
       console.error("Error loading product:", err); 
     }
@@ -262,14 +287,14 @@ function initCustomGrid() {
 
   if (popupClose) popupClose.addEventListener("click", () => { 
     popup.classList.add("hidden"); 
-    document.body.style.overflow = ''; 
+    document.body.classList.remove('popup-open');
     preventBodyScroll(false);
   });
 
   if (popup) popup.addEventListener("click", e => { 
     if (e.target === popup) { 
       popup.classList.add("hidden"); 
-      document.body.style.overflow = ''; 
+      document.body.classList.remove('popup-open');
       preventBodyScroll(false);
     } 
   });
@@ -314,7 +339,7 @@ function initCustomGrid() {
           updateCartCount();
           alert("Product added to cart!");
           popup.classList.add("hidden");
-          document.body.style.overflow = '';
+          document.body.classList.remove('popup-open');
           preventBodyScroll(false);
         } else throw new Error('Failed to add to cart');
       } catch (err) {
