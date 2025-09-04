@@ -277,8 +277,7 @@
   -moz-appearance: none;
   width: 100%;
   padding-right: 30px; /* leave space for arrow */
-  text-align: center;       /* center the selected value */
-  text-align-last: center;  /* center the value in Firefox */
+  
 
   
 }
@@ -297,11 +296,14 @@
   font-size: 16px;
   transition: transform 0.2s ease;
 }
+.size-select-wrapper select:invalid {
+  text-align: left;       /* placeholder aligned left */
+}
 
-@media not all and (min-resolution:.001dpcm) {
-  .size-select-wrapper select {
-    text-align-last: center;
-  }
+/* After selecting a value, center the text */
+.size-select-wrapper select:valid {
+  text-align: center;     /* selected value centered */
+  text-align-last: center; /* for Firefox */
 }
 
 
