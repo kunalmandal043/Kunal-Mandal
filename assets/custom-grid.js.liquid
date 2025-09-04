@@ -136,25 +136,17 @@ function initCustomGrid() {
         data.options.forEach(option => {
           const name = option.name.toLowerCase();
           if (name === "size") {
-  sizeOptionContainer.style.display = 'block';
-  
-  // Add placeholder option
-  const placeholderOption = document.createElement("option");
-  placeholderOption.value = "";
-  placeholderOption.textContent = "Choose your size";
-  placeholderOption.disabled = true;
-  placeholderOption.selected = true;
-  sizeSelect.appendChild(placeholderOption);
-
-  // populate actual size options
-  option.values.forEach((val) => {
-    const optionElement = document.createElement("option");
-    optionElement.value = val;
-    optionElement.textContent = val;
-    sizeSelect.appendChild(optionElement);
-  });
-
-  sizeSelect.onchange = updatePrice;
+            sizeOptionContainer.style.display = 'block';
+            // populate size <select>
+            option.values.forEach((val, idx) => {
+              const optionElement = document.createElement("option");
+              optionElement.value = val;
+              optionElement.textContent = val;
+              if (idx === 0) optionElement.selected = true;
+              sizeSelect.appendChild(optionElement);
+            });
+            // ensure onchange is set only once (avoids duplicate listeners)
+            sizeSelect.onchange = updatePrice;
           } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
             // populate hidden color select (keeps compatibility)
