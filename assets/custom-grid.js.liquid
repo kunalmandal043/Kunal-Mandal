@@ -132,7 +132,7 @@ function initCustomGrid() {
             option.values.forEach((val, index) => {
               // Create container for color option
               const colorOption = document.createElement("div");
-              colorOption.classList.add("color-swatch-option");
+              colorOption.classList.add("color-option");
               
               // Create color swatch
               const swatch = document.createElement("div");
@@ -145,7 +145,23 @@ function initCustomGrid() {
                 swatch.classList.add("black");
               } else {
                 // For other colors, try to set background color based on name
-                swatch.style.backgroundColor = val.toLowerCase();
+                const colorMap = {
+                  'navy': '#000080',
+                  'gray': '#808080',
+                  'red': '#FF0000',
+                  'blue': '#0000FF',
+                  'green': '#008000',
+                  'yellow': '#FFFF00',
+                  'purple': '#800080',
+                  'pink': '#FFC0CB',
+                  'orange': '#FFA500',
+                  'brown': '#A52A2A',
+                  'beige': '#F5F5DC',
+                  'khaki': '#F0E68C',
+                  'olive': '#808000'
+                };
+                
+                swatch.style.backgroundColor = colorMap[val.toLowerCase()] || '#ccc';
               }
               
               // Create color name label
@@ -160,17 +176,22 @@ function initCustomGrid() {
               // Select first color by default
               if (index === 0) {
                 colorOption.classList.add("selected");
+                swatch.classList.add("selected");
                 selectedColor = val;
               }
               
               colorOption.addEventListener("click", () => {
                 // Remove selected class from all options
-                document.querySelectorAll(".color-swatch-option").forEach(opt => {
+                document.querySelectorAll(".color-option").forEach(opt => {
                   opt.classList.remove("selected");
+                });
+                document.querySelectorAll(".color-swatch").forEach(sw => {
+                  sw.classList.remove("selected");
                 });
                 
                 // Add selected class to clicked option
                 colorOption.classList.add("selected");
+                swatch.classList.add("selected");
                 selectedColor = val;
                 updatePrice();
               });
