@@ -121,14 +121,27 @@ function initCustomGrid() {
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
 
-                    
+              const swatch = document.createElement("div");
+              swatch.classList.add("color-swatch");
+
+              // Use color name/hex directly
+              try {
+                swatch.style.backgroundColor = val;
+              } catch (e) {
+                swatch.style.backgroundColor = "#ccc"; // fallback
+              }
+
+              // Special case for white so it's visible
+              if (val.toLowerCase() === "white") {
+                swatch.style.border = "1px solid #aaa";
+              }
 
               const colorName = document.createElement("span");
               colorName.classList.add("color-name");
               colorName.textContent = val;
 
-              // assign strip color dynamically
-              colorOption.style.setProperty("--color-bar", val);
+              colorOption.appendChild(swatch);
+              colorOption.appendChild(colorName);
 
               if (index === 0) {
                 colorOption.classList.add("selected");
@@ -142,11 +155,12 @@ function initCustomGrid() {
                 updatePrice();
               });
 
-              colorOption.appendChild(colorName);
               colorSwatchesContainer.appendChild(colorOption);
-            
+            });
 
-        }); 
+            updatePrice();
+          }
+        });
       }
 
       sizeSelect.addEventListener('change', updatePrice);
