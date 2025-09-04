@@ -131,13 +131,13 @@
   letter-spacing: -0.01em;
 }
 
-/* Color Options - Updated with visible left strip swatches */
+/* Color Options */
 .color-swatches {
   display: flex;
   flex-wrap: wrap;
   width: 100%;
   margin-top: 8px;
-  gap: 0; /* No gaps between options */
+  gap: 0;
 }
 
 .color-option {
@@ -146,13 +146,14 @@
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ddd;
-  padding: 12px 15px;
+  padding: 12px 15px 12px 0; /* leave space for swatch strip */
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
   border-radius: 0;
   margin: 0;
+  overflow: hidden;
 }
 
 /* For exactly 2 colors, split 50/50 */
@@ -171,39 +172,32 @@
   border-color: #000;
 }
 
-/* Left strip swatch - always visible and prominent */
+/* Left strip swatch - full height */
 .color-swatch {
-  width: 24px;
-  height: 24px;
-  margin-right: 15px;
+  width: 10px; /* thin vertical strip */
+  height: 100%;
   flex-shrink: 0;
-  border: 1px solid #ddd;
-  box-sizing: border-box;
-  /* Ensure the swatch is always visible */
-  position: relative;
-  z-index: 2;
-  /* Default background for swatches */
-  background-color: #ccc;
+  border-right: 1px solid #ddd;
+  margin-right: 12px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
 }
 
-.color-swatch.white {
-  background-color: #fff;
-  border: 1px solid #ddd;
-}
+/* Specific color overrides */
+.color-swatch.white { background-color: #fff; }
+.color-swatch.black { background-color: #000; }
 
-.color-swatch.black {
-  background-color: #000;
-  border: 1px solid #000;
-}
-
-/* Make sure swatch remains visible when option is selected */
+/* Ensure swatch stays visible when selected */
 .color-option.selected .color-swatch {
-  border-color: #fff;
+  border-right: 2px solid #fff;
 }
 
 .color-name {
   font-size: 14px;
   font-weight: 400;
+  margin-left: 25px; /* offset text so it clears swatch */
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -265,8 +259,7 @@
   background: #000;
 }
 
-
-/* Responsive: stack image above details on mobile */
+/* Responsive */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
@@ -321,13 +314,11 @@
   }
   
   .color-option {
-    padding: 10px 15px;
+    padding: 10px 15px 10px 0;
   }
   
   .color-swatch {
-    width: 20px;
-    height: 20px;
-    margin-right: 12px;
+    width: 8px;
   }
 }
 
@@ -349,12 +340,11 @@
   }
   
   .color-swatch {
-    width: 18px;
-    height: 18px;
-    margin-right: 10px;
+    width: 6px;
   }
   
   .color-name {
     font-size: 12px;
+    margin-left: 20px;
   }
 }
