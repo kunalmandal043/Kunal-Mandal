@@ -146,7 +146,7 @@
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #ddd;
-  padding: 12px 15px;
+  padding: 12px 15px 12px 0; /* leave room for bar */
   text-align: left;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -154,6 +154,16 @@
   border-radius: 0;
   margin: 0;
 }
+.color-option::before {
+  content: "";
+  display: block;
+  width: 6px;       /* thickness of the strip */
+  height: 100%;
+  flex-shrink: 0;
+  margin-right: 12px;
+  background-color: var(--color-bar, #ccc);
+}
+
 
 /* For exactly 2 colors, split 50/50 */
 .color-option:nth-child(1):nth-last-child(2),
@@ -165,6 +175,7 @@
   background: #f9f9f9;
 }
 
+/* Selected state */
 .color-option.selected {
   background: #000;
   color: #fff;
