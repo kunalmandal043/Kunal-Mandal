@@ -12,11 +12,14 @@ function initCustomGrid() {
   const colorOptionContainer = document.getElementById("color-option-container");
   const sizeOptionContainer = document.getElementById("size-option-container");
   const colorSwatchesContainer = document.getElementById("color-swatches");
+  const hiddenColorSelect = document.getElementById("color-select");
+
+  const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
 
   let currentProduct = null;
   let selectedColor = null;
 
-  // Format money function
+  // Format money function (expects cents)
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", {
       style: "currency",
@@ -24,12 +27,31 @@ function initCustomGrid() {
     });
   }
 
-  // Find variant based on selected options
+  // Helper to get variant options as array regardless of format
+  function getVariantOptionsArray(variant) {
+    if (!variant) return [];
+    if (Array.isArray(variant.options) && variant.options.length) {
+      return variant.options;
+    } else {
+      // fallback to option1/option2/option3 fields
+      const arr = [];
+      if (variant.option1) arr.push(variant.option1);
+      if (variant.option2) arr.push(variant.option2);
+      if (variant.option3) arr.push(variant.option3);
+      return arr;
+    }
+  }
+
+  // Find variant based on selected options array (order must match product.options order)
   function findVariant(product, selectedOptions) {
+    if (!product || !product.variants) return null;
     return product.variants.find(variant => {
-      return variant.options.every((option, index) => {
-        return selectedOptions[index] === option;
-      });
+      const vOpts = getVariantOptionsArray(variant);
+      if (vOpts.length !== selectedOptions.length) {
+        // Some variant structures may differ; compare as far as possible
+        return selectedOptions.every((sel, i) => sel === vOpts[i]);
+      }
+      return vOpts.every((opt, idx) => selectedOptions[idx] === opt);
     });
   }
 
@@ -56,26 +78,30 @@ function initCustomGrid() {
   function updatePrice() {
     if (!currentProduct) return;
 
-    const selectedSize = sizeSelect.value;
+    const selectedSize = sizeSelect ? sizeSelect.value : null;
 
     const selectedOptions = [];
-    currentProduct.options.forEach(option => {
-      if (option.name.toLowerCase() === "color") {
+    // Build selectedOptions array in the same order as product.options
+    (currentProduct.options || []).forEach(option => {
+      const name = option.name.toLowerCase();
+      if (name === "color") {
         selectedOptions.push(selectedColor);
-      } else if (option.name.toLowerCase() === "size") {
-        selectedOptions.push(selectedSize);
+      } else if (name === "size") {
+        selectedOptions.push(selectedSize || option.values[0]);
       } else {
-        selectedOptions.push(option.values[0]);
+        // fallback to the first available value
+        selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
       }
     });
 
     const variant = findVariant(currentProduct, selectedOptions);
     if (variant) {
-      popupPrice.textContent = formatMoney(parseFloat(variant.price) * 100);
+      // Shopify variant.price is usually a string like "29.99"
+      popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
     }
   }
 
-  // Show product popup
+  // Show product popup by handle
   async function showProductPopup(handle) {
     if (!handle) return;
 
@@ -85,86 +111,104 @@ function initCustomGrid() {
       currentProduct = data;
 
       // Image
-      popupImage.src = data.images && data.images.length > 0
-        ? data.images[0]
-        : "{{ 'placeholder.png' | asset_url }}";
-      popupImage.alt = data.title;
+      popupImage.src = (data.images && data.images.length > 0) ? data.images[0] : placeholderSrc;
+      popupImage.alt = data.title || "Product preview";
 
       // Title, price, description
-      popupTitle.textContent = data.title;
+      popupTitle.textContent = data.title || "";
       if (data.variants && data.variants.length > 0) {
-        popupPrice.textContent = formatMoney(parseFloat(data.variants[0].price) * 100);
+        popupPrice.textContent = formatMoney(Math.round(parseFloat(data.variants[0].price) * 100));
+      } else {
+        popupPrice.textContent = "";
       }
       popupDescription.innerHTML = data.description || "";
 
       // Clear old options
       sizeSelect.innerHTML = "";
+      hiddenColorSelect.innerHTML = "";
       colorSwatchesContainer.innerHTML = "";
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
+      selectedColor = null;
 
-      // Options
-      if (data.options) {
+      // Build options
+      if (Array.isArray(data.options)) {
         data.options.forEach(option => {
-          if (option.name.toLowerCase() === "size") {
+          const name = option.name.toLowerCase();
+          if (name === "size") {
             sizeOptionContainer.style.display = 'block';
-            option.values.forEach(val => {
+            // populate size <select>
+            option.values.forEach((val, idx) => {
               const optionElement = document.createElement("option");
               optionElement.value = val;
               optionElement.textContent = val;
+              if (idx === 0) optionElement.selected = true;
               sizeSelect.appendChild(optionElement);
             });
-          } else if (option.name.toLowerCase() === "color") {
+            // ensure onchange is set only once (avoids duplicate listeners)
+            sizeSelect.onchange = updatePrice;
+          } else if (name === "color") {
             colorOptionContainer.style.display = 'block';
+            // populate hidden color select (keeps compatibility)
+            option.values.forEach((val) => {
+              const opt = document.createElement("option");
+              opt.value = val;
+              opt.textContent = val;
+              hiddenColorSelect.appendChild(opt);
+            });
 
+            // create visible rows with permanent left bar
             option.values.forEach((val, index) => {
               const colorOption = document.createElement("div");
               colorOption.classList.add("color-option");
-
-              const swatch = document.createElement("div");
-              swatch.classList.add("color-swatch");
-
-              // Use color name/hex directly
-              try {
-                swatch.style.backgroundColor = val;
-              } catch (e) {
-                swatch.style.backgroundColor = "#ccc"; // fallback
+              // special class for white to allow border visibility
+              const cleaned = (val || "").toString().trim().toLowerCase();
+              if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") {
+                colorOption.classList.add("is-white");
               }
-
-              // Special case for white so it's visible
-              if (val.toLowerCase() === "white") {
-                swatch.style.border = "1px solid #aaa";
-              }
+              // set CSS variable for the left bar color
+              // Use the actual value (hex or name). If invalid color, the browser will ignore it.
+              colorOption.style.setProperty("--color-bar", val);
 
               const colorName = document.createElement("span");
               colorName.classList.add("color-name");
               colorName.textContent = val;
 
-              colorOption.appendChild(swatch);
               colorOption.appendChild(colorName);
 
+              // default selected first
               if (index === 0) {
                 colorOption.classList.add("selected");
                 selectedColor = val;
               }
 
               colorOption.addEventListener("click", () => {
-                document.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
+                // scope the query to this container to avoid touching other popups if any
+                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => {
+                  opt.classList.remove("selected");
+                  opt.setAttribute("aria-selected", "false");
+                });
                 colorOption.classList.add("selected");
+                colorOption.setAttribute("aria-selected", "true");
                 selectedColor = val;
+                // update hidden select to keep parity
+                hiddenColorSelect.value = val;
                 updatePrice();
               });
 
               colorSwatchesContainer.appendChild(colorOption);
             });
 
+            // initial price update after creating color options
             updatePrice();
+          } else {
+            // other option types (not implemented visually) — leave default selection
+            // This keeps arrays aligned in updatePrice/findVariant
           }
         });
       }
 
-      sizeSelect.addEventListener('change', updatePrice);
-
+      // Show popup
       popup.classList.remove("hidden");
       document.body.style.overflow = 'hidden';
     } catch (err) {
@@ -172,7 +216,7 @@ function initCustomGrid() {
     }
   }
 
-  // Grid items
+  // Attach click handlers to each grid item's popup icon
   gridItems.forEach(item => {
     const popupIcon = item.querySelector(".popup-icon");
     if (!popupIcon) return;
@@ -183,70 +227,79 @@ function initCustomGrid() {
     });
   });
 
-  // Close popup
-  popupClose.addEventListener("click", () => {
-    popup.classList.add("hidden");
-    document.body.style.overflow = '';
-  });
-
-  popup.addEventListener("click", e => {
-    if (e.target === popup) {
+  // Close popup handlers
+  if (popupClose) {
+    popupClose.addEventListener("click", () => {
       popup.classList.add("hidden");
       document.body.style.overflow = '';
-    }
-  });
-
-  // Add to Cart
-  addToCartBtn.addEventListener("click", async () => {
-    if (!currentProduct) return;
-
-    const selectedSize = sizeSelect.value;
-    const selectedOptions = [];
-    currentProduct.options.forEach(option => {
-      if (option.name.toLowerCase() === "color") {
-        selectedOptions.push(selectedColor);
-      } else if (option.name.toLowerCase() === "size") {
-        selectedOptions.push(selectedSize);
-      } else {
-        selectedOptions.push(option.values[0]);
-      }
     });
+  }
 
-    const variant = findVariant(currentProduct, selectedOptions);
-    if (!variant) {
-      alert("Please select valid options");
-      return;
-    }
-
-    try {
-      addToCartBtn.disabled = true;
-      addToCartBtn.querySelector('span').textContent = 'Adding...';
-
-      const response = await fetch("/cart/add.js", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Requested-With": "XMLHttpRequest"
-        },
-        body: JSON.stringify({ id: variant.id, quantity: 1 })
-      });
-
-      if (response.ok) {
-        updateCartCount();
-        alert("Product added to cart!");
+  // close when clicking outside content
+  if (popup) {
+    popup.addEventListener("click", e => {
+      if (e.target === popup) {
         popup.classList.add("hidden");
         document.body.style.overflow = '';
-      } else {
-        throw new Error('Failed to add to cart');
       }
-    } catch (err) {
-      console.error(err);
-      alert("Could not add product to cart.");
-    } finally {
-      addToCartBtn.disabled = false;
-      addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
-    }
-  });
+    });
+  }
+
+  // Add to Cart
+  if (addToCartBtn) {
+    addToCartBtn.addEventListener("click", async () => {
+      if (!currentProduct) return;
+
+      const selectedSize = sizeSelect ? sizeSelect.value : null;
+      const selectedOptions = [];
+
+      (currentProduct.options || []).forEach(option => {
+        const name = option.name.toLowerCase();
+        if (name === "color") {
+          selectedOptions.push(selectedColor);
+        } else if (name === "size") {
+          selectedOptions.push(selectedSize || option.values[0]);
+        } else {
+          selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+        }
+      });
+
+      const variant = findVariant(currentProduct, selectedOptions);
+      if (!variant) {
+        alert("Please select valid options");
+        return;
+      }
+
+      try {
+        addToCartBtn.disabled = true;
+        addToCartBtn.querySelector('span').textContent = 'Adding...';
+
+        const response = await fetch("/cart/add.js", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Requested-With": "XMLHttpRequest"
+          },
+          body: JSON.stringify({ id: variant.id, quantity: 1 })
+        });
+
+        if (response.ok) {
+          updateCartCount();
+          alert("Product added to cart!");
+          popup.classList.add("hidden");
+          document.body.style.overflow = '';
+        } else {
+          throw new Error('Failed to add to cart');
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Could not add product to cart.");
+      } finally {
+        addToCartBtn.disabled = false;
+        addToCartBtn.querySelector('span').textContent = 'ADD TO CART ➜';
+      }
+    });
+  }
 }
 
 // Init
