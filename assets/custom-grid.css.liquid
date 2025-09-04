@@ -277,7 +277,8 @@
   -moz-appearance: none;
   width: 100%;
   padding-right: 30px; /* leave space for arrow */
-  
+  text-align: center;        /* center selected value */
+  text-align-last: center;   /* Firefox */
 
 }
 
@@ -296,7 +297,9 @@
   transition: transform 0.2s ease;
 }
 
-
+.size-select-wrapper select option:disabled {
+  text-align: left;
+}
 
 
 /* Responsive: stack image above details on mobile */
