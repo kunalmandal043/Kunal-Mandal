@@ -199,55 +199,58 @@ function initCustomGrid() {
 if (addToCartBtn) {
   const addToCartIcon = addToCartBtn.querySelector('.add-to-cart-icon');
 
-  addToCartBtn.addEventListener("click", async () => {
+  // Remove previous click listeners if any
+  addToCartBtn.replaceWith(addToCartBtn.cloneNode(true));
+  const newAddToCartBtn = document.getElementById('add-to-cart');
+  const newAddToCartIcon = newAddToCartBtn.querySelector('.add-to-cart-icon');
+
+  newAddToCartBtn.addEventListener("click", async () => {
     if (!currentProduct) return;
 
     const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
 
-// Require size selection
-if (!selectedSizeValue) {
-  alert("Please select a size before adding to cart.");
-  return; // STOP here, do not proceed to build options or add to cart
-}
+    if (!selectedSizeValue) {
+      alert("Please select a size before adding to cart.");
+      return; // Stop execution if size not selected
+    }
 
-const selectedOptions = [];
-(currentProduct.options || []).forEach(option => {
-  const name = option.name.toLowerCase();
-  if (name === "color") selectedOptions.push(selectedColor);
-  else if (name === "size") selectedOptions.push(selectedSizeValue); // no fallback
-  else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
-});
-
+    const selectedOptions = [];
+    (currentProduct.options || []).forEach(option => {
+      const name = option.name.toLowerCase();
+      if (name === "color") selectedOptions.push(selectedColor);
+      else if (name === "size") selectedOptions.push(selectedSizeValue);
+      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+    });
 
     const variant = findVariant(currentProduct, selectedOptions);
     if (!variant) { alert("Please select valid options"); return; }
 
     try {
-  addToCartBtn.disabled = true;
-  // add some visual feedback if needed, e.g., overlay or spinner
-  const response = await fetch("/cart/add.js", {
-    method: "POST",
-    headers: {
-      "Content-Type":"application/json",
-      "X-Requested-With":"XMLHttpRequest"
-    },
-    body: JSON.stringify({ id: variant.id, quantity: 1 })
-  });
-  if (response.ok) {
-    updateCartCount();
-    alert("Product added to cart!");
-    popup.classList.add("hidden");
-    document.body.style.overflow = '';
-  } else throw new Error('Failed to add to cart');
-} catch (err) {
-  console.error(err);
-  alert("Could not add product to cart.");
-} finally {
-  addToCartBtn.disabled = false;
-      addToCartIcon.src = "{{ 'add-to-cart.svg' | asset_url }}";
+      newAddToCartBtn.disabled = true;
+      const response = await fetch("/cart/add.js", {
+        method: "POST",
+        headers: {
+          "Content-Type":"application/json",
+          "X-Requested-With":"XMLHttpRequest"
+        },
+        body: JSON.stringify({ id: variant.id, quantity: 1 })
+      });
+      if (response.ok) {
+        updateCartCount();
+        alert("Product added to cart!");
+        popup.classList.add("hidden");
+        document.body.style.overflow = '';
+      } else throw new Error('Failed to add to cart');
+    } catch (err) {
+      console.error(err);
+      alert("Could not add product to cart.");
+    } finally {
+      newAddToCartBtn.disabled = false;
+      newAddToCartIcon.src = "{{ 'add-to-cart.svg' | asset_url }}";
     }
   });
-  }
+}
+
 
   function updateCartCount() {
     fetch('/cart.js').then(r => r.json()).then(cart => {
