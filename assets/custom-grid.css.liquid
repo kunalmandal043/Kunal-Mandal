@@ -290,13 +290,12 @@ body.popup-open {
 .dropdown-options::-webkit-scrollbar { display: none; }
 
 
-.dropdown-option {
-  padding: 12px 20px;
-  cursor: pointer;
-  text-align: center;
-  transition: all 0.2s ease;
+.dropdown-options {
+  position: absolute;
+  width: 100%;
+  z-index: 1001;
+  display: none;
 }
-
 .dropdown-option:hover {
   background-color: black;
   color: white;
@@ -310,7 +309,7 @@ body.popup-open {
 /* Size dropdown specific styles */
 .size-select-wrapper {
   position: relative;
-  width: 100%;
+  /* width: 100%; */
 }
 
 .size-select-wrapper select {
