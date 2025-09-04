@@ -129,59 +129,41 @@ function initCustomGrid() {
             colorOptionContainer.style.display = 'block';
             
             // Create color options with left strip swatches
-            option.values.forEach((val, index) => {
-              // Create container for color option
-              const colorOption = document.createElement("div");
-              colorOption.classList.add("color-option");
-              
-              // Create color swatch (left strip)
-              const swatch = document.createElement("div");
-              swatch.classList.add("color-swatch");
-              
-              // Add specific class for white/black colors
-              if (val.toLowerCase() === "white") {
-                swatch.classList.add("white");
-              } else if (val.toLowerCase() === "black") {
-                swatch.classList.add("black");
-              } else {
-                // For other colors, try to set background color based on name
-                const colorMap = {
-                  'navy': '#000080',
-                  'gray': '#808080',
-                  'grey': '#808080',
-                  'red': '#FF0000',
-                  'blue': '#0000FF',
-                  'green': '#008000',
-                  'yellow': '#FFFF00',
-                  'purple': '#800080',
-                  'pink': '#FFC0CB',
-                  'orange': '#FFA500',
-                  'brown': '#A52A2A',
-                  'beige': '#F5F5DC',
-                  'khaki': '#F0E68C',
-                  'olive': '#808000',
-                  'tan': '#D2B48C',
-                  'burgundy': '#800020',
-                  'maroon': '#800000',
-                  'teal': '#008080',
-                  'turquoise': '#40E0D0',
-                  'lavender': '#E6E6FA',
-                  'mustard': '#FFDB58'
-                };
-                
-                // Normalize the color name
-                const normalizedColor = val.toLowerCase().trim();
-                swatch.style.backgroundColor = colorMap[normalizedColor] || '#ccc';
-              }
-              
-              // Create color name label
-              const colorName = document.createElement("span");
-              colorName.classList.add("color-name");
-              colorName.textContent = val;
-              
-              // Add elements to container
-              colorOption.appendChild(swatch);
-              colorOption.appendChild(colorName);
+            // Create color options with left strip swatches
+option.values.forEach((val, index) => {
+  // Create container for color option
+  const colorOption = document.createElement("div");
+  colorOption.classList.add("color-option");
+  colorOption.setAttribute("data-color", val.toLowerCase().trim());
+  
+  // Create color name label
+  const colorName = document.createElement("span");
+  colorName.classList.add("color-name");
+  colorName.textContent = val;
+  
+  // Add elements to container
+  colorOption.appendChild(colorName);
+  
+  // Select first color by default
+  if (index === 0) {
+    colorOption.classList.add("selected");
+    selectedColor = val;
+  }
+  
+  colorOption.addEventListener("click", () => {
+    // Remove selected class from all options
+    document.querySelectorAll(".color-option").forEach(opt => {
+      opt.classList.remove("selected");
+    });
+    
+    // Add selected class to clicked option
+    colorOption.classList.add("selected");
+    selectedColor = val;
+    updatePrice();
+  });
+  
+  colorSwatchesContainer.appendChild(colorOption);
+});
               
               // Select first color by default
               if (index === 0) {
