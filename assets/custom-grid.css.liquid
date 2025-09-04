@@ -1,4 +1,4 @@
-/* --- Global --- */
+/* custom-grid.css */
 .hidden {
   display: none !important;
 }
@@ -54,7 +54,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* --- Popup --- */
+/* Popup Styles */
 .popup {
   position: fixed;
   top: 0;
@@ -88,10 +88,11 @@
   right: 15px;
   font-size: 24px;
   cursor: pointer;
+  transition: opacity 0.4s ease, transform 0.4s ease;
   color: #333;
 }
 
-/* --- Popup top --- */
+/* Popup Top Section: Image + Details */
 .popup-top {
   display: flex;
   flex-direction: row;
@@ -114,7 +115,9 @@
 .popup-details h2 {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
+  font-style: normal;
   font-size: 16px;
+  line-height: 120%;
   margin-bottom: 10px;
 }
 
@@ -122,28 +125,40 @@
   margin-bottom: 10px;
   font-family: 'Jost', sans-serif;
   font-weight: 300;
+  font-style: normal;
   font-size: 12px;
+  line-height: 110%;
+  letter-spacing: -0.01em;
 }
 
-/* --- Color swatches with left strip --- */
+/* Color Options - Updated with visible left strip swatches */
 .color-swatches {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  flex-wrap: wrap;
   width: 100%;
   margin-top: 8px;
+  gap: 0; /* No gaps between options */
 }
 
 .color-option {
   display: flex;
   align-items: center;
   width: 100%;
+  box-sizing: border-box;
   border: 1px solid #ddd;
-  padding: 10px 15px 10px 40px; /* leave space for strip */
+  padding: 12px 15px;
   text-align: left;
   cursor: pointer;
-  position: relative;
   transition: all 0.2s ease;
+  position: relative;
+  border-radius: 0;
+  margin: 0;
+}
+
+/* For exactly 2 colors, split 50/50 */
+.color-option:nth-child(1):nth-last-child(2),
+.color-option:nth-child(2):nth-last-child(1) {
+  width: 50%;
 }
 
 .color-option:hover {
@@ -151,25 +166,39 @@
 }
 
 .color-option.selected {
-  background: #000; /* black when selected */
+  background: #000;
   color: #fff;
   border-color: #000;
 }
 
-/* Thin vertical strip always visible */
+/* Left strip swatch - always visible and prominent */
 .color-swatch {
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 20px;  /* thin strip */
+  width: 24px;
+  height: 24px;
+  margin-right: 15px;
+  flex-shrink: 0;
+  border: 1px solid #ddd;
+  box-sizing: border-box;
+  /* Ensure the swatch is always visible */
+  position: relative;
+  z-index: 2;
+  /* Default background for swatches */
   background-color: #ccc;
-  border-right: 1px solid #ddd;
 }
 
-/* Make sure the strip stays visible when selected */
+.color-swatch.white {
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+.color-swatch.black {
+  background-color: #000;
+  border: 1px solid #000;
+}
+
+/* Make sure swatch remains visible when option is selected */
 .color-option.selected .color-swatch {
-  border-right: 1px solid #fff;
+  border-color: #fff;
 }
 
 .color-name {
@@ -177,7 +206,7 @@
   font-weight: 400;
 }
 
-/* --- Bottom Section --- */
+/* Bottom Section: Options + Add to Cart */
 .popup-bottom {
   display: flex;
   flex-direction: column;
@@ -202,9 +231,14 @@
   font-size: 16px;
   width: 100%;
   box-sizing: border-box;
+  border-radius: 0;
 }
 
 #add-to-cart {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: #000;
   color: #fff;
   font-size: 16px;
@@ -214,6 +248,8 @@
   transition: background 0.3s ease;
   margin-top: 15px;
   width: 100%;
+  box-sizing: border-box;
+  border-radius: 0;
 }
 
 #add-to-cart:hover {
@@ -224,6 +260,11 @@
   opacity: 0.7;
   cursor: not-allowed;
 }
+
+#add-to-cart:disabled:hover {
+  background: #000;
+}
+
 
 /* Responsive: stack image above details on mobile */
 @media (max-width: 768px) {
