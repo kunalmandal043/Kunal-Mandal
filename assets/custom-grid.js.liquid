@@ -19,6 +19,7 @@ function initCustomGrid() {
   let currentProduct = null;
   let selectedColor = null;
   let selectedSize = null;
+  let currentDropdown = null;
 
   function formatMoney(cents) {
     return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
@@ -58,6 +59,15 @@ function initCustomGrid() {
     if (variant) popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
   }
 
+  // Function to prevent body scrolling
+  function preventBodyScroll(prevent) {
+    if (prevent) {
+      document.body.classList.add('body-no-scroll');
+    } else {
+      document.body.classList.remove('body-no-scroll');
+    }
+  }
+
   // Function to create custom dropdown
   function createCustomDropdown(container, options, placeholder) {
     // Create dropdown elements
@@ -94,6 +104,8 @@ function initCustomGrid() {
         
         // Close dropdown
         optionsContainer.style.display = 'none';
+        preventBodyScroll(false);
+        currentDropdown = null;
         
         // Update price
         updatePrice();
@@ -106,13 +118,39 @@ function initCustomGrid() {
     button.addEventListener('click', (e) => {
       e.stopPropagation();
       const isVisible = optionsContainer.style.display === 'block';
+      
+      // Close any other open dropdown
+      if (currentDropdown && currentDropdown !== optionsContainer) {
+        currentDropdown.style.display = 'none';
+      }
+      
       optionsContainer.style.display = isVisible ? 'none' : 'block';
+      
+      // Prevent body scrolling when dropdown is open
+      if (optionsContainer.style.display === 'block') {
+        preventBodyScroll(true);
+        currentDropdown = optionsContainer;
+      } else {
+        preventBodyScroll(false);
+        currentDropdown = null;
+      }
     });
     
     // Close dropdown when clicking outside
     document.addEventListener('click', (e) => {
-      if (!dropdownContainer.contains(e.target)) {
+      if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
         optionsContainer.style.display = 'none';
+        preventBodyScroll(false);
+        currentDropdown = null;
+      }
+    });
+    
+    // Close dropdown on escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && optionsContainer.style.display === 'block') {
+        optionsContainer.style.display = 'none';
+        preventBodyScroll(false);
+        currentDropdown = null;
       }
     });
     
@@ -225,12 +263,14 @@ function initCustomGrid() {
   if (popupClose) popupClose.addEventListener("click", () => { 
     popup.classList.add("hidden"); 
     document.body.style.overflow = ''; 
+    preventBodyScroll(false);
   });
 
   if (popup) popup.addEventListener("click", e => { 
     if (e.target === popup) { 
       popup.classList.add("hidden"); 
       document.body.style.overflow = ''; 
+      preventBodyScroll(false);
     } 
   });
 
@@ -275,6 +315,7 @@ function initCustomGrid() {
           alert("Product added to cart!");
           popup.classList.add("hidden");
           document.body.style.overflow = '';
+          preventBodyScroll(false);
         } else throw new Error('Failed to add to cart');
       } catch (err) {
         console.error(err);
