@@ -131,42 +131,23 @@
   letter-spacing: -0.01em;
 }
 
-/* Color Options - Updated to include left color strip */
+/* Color Options - Updated to match ADD TO CART button style */
 .color-swatches {
   display: flex;
-  flex-direction: column;
-  width: 100%;
+  flex-wrap: wrap;
+  width: 100%; /* same width as button */
   margin-top: 8px;
 }
 
 .color-option {
-  position: relative;
-  display: flex;
-  align-items: center;
+  flex: 1 1 50%; /* if 2 → 50% each, if more → auto-fit */
   box-sizing: border-box;
   border: 1px solid #ddd;
-  padding: 12px 15px 12px 20px; /* Added left padding for the strip */
-  text-align: left;
+  padding: 12px;
+  text-align: left; /* left-aligned text */
   cursor: pointer;
   transition: background 0.2s ease, border 0.2s ease;
-  border-radius: 0;
-  margin-bottom: 8px;
-}
-
-/* Color strip on the left side */
-.color-option::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: var(--color-value, #ccc);
-}
-
-/* Remove margin from last color option */
-.color-option:last-child {
-  margin-bottom: 0;
+  border-radius: 0; /* no rounded corners */
 }
 
 .color-option:hover {
@@ -178,6 +159,32 @@
   background: #f0f0f0;
 }
 
+
+
+.color-option:first-child {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.color-option:last-child {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  margin-bottom: 0;
+}
+
+.color-option:hover {
+  background-color: #f5f5f5;
+}
+
+.color-option.selected {
+  background-color: #000;
+  border-color: #000;
+}
+
+.color-option.selected .color-name {
+  color: #fff;
+}
+
 .color-swatch {
   width: 30px;
   height: 30px;
@@ -185,7 +192,7 @@
   position: relative;
   margin-right: 12px;
   flex-shrink: 0;
-  border-radius: 0;
+  border-radius: 0; /* Remove rounded corners */
 }
 
 .color-swatch.white {
@@ -219,7 +226,7 @@
   font-size: 14px;
   font-weight: 400;
   flex-grow: 1;
-  text-align: left;
+  text-align: left; /* Ensure text is left-aligned */
 }
 
 /* Bottom Section: Options + Add to Cart */
@@ -247,7 +254,7 @@
   font-size: 16px;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 0;
+  border-radius: 0; /* Match ADD TO CART button style */
 }
 
 #add-to-cart {
@@ -265,7 +272,7 @@
   margin-top: 15px;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 0;
+  border-radius: 0; /* Ensure consistent border radius */
 }
 
 #add-to-cart:hover {
@@ -336,11 +343,7 @@
   }
   
   .color-option {
-    padding: 10px 15px 10px 18px; /* Adjusted for mobile */
-  }
-  
-  .color-option::before {
-    width: 3px; /* Slightly thinner on mobile */
+    padding: 10px 15px;
   }
 }
 
