@@ -132,24 +132,27 @@
 }
 
 /* Color Options - Updated with visible left strip swatches */
-.color-swatch {
-  width: 6px;           /* thin strip */
-  height: 100%;         /* full height of row */
-  flex-shrink: 0;
-  margin-right: 10px;   /* spacing before text */
+.color-swatches {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  margin-top: 8px;
+  gap: 0; /* No gaps between options */
 }
 
 .color-option {
   display: flex;
   align-items: center;
-  padding: 8px 10px;
+  width: 100%;
+  box-sizing: border-box;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  padding: 12px 15px;
+  text-align: left;
   cursor: pointer;
-  margin-bottom: 6px;
-  transition: border-color 0.2s ease;
-  overflow: hidden;
+  transition: all 0.2s ease;
   position: relative;
+  border-radius: 0;
+  margin: 0;
 }
 
 /* For exactly 2 colors, split 50/50 */
@@ -163,7 +166,9 @@
 }
 
 .color-option.selected {
-  border: 2px solid #000;
+  background: #000;
+  color: #fff;
+  border-color: #000;
 }
 
 /* Left strip swatch - always visible and prominent */
@@ -198,7 +203,7 @@
 
 .color-name {
   font-size: 14px;
-  color: #333;
+  font-weight: 400;
 }
 
 /* Bottom Section: Options + Add to Cart */
