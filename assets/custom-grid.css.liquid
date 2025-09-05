@@ -1,271 +1,386 @@
-/* custom-grid.css */
 .hidden {
-  display: none !important;
+  display: none !important; /* Utility class to hide elements */
 }
 
+/* Container for the custom grid layout */
 .custom-grid {
-  padding: 40px 20px;
-  text-align: center;
-  max-width: 1200px;
-  margin: 0 auto;
+  padding: 40px 20px; /* Top-bottom and left-right spacing */
+  text-align: center; /* Center text by default */
+  max-width: 1200px; /* Limit width for large screens */
+  margin: 0 auto; /* Center container horizontally */
 }
 
+/* Heading styles for grid sections */
 .heading {
-  font-family: "Lustria", serif;
+  font-family: "Lustria", serif; /* Elegant serif font */
   font-weight: 400;
   font-size: 36px;
-  line-height: 120%;
-  text-align: left;
-  margin: 0 0 20px 0;
+  line-height: 120%; /* Line spacing */
+  text-align: left; /* Align heading text to left */
+  margin: 0 0 20px 0; /* Bottom margin to separate from content */
 }
 
+/* GRID LAYOUT */
 .grid-container {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
+  grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+  gap: 8px; /* Space between grid items */
 }
 
 .grid-item {
-  position: relative;
+  position: relative; /* For absolute positioning of children (e.g., icons) */
 }
 
 .grid-image-wrapper {
   position: relative;
-  overflow: hidden;
+  overflow: hidden; /* Prevent images from spilling out */
 }
 
 .grid-image {
-  width: 100%;
-  height: auto;
-  object-fit: cover;
+  width: 100%; /* Full width of container */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: cover; /* Crop image if needed */
 }
 
+/* Popup icon inside grid item */
 .popup-icon {
   position: absolute;
   bottom: 30%;
   right: 60%;
   width: 22px;
   height: 22px;
-  cursor: pointer;
-  z-index: 4;
-  background: white;
-  border-radius: 50%;
+  cursor: pointer; /* Pointer cursor on hover */
+  z-index: 4; /* Ensure it appears above other elements */
+  border-radius: 50%; /* Circular icon */
   padding: 4px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Slight shadow for depth */
 }
 
-/* Popup Styles */
+/* POPUP STYLES */
+
+/* Fullscreen overlay */
 .popup {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.7);
   display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-  padding: 20px;
-  box-sizing: border-box;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  z-index: 1000; /* Ensure popup is on top */
+  transition: opacity 0.4s ease, transform 0.4s ease; /* Smooth show/hide animation */
+  border: 2px solid #ccc;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
 }
 
-  
-  
+/* Popup content box */
 .popup-content {
-  
   background: white;
-  padding: 30px;
-  width: 100%;
-  max-width: 400px; /* Added max-width for larger screens */
-  max-height: 95vh;
-  overflow-y: auto;
+  padding: 20px;
+  width: 90%;
+  max-width: 350px; /* Limit width */
+  max-height: 60vh; /* Limit height to 60% of viewport */
+  overflow: hidden; /* Prevent scroll outside content */
   position: relative;
-  box-sizing: border-box; /* Include padding in width calculation */
+  box-sizing: border-box;
 }
 
+/* Close button */
 #popup-close {
   position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 24px;
+  top: 4px;
+  right: 4px;
+  font-size: 28px;
+  line-height: 1;
   cursor: pointer;
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  background: transparent;
+  border: 0;
   color: #333;
 }
 
-/* Popup Top Section: Image + Details */
+/* Top section: image + details */
 .popup-top {
   display: flex;
-  flex-direction: row;
-  gap: 20px;
+  flex-direction: row; /* Image and details side by side */
+  gap: 20px; /* Space between image and details */
   margin-bottom: 20px;
+  align-items: stretch; /* Make both sides equal height */
 }
 
 .popup-top img#popup-image {
   width: 50%;
   max-width: 250px;
-  height: auto;
-  object-fit: cover; /* Ensure image maintains aspect ratio */
+  height: 100%; /* Fill container height */
+  object-fit: cover; /* Maintain aspect ratio */
 }
 
+/* Details section next to image */
 .popup-details {
   flex: 1;
   text-align: left;
+  height: 100%;
+  overflow-y: auto; /* Scroll if content overflows */
+  display: flex;
+  flex-direction: column; /* Stack title, price, description vertically */
+  gap: 8px; /* Space between title, price, description */
 }
 
+/* Reset default margins to respect gap */
+.popup-details h2,
+.popup-details .popup-price,
+.popup-details p {
+  margin: 0;
+}
+
+/* Popup title */
 .popup-details h2 {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
   font-style: normal;
-  font-size: 16px;
+  font-size: 18px;
   line-height: 120%;
-  margin-bottom: 10px;
 }
 
+/* Popup price */
+.popup-details .popup-price {
+  font-size: 14px;
+}
+
+/* Popup description */
 .popup-details p {
-  margin-bottom: 10px;
   font-family: 'Jost', sans-serif;
   font-weight: 300;
-  font-style: normal;
-  font-size: 12px;
+  font-size: 14px;
   line-height: 110%;
-  letter-spacing: -0.01em; /* Changed from -1% to valid value */
+  letter-spacing: -0.01em;
 }
 
-/* Bottom Section: Options + Add to Cart */
+/* COLOR OPTIONS */
+.color-swatches {
+  display: flex;
+  flex-wrap: nowrap; /* Keep colors in a single row */
+  width: 100%;
+  margin-top: 8px;
+  gap: 0;
+}
+
+/* Each color option */
+.color-option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  text-align: left;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  position: relative;
+  min-height: 44px;
+  flex: 1 1 auto; /* Flexible width */
+}
+
+/* Ensure equal width for all colors */
+.color-swatches > .color-option {
+  width: calc(100% / var(--color-count));
+}
+
+/* Colored indicator bar */
+.color-option::before {
+  content: "";
+  display: block;
+  width: 6px;
+  height: 100%;
+  flex-shrink: 0;
+  margin-right: 8px;
+  background-color: var(--color-bar, #ccc);
+}
+
+/* Special style for white color */
+.color-option.is-white::before {
+  background-color: var(--color-bar, #fff);
+  box-shadow: 0 0 0 1px #ddd;
+}
+
+/* Hover effect for color option */
+.color-option:hover {
+  background: #f9f9f9;
+}
+
+/* Selected color option */
+.color-option.selected {
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+.color-option.selected::before {
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.12);
+}
+
+.color-option.selected.is-white::before {
+  box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+}
+
+/* Color label */
+.color-name {
+  font-size: 14px;
+  font-weight: 400;
+  flex: 1;
+  text-align: center;
+}
+
+/* Bottom section of popup */
 .popup-bottom {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  cursor:pointer;
 }
 
+/* Option container */
 .popup-option {
   display: flex;
   flex-direction: column;
-  text-align: center;
-  cursor:pointer;
+  text-align: left;
 }
 
 .popup-option label {
-  
-  margin-bottom: 6px;
+  margin-bottom: 6px; /* Space between label and select */
   font-weight: 500;
-  cursor:pointer;
 }
 
 .popup-option select {
-  padding: 8px;
+  padding: 12px 20px;
   border: 1px solid #ddd;
-  cursor:pointer;
+  cursor: pointer;
   font-size: 16px;
-  width: 100%; /* Ensure select doesn't overflow */
+  width: 100%;
   box-sizing: border-box;
 }
 
+/* Add to cart button */
 #add-to-cart {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  background: #000;
-  color: #fff;
-  font-size: 16px;
-  padding: 12px 20px;
   border: none;
   cursor: pointer;
+  background: black;
   transition: background 0.3s ease;
   margin-top: 15px;
-  width: 100%; /* Full width button */
-  box-sizing: border-box;
+  width: 100%;
+  height: 50px;
 }
 
-#add-to-cart:hover {
-  background: #333;
-}
-
+/* Disabled state */
 #add-to-cart:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
-#add-to-cart:disabled:hover {
-  background: #000;
+/* Icon inside add to cart button */
+.add-to-cart-icon {
+  width: auto;
+  height: 100%;
+  object-fit: contain;
 }
 
-/* Responsive: stack image above details on mobile */
+/* Size select wrapper for custom arrow */
+.size-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.size-select-wrapper select {
+  appearance: none; /* Remove default arrow */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 100%;
+  padding-right: 40px; /* Space for custom arrow */
+  text-align: left;
+  outline: none;
+  box-shadow: none;
+}
+
+/* Center text when focused or value selected */
+.size-select-wrapper select:focus,
+.size-select-wrapper select:not([value=""]):not(:focus) {
+  text-align: center;
+}
+
+/* Custom arrow for size select */
+.size-select-wrapper .size-arrow {
+  border-left: 1px solid #ccc;
+  padding-left: 12px;
+  height: 100%;
+  width: 16px;
+  box-sizing: content-box;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none; /* Prevent arrow from being clickable */
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+/*RESPONSIVE STYLES*/
+
+/* Tablet screens */
 @media (max-width: 768px) {
   .grid-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  .heading {
-    text-align:center;
-    font-size: 24px;
-    
-  }
-  .popup-icon { 
-    width: 16px; 
-    height: 16px; 
-  }
-  
-  .popup {
-    padding: 10px; /* Reduced padding on mobile */
-  }
-  
-  .popup-content {
-    width: 100%; /* Full width on mobile */
-    padding: 20px; /* Reduced padding on mobile */
-    max-height: 95vh; /* Slightly more height on mobile */
-  }
-  
-  .popup-top {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 15px; /* Reduced gap on mobile */
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
   }
 
-  .popup-top img#popup-image {
-    width: 100%;
-    max-width: 100%;
+  .heading {
+    text-align: center;
+    font-size: 24px;
+  }
+
+  .popup-icon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .popup-content {
+    width: 90%;
+    max-width: 600px;
+    max-height: 70vh;
+  }
+
+  .popup-top {
+    gap: 10px;
+    align-items: flex-start;
   }
 
   .popup-details {
-    width: 100%;
+    width: 50%;
+    height: 40%;
   }
 
-  .popup-bottom {
-    width: 100%;
-  }
-  
-  /* Additional mobile-specific adjustments */
-  .popup-option select {
-    font-size: 14px; /* Slightly smaller font on mobile */
-  }
-  
-  #add-to-cart {
-    font-size: 14px; /* Slightly smaller font on mobile */
-    padding: 10px 15px; /* Adjusted padding on mobile */
-  }
+  .popup-details h2 { font-size: 14px; }
+  .popup-details .popup-price { font-size: 12px; }
+  .popup-details p { font-size: 12px; }
 }
 
-/* Additional media query for very small devices */
+/* Mobile screens */
 @media (max-width: 480px) {
-  .popup-content {
-    padding: 15px;
-  }
-  
-  .popup-top {
-    gap: 10px;
-  }
-  
-  .popup-details h2 {
-    font-size: 14px;
-  }
-  
-  .popup-details p {
-    font-size: 11px;
-  }
+  .color-option { font-size: 10px; min-width: 30px; height: 36px; }
+  .color-option::before { width: 3px; margin-right: 4px; }
+
+  .popup-top { gap: 10px; align-items: flex-start; }
+  .popup-top img#popup-image { width: 50%; height: 100%; }
+  .popup-details { width: 50%; height: 40%; }
+
+  .popup-details h2 { font-size: 12px; }
+  .popup-details .popup-price { font-size: 10px; }
+  .popup-details p { font-size: 10px; }
+}
+
+/* Desktop screens */
+@media (min-width: 769px) {
+  .popup-details h2 { font-size: 12px; }
+  .popup-details .popup-price { font-size: 11px; }
+  .popup-details p { font-size: 11px; }
+  .popup-details { max-height: 100%; overflow-y: auto; }
 }
