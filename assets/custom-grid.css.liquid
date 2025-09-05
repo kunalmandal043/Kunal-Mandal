@@ -1,4 +1,3 @@
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -78,8 +77,6 @@ body.popup-open {
   box-sizing: border-box;
   opacity: 0;
   visibility: hidden;
-
-  box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
   transition: opacity 0.4s ease, visibility 0.4s;
 }
 
@@ -282,7 +279,7 @@ body.popup-open {
   object-fit: contain;
 }
 
-/* Custom Dropdown Styles */
+/* Custom Dropdown Styles - UPDATED */
 .custom-dropdown {
   position: relative;
   width: 100%;
@@ -293,12 +290,13 @@ body.popup-open {
   padding: 12px 20px;
   border: 1px solid #ddd;
   background: white;
-  text-align: left;
+  text-align: center;
   cursor: pointer;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   font-size: 16px;
+  position: relative;
 }
 
 .dropdown-button.placeholder {
@@ -308,7 +306,7 @@ body.popup-open {
 .dropdown-options {
   position: absolute;
   top: 100%;
-  right: 0;
+  left: 0;
   width: 100%;
   border: 1px solid #ddd;
   border-top: none;
@@ -319,6 +317,9 @@ body.popup-open {
   display: none;
   /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  transform: translateZ(0); /* Force GPU rendering for smooth scrolling */
+  will-change: transform;
 }
 
 .dropdown-options::-webkit-scrollbar {
@@ -330,6 +331,8 @@ body.popup-open {
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .dropdown-option:hover {
@@ -340,6 +343,10 @@ body.popup-open {
 .dropdown-option.selected {
   background-color: black;
   color: white;
+  position: sticky;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
 }
 
 /* Size dropdown specific styles */
@@ -360,8 +367,6 @@ body.popup-open {
   pointer-events: none;
   transition: transform 0.2s ease;
 }
-
-
 
 /* Class to prevent body scrolling when dropdown is open */
 .body-no-scroll {
@@ -433,6 +438,16 @@ body.popup-open {
   #popup-description {
     max-height: 100px;
   }
+  
+  .dropdown-button {
+    padding: 10px 35px 10px 15px;
+    font-size: 14px;
+  }
+  
+  .dropdown-option {
+    padding: 10px 15px;
+    font-size: 14px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -462,11 +477,11 @@ body.popup-open {
   
   .dropdown-button {
     font-size: 14px;
-    padding: 10px 15px;
+    padding: 8px 30px 8px 12px;
   }
   
   .dropdown-option {
-    padding: 10px 15px;
+    padding: 8px 12px;
     font-size: 14px;
   }
 }
