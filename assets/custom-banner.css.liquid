@@ -1,38 +1,43 @@
+/* GLOBAL RESET */
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+  box-sizing: border-box; /* Include padding/border in element width/height */
+  margin: 0; /* Remove default margins */
+  padding: 0; /* Remove default padding */
 }
+
+/*  MAIN BANNER CONTAINER  */
 .custom-banner {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+  width: 100%; /* Full width */
+  min-height: 100vh; /* At least full viewport height */
+  display: flex; /* Flex container */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: space-between; /* Spread header, body, footer */
+  position: relative; /* For absolute children positioning */
 }
 
-/* ------------------ HEADER ------------------ */
+/*  HEADER - */
 .banner-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 5%;
-  background: #F5F5F5;
-  width: 100%;
+  display: flex; /* Flex layout for logo, center text, CTA */
+  align-items: center; /* Vertically center items */
+  justify-content: space-between; /* Space between children */
+  gap: 16px; /* Gap between elements */
+  padding: 10px 5%; /* Inner spacing */
+  background: #F5F5F5; /* Light gray background */
+  width: 100%; 
   height: auto;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Wrap elements if needed */
   position: relative;
-  /* z-index: 1001; */
+  /* z-index: 1001; */ /* Optional: keep above banner */
 }
 
+/* Brand/logo text */
 .brand {
-  font-weight: 900;
-  font-size: 1.25rem;
-  text-transform: uppercase;
+  font-weight: 900; /* Bold */
+  font-size: 1.25rem; /* Medium-large font */
+  text-transform: uppercase; /* Uppercase letters */
 }
 
+/* Center text in header */
 .banner-head__center {
   margin: 0 auto;
   text-align: center;
@@ -40,42 +45,45 @@
   font-weight: 400;
   font-size: 1rem;
 }
-.banner-taskbar{
-  display:none;
+
+/* Taskbar (hamburger/menu) hidden by default */
+.banner-taskbar {
+  display: none;
 }
 
-/* ------------------ HOVER EFFECT FOR TOP-RIGHT CTA ------------------ */
+/* HEADER CTA HOVER EFFECT  */
 .banner-head__right {
   position: relative;
-  overflow: hidden;
-  background: rgba(255, 245, 68, 1);
+  overflow: hidden; /* Clip sliding overlay */
+  background: rgba(255, 245, 68, 1); /* Yellow background */
   padding: 10px 20px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  transition: color 0.4s ease-in-out;
+  transition: color 0.4s ease-in-out; /* Smooth color change */
 }
 
-/* Sliding black overlay */
+/* Sliding black overlay on hover */
 .banner-head__right::before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: -100%; /* Start hidden off-screen */
   width: 100%;
   height: 100%;
   background: #000;
-  z-index: 0;
-  transition: left 0.4s ease-in-out;
+  z-index: 0; /* Behind text */
+  transition: left 0.4s ease-in-out; /* Smooth slide */
 }
 
 .banner-head__right:hover::before {
-  left: 0;
+  left: 0; /* Slide overlay fully */
 }
 
+/* CTA text inside right header */
 .banner-head__right .banner-cta {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Above overlay */
   color: #000;
   font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
@@ -88,28 +96,30 @@
   transition: color 0.4s ease-in-out;
 }
 
+/* Icon inside CTA */
 .banner-head__right .banner-cta img {
   width: 20px;
   height: 20px;
-  filter: brightness(0);
+  filter: brightness(0); /* Black icon */
   transition: filter 0.4s ease-in-out;
 }
 
+/* Change color of CTA text & icon on hover */
 .banner-head__right:hover .banner-cta {
   color: #fff;
 }
 
 .banner-head__right:hover .banner-cta img {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1); /* White icon */
 }
 
-/* ------------------ BODY ------------------ */
+/*  BODY */
 .banner-body {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Full viewport height */
   background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center center;
-  background-size: cover;
+  background-size: cover; /* Cover entire container */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -117,8 +127,9 @@
   color: #000;
 }
 
+/* Text content inside body */
 .body-text {
-  position: absolute;
+  position: absolute; /* Position relative to banner-body */
   top: 400px;
   left: 67px;
   max-width: 600px;
@@ -127,18 +138,19 @@
   gap: 20px;
 }
 
+/* Banner title */
 .banner-title {
   font-family: "Jost", sans-serif;
   font-weight: 500;
-  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-size: clamp(2rem, 6vw, 4.5rem); /* Responsive font */
   line-height: 1.1;
   margin-bottom: 1rem;
   max-width: 90%;
 }
 
+/* Banner subtitle */
 .banner-sub {
   max-width: 483px;
-  position: relative;
   font-family: "Jost", sans-serif;
   font-weight: 400;
   font-size: 20px;
@@ -149,36 +161,38 @@
   letter-spacing: 0px;
 }
 
-/* ------------------ SHOP NOW BUTTON ------------------ */
+/* SHOP NOW BUTTON  */
 .banner-head__bottom {
   position: relative;
   width: fit-content;
   padding: 12px 24px;
   margin-top: 1.5rem;
-  background: #000;
-  overflow: hidden;
+  background: #000; /* Black button */
+  overflow: hidden; /* Clip sliding overlay */
   cursor: pointer;
 }
 
+/* Sliding yellow overlay */
 .banner-head__bottom::before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: -100%; /* Start hidden */
   width: 100%;
   height: 100%;
-  background: rgba(255, 245, 68, 1);
-  z-index: 0;
+  background: rgba(255, 245, 68, 1); /* Yellow */
+  z-index: 0; /* Behind text */
   transition: left 0.4s ease-in-out;
 }
 
 .banner-head__bottom:hover::before {
-  left: 0;
+  left: 0; /* Slide overlay */
 }
 
+/* CTA text on button */
 .bottom-banner-cta {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Above overlay */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
@@ -191,6 +205,7 @@
   transition: color 0.4s ease-in-out;
 }
 
+/* Icon inside button */
 .bottom-btn-icon {
   width: 20px;
   height: 20px;
@@ -198,6 +213,7 @@
   transition: filter 0.4s ease-in-out;
 }
 
+/* Change button text & icon on hover */
 .banner-head__bottom:hover .bottom-banner-cta {
   color: #000;
 }
@@ -206,9 +222,9 @@
   filter: brightness(0) invert(0);
 }
 
-/* ------------------ FOOTER ------------------ */
+/*  FOOTER  */
 .banner-footer {
-  background: #F5F5F5;
+  background: #F5F5F5; /* Light gray */
   min-height: 34px;
   display: flex;
   align-items: center;
@@ -225,34 +241,32 @@
   text-align: center;
 }
 
-/* ------------------ SMOOTH MOBILE DROPDOWN STYLES ------------------ */
+/*  MOBILE DROPDOWN  */
 .mobile-dropdown {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay */
   z-index: 9999;
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 80px;
-  opacity: 0;
+  opacity: 0; /* Hidden by default */
   visibility: hidden;
   transition: all 0.3s ease;
 }
 
 .mobile-dropdown.active {
   opacity: 1;
-  visibility: visible;
-  transition: all 0.3s ease;
+  visibility: visible; /* Show dropdown */
 }
 
 .mobile-dropdown.closing {
   opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
+  visibility: hidden; /* Hide dropdown */
 }
 
 .mobile-dropdown__content {
@@ -270,16 +284,16 @@
   transition: transform 0.3s ease;
 }
 
+/* Animate dropdown content */
 .mobile-dropdown.active .mobile-dropdown__content {
   transform: translateY(0);
-  transition: transform 0.3s ease;
 }
 
 .mobile-dropdown.closing .mobile-dropdown__content {
   transform: translateY(-20px);
-  transition: transform 0.3s ease;
 }
 
+/* Centered text inside dropdown */
 .mobile-dropdown__center {
   font-family: Jost, system-ui, sans-serif;
   font-weight: 400;
@@ -289,6 +303,7 @@
   color: #000;
 }
 
+/* CTA button inside mobile dropdown */
 .mobile-dropdown__cta {
   display: flex;
   align-items: center;
@@ -314,39 +329,37 @@
   filter: brightness(0) invert(1);
 }
 
-/* ------------------ RESPONSIVE FIXES ------------------ */
+/* RESPONSIVE STYLES */
 @media (max-width: 768px) {
+  /* Adjust banner body for mobile */
   .banner-body {
     position: relative;
     min-height: 80vh;
     justify-content: flex-start;
-    background: none;
+    background: none; /* Remove desktop background */
     overflow: hidden;
-    --mobile-zoom: 1.8;
+    --mobile-zoom: 1.8; /* Custom variable for zoom effect */
   }
 
+  /* Mobile background image */
   .banner-body::before {
     content: "";
     position: absolute;
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    
     width: 100%;
     height: 100%;
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: 180% auto;
     background-size: calc(190% * var(--mobile-zoom)) auto;
     background-position: center bottom;
-    z-index: -1;
-    pointer-events: none;
+    z-index: -1; /* Behind content */
+    pointer-events: none; /* Clicks pass through */
   }
 
+  /* Adjust text for mobile */
   .body-text {
     position: static;
-    top: auto;
-    left: auto;
-    transform: none;
     max-width: 100%;
     margin: 0 auto;
     text-align: center;
@@ -357,10 +370,6 @@
 
   .banner-title {
     font-size: 3rem;
-    font-weight: 500;
-    line-height: 1.2;
-    margin-top: 100;
-    width: 100%;
     text-align: center;
   }
 
@@ -374,9 +383,9 @@
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: hidden;
   }
 
+  /* Position bottom button on mobile */
   .banner-head__bottom {
     position: absolute;
     bottom: 40px;
@@ -392,32 +401,21 @@
     width: auto;
   }
 
-  /* ------------------ MOBILE HEADER FIXES ------------------ */
-  
+  /* ------------------ MOBILE HEADER ------------------ */
   .banner-head {
-    display: flex;
-    align-items: center;
     justify-content: center;
-    position: relative;
-    padding: 10px 16px;
     height: 60px;
-    z-index: 10000; /* Higher than dropdown */
+    z-index: 10000; /* Above dropdown */
   }
 
-  /* Taskbar pinned left */
+  /* Show taskbar icon */
   .banner-taskbar {
     display: flex;
-    align-items: center;
-    justify-content: center;
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0;
-    cursor: pointer;
-    z-index: 10001; /* Highest z-index */
+    z-index: 10001;
   }
 
   .banner-taskbar img {
@@ -425,13 +423,13 @@
     height: 28px;
   }
 
-  /* Hide center + right on mobile */
+  /* Hide center and right header content */
   .banner-head__center,
   .banner-head__right {
     display: none !important;
   }
 
-  /* Brand text perfectly centered */
+  /* Brand perfectly centered */
   .banner-head__left {
     margin: 0;
     flex: 1;
@@ -445,7 +443,7 @@
   }
 }
 
-/* Prevent body scrolling when menu is open */
+/* Prevent body scroll when mobile menu is open */
 body.mobile-menu-open {
   overflow: hidden;
 }
