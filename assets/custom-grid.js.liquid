@@ -72,130 +72,112 @@ function initCustomGrid() {
 
   // Function to create custom dropdown
   function createCustomDropdown(container, options, placeholder) {
-    // Remove old dropdown if exists
-    if (currentCustomDropdown) {
-      currentCustomDropdown.remove();
-      currentCustomDropdown = null;
-    }
-
-    const dropdownContainer = document.createElement('div');
-    dropdownContainer.className = 'custom-dropdown';
-    currentCustomDropdown = dropdownContainer;
-
-    const button = document.createElement('button');
-    button.className = 'dropdown-button placeholder';
-    button.textContent = placeholder;
-
-    const optionsContainer = document.createElement('div');
-    optionsContainer.className = 'dropdown-options';
-
-    // Build options
-    options.forEach(option => {
-      const optionElement = document.createElement('div');
-      optionElement.className = 'dropdown-option';
-      optionElement.textContent = option;
-      optionElement.dataset.value = option;
-
-      optionElement.addEventListener('click', () => {
-        // Select size
-        optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
-        optionElement.classList.add('selected');
-
-        button.textContent = option;
-        button.classList.remove('placeholder');
-        selectedSize = option;
-
-        optionsContainer.style.display = 'none';
-        sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-
-        updatePrice();
-      });
-
-      optionsContainer.appendChild(optionElement);
-    });
-
-    // Function to center selected option in view
-    function centerSelectedOption() {
-      const selectedOption = optionsContainer.querySelector('.dropdown-option.selected');
-      if (selectedOption) {
-        selectedOption.scrollIntoView({ block: 'center', behavior: 'smooth' });
-      }
-    }
-
-    // Toggle dropdown
-    button.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isVisible = optionsContainer.style.display === 'block';
-
-      // Close others
-      if (currentDropdown && currentDropdown !== optionsContainer) {
-        currentDropdown.style.display = 'none';
-        sizeArrow.src = lowerArrow;
-      }
-
-      if (!isVisible) {
-        // Opening dropdown
-        optionsContainer.style.display = 'block';
-        sizeArrow.src = upperArrow;
-        preventBodyScroll(true);
-        currentDropdown = optionsContainer;
-        
-        // Center selected option if exists
-        setTimeout(centerSelectedOption, 10);
-      } else {
-        // Closing dropdown
-        optionsContainer.style.display = 'none';
-        sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-      }
-    });
-
-    // Handle scroll events for options container
-    optionsContainer.addEventListener('scroll', () => {
-      const options = optionsContainer.querySelectorAll('.dropdown-option');
-      const containerHeight = optionsContainer.clientHeight;
-      
-      options.forEach(option => {
-        const optionRect = option.getBoundingClientRect();
-        const containerRect = optionsContainer.getBoundingClientRect();
-        
-        // Calculate how much of the option is visible
-        const visibleHeight = Math.min(optionRect.bottom, containerRect.bottom) - 
-                             Math.max(optionRect.top, containerRect.top);
-        
-        // Add/remove classes based on visibility
-        if (visibleHeight > 0) {
-          option.classList.add('visible');
-          option.classList.remove('hidden');
-        } else {
-          option.classList.add('hidden');
-          option.classList.remove('visible');
-        }
-      });
-    });
-
-    // Outside click close
-    document.addEventListener('click', (e) => {
-      if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
-        optionsContainer.style.display = 'none';
-        sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-      }
-    });
-
-    dropdownContainer.appendChild(button);
-    dropdownContainer.appendChild(optionsContainer);
-
-    const select = container.querySelector('select');
-    if (select) container.replaceChild(dropdownContainer, select);
-    else container.appendChild(dropdownContainer);
-
-    return dropdownContainer;
+  // Remove old dropdown if exists
+  if (currentCustomDropdown) {
+    currentCustomDropdown.remove();
+    currentCustomDropdown = null;
   }
+
+  const dropdownContainer = document.createElement('div');
+  dropdownContainer.className = 'custom-dropdown';
+  currentCustomDropdown = dropdownContainer;
+
+  const button = document.createElement('button');
+  button.className = 'dropdown-button placeholder';
+  button.textContent = placeholder;
+
+  const optionsContainer = document.createElement('div');
+  optionsContainer.className = 'dropdown-options';
+
+  // Build options
+  options.forEach(option => {
+    const optionElement = document.createElement('div');
+    optionElement.className = 'dropdown-option';
+    optionElement.textContent = option;
+    optionElement.dataset.value = option;
+
+    optionElement.addEventListener('click', () => {
+  // Reset all options
+  optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+  optionElement.classList.add('selected');
+
+  // Set size
+  button.textContent = option;
+  button.classList.remove('placeholder');
+  selectedSize = option;
+
+  // Close dropdown
+  optionsContainer.style.display = 'none';
+  sizeArrow.src = lowerArrow;
+  preventBodyScroll(false);
+  currentDropdown = null;
+
+  // 👉 Scroll the selected option into center
+  optionElement.scrollIntoView({
+    block: "center",
+    inline: "nearest",
+    behavior: "smooth"
+  });
+
+  updatePrice();
+});
+
+
+    optionsContainer.appendChild(optionElement);
+  });
+
+  // Toggle dropdown
+  button.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const isVisible = optionsContainer.style.display === 'block';
+
+    // Close others
+    if (currentDropdown && currentDropdown !== optionsContainer) {
+      currentDropdown.style.display = 'none';
+      sizeArrow.src = lowerArrow;
+    }
+
+    if (!isVisible) {
+      // Opening dropdown
+      optionsContainer.style.display = 'block';
+      sizeArrow.src = upperArrow;
+      preventBodyScroll(true);
+      currentDropdown = optionsContainer;
+
+      //  Reset previous selection when reopening
+      selectedSize = null;
+      button.textContent = placeholder;
+      button.classList.add('placeholder');
+      optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+    } else {
+      // Closing dropdown
+      optionsContainer.style.display = 'none';
+      sizeArrow.src = lowerArrow;
+      preventBodyScroll(false);
+      currentDropdown = null;
+    }
+  });
+
+  // Outside click close
+  document.addEventListener('click', (e) => {
+    if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
+      optionsContainer.style.display = 'none';
+      sizeArrow.src = lowerArrow;
+      preventBodyScroll(false);
+      currentDropdown = null;
+    }
+  });
+
+  dropdownContainer.appendChild(button);
+  dropdownContainer.appendChild(optionsContainer);
+
+  const select = container.querySelector('select');
+  if (select) container.replaceChild(dropdownContainer, select);
+  else container.appendChild(dropdownContainer);
+
+  return dropdownContainer;
+}
+
 
   async function showProductPopup(handle) {
     if (!handle) return;
