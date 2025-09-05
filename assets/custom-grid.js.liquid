@@ -1,4 +1,7 @@
 function initCustomGrid() {
+  // -------------------------
+  // DOM Elements
+  // -------------------------
   const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
@@ -8,271 +11,178 @@ function initCustomGrid() {
   const popupDescription = document.getElementById("popup-description");
   const sizeSelect = document.getElementById("size-select");
   const addToCartBtn = document.getElementById("add-to-cart");
-  const colorOptionContainer = document.getElementById("color-option-container");
-  const sizeOptionContainer = document.getElementById("size-option-container");
-  const colorSwatchesContainer = document.getElementById("color-swatches");
+  const colorContainer = document.getElementById("color-option-container");
+  const sizeContainer = document.getElementById("size-option-container");
+  const colorSwatches = document.getElementById("color-swatches");
   const hiddenColorSelect = document.getElementById("color-select");
-  const sizeSelectWrapper = document.querySelector('.size-select-wrapper');
-  const sizeSelectArrow = sizeSelectWrapper.querySelector('.size-arrow');
+  const sizeWrapper = document.querySelector('.size-select-wrapper');
+  const sizeArrow = sizeWrapper.querySelector('.size-arrow');
 
-  const placeholderSrc = popup ? (popup.dataset.placeholder || "") : "";
+  const placeholderSrc = popup?.dataset.placeholder || "";
   const lowerArrow = popup.dataset.arrowLower;
   const upperArrow = popup.dataset.arrowUpper;
 
   let currentProduct = null;
   let selectedColor = null;
 
-  function formatMoney(cents) {
-    return (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
-  }
+  // -------------------------
+  // Utility Functions
+  // -------------------------
+  const formatMoney = cents =>
+    (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 
-  function getVariantOptionsArray(variant) {
-    if (!variant) return [];
-    if (Array.isArray(variant.options) && variant.options.length) return variant.options;
-    const arr = [];
-    if (variant.option1) arr.push(variant.option1);
-    if (variant.option2) arr.push(variant.option2);
-    if (variant.option3) arr.push(variant.option3);
-    return arr;
-  }
+  const getVariantOptions = variant =>
+    variant?.options?.length ? variant.options : [variant.option1, variant.option2, variant.option3].filter(Boolean);
 
-  function findVariant(product, selectedOptions) {
-    if (!product || !product.variants) return null;
-    return product.variants.find(variant => {
-      const vOpts = getVariantOptionsArray(variant);
-      if (vOpts.length !== selectedOptions.length) {
-        return selectedOptions.every((sel, i) => sel === vOpts[i]);
-      }
-      return vOpts.every((opt, idx) => selectedOptions[idx] === opt);
-    });
-  }
+  const findVariant = (product, selected) =>
+    product?.variants?.find(v => getVariantOptions(v).every((opt, i) => opt === selected[i])) || null;
 
-  function updatePrice() {
+  const updatePrice = () => {
     if (!currentProduct) return;
-    const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
-    const selectedOptions = [];
-    (currentProduct.options || []).forEach(option => {
-      const name = option.name.toLowerCase();
-      if (name === "color") selectedOptions.push(selectedColor);
-      else if (name === "size") selectedOptions.push(selectedSizeValue || option.values[0]);
-      else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+    const selectedSize = sizeSelect.value || currentProduct.options.find(o => o.name.toLowerCase() === "size")?.values[0];
+    const selectedOptions = currentProduct.options.map(o => {
+      const name = o.name.toLowerCase();
+      return name === "color" ? selectedColor : name === "size" ? selectedSize : o.values[0];
     });
     const variant = findVariant(currentProduct, selectedOptions);
     if (variant) popupPrice.textContent = formatMoney(Math.round(parseFloat(variant.price) * 100));
-  }
+  };
 
-  // Function to handle text alignment for size dropdown
-  function updateSizeSelectAlignment() {
-    if (!sizeSelect) return;
-    
-    // Set initial alignment
-    if (sizeSelect.value === "") {
-      sizeSelect.style.textAlign = "left";
+  const createOptionElement = (val, parent, isColor = false, idx = 0) => {
+    if (isColor) {
+      const colorEl = document.createElement("div");
+      colorEl.className = "color-option" + (val.toLowerCase().includes("white") ? " is-white" : "");
+      colorEl.style.setProperty("--color-bar", val);
+      colorEl.innerHTML = `<span class="color-name">${val}</span>`;
+      if (idx === 0) { colorEl.classList.add("selected"); selectedColor = val; }
+      colorEl.addEventListener("click", () => {
+        colorSwatches.querySelectorAll(".color-option").forEach(opt => opt.classList.remove("selected"));
+        colorEl.classList.add("selected");
+        selectedColor = val;
+        hiddenColorSelect.value = val;
+        updatePrice();
+      });
+      parent.appendChild(colorEl);
     } else {
-      sizeSelect.style.textAlign = "center";
+      const opt = document.createElement("option");
+      opt.value = val;
+      opt.textContent = val;
+      parent.appendChild(opt);
     }
-    
-    // Update alignment on change
-    sizeSelect.addEventListener('change', function() {
-      if (this.value === "") {
-        this.style.textAlign = "left";
-      } else {
-        this.style.textAlign = "center";
-      }
-    });
-  }
+  };
 
-  async function showProductPopup(handle) {
+  const setupDropdownAlignment = () => {
+    if (!sizeSelect) return;
+    const updateAlign = () => sizeSelect.style.textAlign = sizeSelect.value ? "center" : "left";
+    sizeSelect.addEventListener("change", updateAlign);
+    sizeSelect.addEventListener("focus", () => sizeArrow.src = upperArrow);
+    sizeSelect.addEventListener("blur", () => sizeArrow.src = upperArrow);
+    updateAlign();
+  };
+
+  const showPopup = async handle => {
     if (!handle) return;
     try {
       const res = await fetch(`/products/${handle}.js`);
       const data = await res.json();
       currentProduct = data;
 
-      popupImage.src = (data.images && data.images.length > 0) ? data.images[0] : placeholderSrc;
+      // Update top content
+      popupImage.src = data.images?.[0] || placeholderSrc;
       popupImage.alt = data.title || "Product preview";
       popupTitle.textContent = data.title || "";
-      if (data.variants && data.variants.length > 0) popupPrice.textContent = formatMoney(Math.round(parseFloat(data.variants[0].price) * 100));
-      else popupPrice.textContent = "";
+      popupPrice.textContent = formatMoney(Math.round((data.variants?.[0]?.price || 0) * 100));
       popupDescription.innerHTML = data.description || "";
 
-      // Clear old options
+      // Reset options
       sizeSelect.innerHTML = '<option value="" selected disabled hidden>Choose your size</option>';
       hiddenColorSelect.innerHTML = "";
-      colorSwatchesContainer.innerHTML = "";
-      colorOptionContainer.style.display = 'none';
-      sizeOptionContainer.style.display = 'none';
+      colorSwatches.innerHTML = "";
+      colorContainer.style.display = sizeContainer.style.display = 'none';
       selectedColor = null;
-      
-      // FIXED: Set initial arrow to upperArrow
-      sizeSelectArrow.src = upperArrow;
+      sizeArrow.src = upperArrow;
 
-      if (Array.isArray(data.options)) {
-        data.options.forEach(option => {
-          const name = option.name.toLowerCase();
-          if (name === "size") {
-            sizeOptionContainer.style.display = 'block';
-            option.values.forEach(val => {
-              const optEl = document.createElement("option");
-              optEl.value = val; 
-              optEl.textContent = val; 
-              sizeSelect.appendChild(optEl);
-            });
-            sizeSelect.onchange = updatePrice;
-            
-            // Set up text alignment for the size dropdown
-            updateSizeSelectAlignment();
-          } else if (name === "color") {
-            colorOptionContainer.style.display = 'block';
-            option.values.forEach(val => {
-              const opt = document.createElement("option"); 
-              opt.value = val; 
-              opt.textContent = val;
-              hiddenColorSelect.appendChild(opt);
-            });
-
-            option.values.forEach((val, idx) => {
-              const colorOption = document.createElement("div");
-              colorOption.classList.add("color-option");
-              const cleaned = (val || "").trim().toLowerCase();
-              if (cleaned === "white" || cleaned === "#fff" || cleaned === "#ffffff") colorOption.classList.add("is-white");
-              colorOption.style.setProperty("--color-bar", val);
-
-              const colorName = document.createElement("span");
-              colorName.classList.add("color-name"); 
-              colorName.textContent = val;
-              colorOption.appendChild(colorName);
-
-              if (idx === 0) { 
-                colorOption.classList.add("selected"); 
-                selectedColor = val; 
-              }
-              colorOption.addEventListener("click", () => {
-                colorSwatchesContainer.querySelectorAll(".color-option").forEach(opt => { 
-                  opt.classList.remove("selected"); 
-                  opt.setAttribute("aria-selected", "false"); 
-                });
-                colorOption.classList.add("selected"); 
-                colorOption.setAttribute("aria-selected", "true");
-                selectedColor = val; 
-                hiddenColorSelect.value = val; 
-                updatePrice();
-              });
-              colorSwatchesContainer.appendChild(colorOption);
-            });
-            updatePrice();
-          }
-        });
-      }
-
-      popup.classList.remove("hidden"); 
-      document.body.style.overflow = 'hidden';
-    } catch (err) { 
-      console.error("Error loading product:", err); 
-    }
-  }
-
-  gridItems.forEach(item => {
-    const popupIcon = item.querySelector(".popup-icon");
-    if (!popupIcon) return;
-    popupIcon.addEventListener("click", e => { 
-      e.stopPropagation(); 
-      showProductPopup(item.dataset.handle); 
-    });
-  });
-
-  if (popupClose) popupClose.addEventListener("click", () => { 
-    popup.classList.add("hidden"); 
-    document.body.style.overflow = ''; 
-  });
-
-  if (popup) popup.addEventListener("click", e => { 
-    if (e.target === popup) { 
-      popup.classList.add("hidden"); 
-      document.body.style.overflow = ''; 
-    } 
-  });
-
-  if (sizeSelectWrapper && sizeSelectArrow) {
-    
-    // Update arrow on focus/blur
-    sizeSelect.addEventListener('focus', () => {
-      sizeSelectArrow.src = upperArrow;
-    });
-    
-    sizeSelect.addEventListener('blur', () => {
-      sizeSelectArrow.src = upperArrow;
-    });
-    
-    // Keep the click handler for fallback
-    sizeSelectWrapper.addEventListener("click", () => {
-      const isUpper = sizeSelectArrow.src.includes('choose-size-upper.svg');
-      sizeSelectArrow.src = isUpper ? lowerArrow : upperArrow;
-    });
-  }
-
-  if (addToCartBtn) {
-    const addToCartIcon = addToCartBtn.querySelector('.add-to-cart-icon');
-
-    addToCartBtn.addEventListener("click", async () => {
-      if (!currentProduct) return;
-
-      const selectedSizeValue = sizeSelect ? sizeSelect.value : null;
-
-      // Require size selection
-      if (!selectedSizeValue) {
-        alert("Please select a size before adding to cart.");
-        return;
-      }
-
-      const selectedOptions = [];
-      (currentProduct.options || []).forEach(option => {
+      // Populate options
+      data.options?.forEach(option => {
         const name = option.name.toLowerCase();
-        if (name === "color") selectedOptions.push(selectedColor);
-        else if (name === "size") selectedOptions.push(selectedSizeValue);
-        else selectedOptions.push(option.values && option.values[0] ? option.values[0] : null);
+        if (name === "size") {
+          sizeContainer.style.display = "block";
+          option.values.forEach(val => createOptionElement(val, sizeSelect));
+          sizeSelect.onchange = updatePrice;
+          setupDropdownAlignment();
+        } else if (name === "color") {
+          colorContainer.style.display = "block";
+          option.values.forEach((val, idx) => {
+            createOptionElement(val, hiddenColorSelect);
+            createOptionElement(val, colorSwatches, true, idx);
+          });
+          updatePrice();
+        }
       });
 
-      const variant = findVariant(currentProduct, selectedOptions);
-      if (!variant) { 
-        alert("Please select valid options"); 
-        return; 
-      }
+      popup.classList.remove("hidden");
+      document.body.style.overflow = 'hidden';
+    } catch (err) {
+      console.error("Error loading product:", err);
+    }
+  };
 
-      try {
-        addToCartBtn.disabled = true;
-        const response = await fetch("/cart/add.js", {
-          method: "POST",
-          headers: {
-            "Content-Type":"application/json",
-            "X-Requested-With":"XMLHttpRequest"
-          },
-          body: JSON.stringify({ id: variant.id, quantity: 1 })
-        });
-        if (response.ok) {
-          updateCartCount();
-          alert("Product added to cart!");
-          popup.classList.add("hidden");
-          document.body.style.overflow = '';
-        } else throw new Error('Failed to add to cart');
-      } catch (err) {
-        console.error(err);
-        alert("Could not add product to cart.");
-      } finally {
-        addToCartBtn.disabled = false;
-        addToCartIcon.src = "{{ 'add-to-cart.svg' | asset_url }}";
-      }
+  const closePopup = () => {
+    popup.classList.add("hidden");
+    document.body.style.overflow = '';
+  };
+
+  const addToCart = async () => {
+    if (!currentProduct) return;
+    const selectedSize = sizeSelect.value;
+    if (!selectedSize) return alert("Please select a size before adding to cart.");
+
+    const selectedOptions = currentProduct.options.map(o => {
+      const name = o.name.toLowerCase();
+      return name === "color" ? selectedColor : name === "size" ? selectedSize : o.values[0];
     });
-  }
 
-  function updateCartCount() {
-    fetch('/cart.js').then(r => r.json()).then(cart => {
-      document.querySelectorAll('.cart-count, [data-cart-count], #cart-count').forEach(el => el.textContent = cart.item_count);
-      document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
-    }).catch(console.error);
-  }
+    const variant = findVariant(currentProduct, selectedOptions);
+    if (!variant) return alert("Please select valid options");
+
+    try {
+      addToCartBtn.disabled = true;
+      const response = await fetch("/cart/add.js", {
+        method: "POST",
+        headers: { "Content-Type":"application/json", "X-Requested-With":"XMLHttpRequest" },
+        body: JSON.stringify({ id: variant.id, quantity: 1 })
+      });
+      if (response.ok) {
+        fetch('/cart.js').then(r => r.json()).then(cart => {
+          document.querySelectorAll('.cart-count, [data-cart-count], #cart-count').forEach(el => el.textContent = cart.item_count);
+          document.dispatchEvent(new CustomEvent('cart:updated', { detail: { cart } }));
+        });
+        alert("Product added to cart!");
+        closePopup();
+      } else throw new Error("Failed to add to cart");
+    } catch (err) {
+      console.error(err);
+      alert("Could not add product to cart.");
+    } finally { addToCartBtn.disabled = false; }
+  };
+
+  // -------------------------
+  // Event Listeners
+  // -------------------------
+  gridItems.forEach(item => {
+    const icon = item.querySelector(".popup-icon");
+    icon?.addEventListener("click", e => { e.stopPropagation(); showPopup(item.dataset.handle); });
+  });
+  popupClose?.addEventListener("click", closePopup);
+  popup?.addEventListener("click", e => { if (e.target === popup) closePopup(); });
+  sizeWrapper?.addEventListener("click", () => {
+    const isUpper = sizeArrow.src.includes('choose-size-upper.svg');
+    sizeArrow.src = isUpper ? lowerArrow : upperArrow;
+  });
+  addToCartBtn?.addEventListener("click", addToCart);
 }
 
+// Initialize
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCustomGrid);
 else initCustomGrid();
 if (typeof Shopify !== 'undefined') document.addEventListener('shopify:section:load', initCustomGrid);
