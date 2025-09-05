@@ -98,20 +98,20 @@
   flex-direction: row;
   gap: 20px;
   margin-bottom: 20px;
-  align-items: stretch; /* make image and description same height */
+  align-items: stretch; /* image & description same height by default */
 }
 
 .popup-top img#popup-image {
   width: 50%;
   max-width: 250px;
+  height: 100%; /* image fully stretched */
   object-fit: cover;
-  height: 100%;
 }
 
 .popup-details {
   flex: 1;
   text-align: left;
-  height: 100%;
+  height: 100%; /* default height */
   overflow-y: auto;
 }
 
@@ -313,22 +313,24 @@
     overflow: hidden;
   }
 
-  /* Keep image and description side by side */
+  /* Side-by-side layout with stretched image */
   .popup-top {
+    display: flex;
     flex-direction: row;
     gap: 15px;
-    align-items: stretch;
+    align-items: flex-start; /* allow description to be smaller */
   }
 
   .popup-top img#popup-image {
     width: 50%;
     max-width: 250px;
-    height: 100%;
+    height: 100%; /* image fully stretched */
+    object-fit: cover;
   }
 
   .popup-details {
     width: 50%;
-    height: 100%;
+    height: 40%; /* smaller height than image */
     overflow-y: auto;
   }
 
@@ -337,29 +339,33 @@
   }
 }
 
-/* Tiny screen adjustments */
+/* Tiny screen adjustments: keep same side-by-side layout */
 @media (max-width: 480px) {
   .color-option {
     font-size: 10px;
     min-width: 30px;
     height: 36px;
   }
+
   .color-option::before {
     width: 3px;
     height: 100%;
     margin-right: 4px;
   }
 
-  /* Keep same side-by-side layout even on tiny screens */
   .popup-top {
     flex-direction: row;
     gap: 10px;
-    align-items: stretch;
+    align-items: flex-start;
   }
 
-  .popup-top img#popup-image,
-  .popup-details {
+  .popup-top img#popup-image {
     width: 50%;
     height: 100%;
+  }
+
+  .popup-details {
+    width: 50%;
+    height: 40%; /* smaller height than image */
   }
 }
