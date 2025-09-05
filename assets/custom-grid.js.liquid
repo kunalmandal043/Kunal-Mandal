@@ -1,7 +1,7 @@
 function initCustomGrid() {
-  // -------------------------
+ 
   // DOM Elements
-  // -------------------------
+  
   const gridItems = document.querySelectorAll(".grid-item");
   const popup = document.getElementById("product-popup");
   const popupClose = document.getElementById("popup-close");
@@ -25,9 +25,9 @@ function initCustomGrid() {
   let currentProduct = null;
   let selectedColor = null;
 
-  // -------------------------
+ 
   // Utility Functions
-  // -------------------------
+  
   const formatMoney = cents =>
     (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 
@@ -166,9 +166,9 @@ function initCustomGrid() {
     } finally { addToCartBtn.disabled = false; }
   };
 
-  // -------------------------
+ 
   // Event Listeners
-  // -------------------------
+ 
   gridItems.forEach(item => {
     const icon = item.querySelector(".popup-icon");
     icon?.addEventListener("click", e => { e.stopPropagation(); showPopup(item.dataset.handle); });
