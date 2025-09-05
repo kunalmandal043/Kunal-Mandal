@@ -149,35 +149,14 @@ function initCustomGrid() {
   });
 
   // Outside click close
-  optionElement.addEventListener('click', () => {
-  // Remove old selection
-  optionsContainer.querySelectorAll('.dropdown-option')
-    .forEach(opt => opt.classList.remove('selected'));
-
-  // Highlight new selection
-  optionElement.classList.add('selected');
-
-  // Place text in button
-  button.textContent = option;
-  button.classList.remove('placeholder');
-  selectedSize = option;
-
-  // Close dropdown
-  optionsContainer.style.display = 'none';
-  sizeArrow.src = lowerArrow;
-  preventBodyScroll(false);
-  currentDropdown = null;
-
-  updatePrice();
-
-  // Center the chosen option in the box
-  optionElement.scrollIntoView({
-    block: "center",
-    inline: "nearest",
-    behavior: "smooth"
+  document.addEventListener('click', (e) => {
+    if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === 'block') {
+      optionsContainer.style.display = 'none';
+      sizeArrow.src = lowerArrow;
+      preventBodyScroll(false);
+      currentDropdown = null;
+    }
   });
-});
-
 
   dropdownContainer.appendChild(button);
   dropdownContainer.appendChild(optionsContainer);
