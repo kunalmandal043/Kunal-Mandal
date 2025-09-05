@@ -19,57 +19,30 @@ function initCustomGrid() {
   const lowerArrow = els.popup?.dataset.arrowLower;
   const upperArrow = els.popup?.dataset.arrowUpper;
 
-  let currentProduct = null,
-    selectedColor = null,
-    selectedSize = null,
-    currentDropdown = null,
-    currentCustomDropdown = null;
+  let currentProduct = null;
+  let selectedColor = null;
+  let selectedSize = null;
+  let currentDropdown = null;
+  let currentCustomDropdown = null;
 
   const formatMoney = (cents) =>
     (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
-
-  const getVariantOptionsArray = (v) =>
-    !v ? [] : v.options?.length ? v.options : [v.option1, v.option2, v.option3].filter(Boolean);
-
-  const findVariant = (product, selectedOptions) =>
-    product?.variants?.find((v) => {
-      const vOpts = getVariantOptionsArray(v);
-      return vOpts.every((opt, i) => selectedOptions[i] === opt);
-    }) || null;
-
-  const preventBodyScroll = (state) =>
-    document.body.classList.toggle("body-no-scroll", state);
 
   const cleanupDropdown = () => {
     if (currentCustomDropdown) currentCustomDropdown.remove();
     currentCustomDropdown = null;
     currentDropdown = null;
+    // Always reset arrow to lower
     if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
   };
 
   const closePopup = () => {
     els.popup.classList.add("hidden");
     document.body.classList.remove("popup-open");
-    preventBodyScroll(false);
     cleanupDropdown();
-    // reset arrow to lower
-    if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
   };
 
-  const updatePrice = () => {
-    if (!currentProduct) return;
-    const opts = currentProduct.options.map((o) => {
-      const name = o.name.toLowerCase();
-      if (name === "color") return selectedColor;
-      if (name === "size") return selectedSize || o.values[0];
-      return o.values?.[0] || null;
-    });
-    const v = findVariant(currentProduct, opts);
-    if (v) els.popupPrice.textContent = formatMoney(+v.price * 100);
-  };
-
-  // ---------- Dropdown ----------
-  function createCustomDropdown(container, options, placeholder) {
+  const createCustomDropdown = (container, options, placeholder) => {
     cleanupDropdown();
 
     const dropdownContainer = document.createElement("div");
@@ -88,7 +61,6 @@ function initCustomGrid() {
       const optEl = document.createElement("div");
       optEl.className = "dropdown-option";
       optEl.textContent = option;
-      optEl.dataset.value = option;
 
       optEl.addEventListener("click", () => {
         optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
@@ -97,11 +69,8 @@ function initCustomGrid() {
         button.classList.remove("placeholder");
         selectedSize = option;
         optionsContainer.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
+        if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // back to lower
         currentDropdown = null;
-        optEl.scrollIntoView({ block: "center", behavior: "smooth" });
-        updatePrice();
       });
 
       optionsContainer.appendChild(optEl);
@@ -110,24 +79,14 @@ function initCustomGrid() {
     button.addEventListener("click", (e) => {
       e.stopPropagation();
       const isVisible = optionsContainer.style.display === "block";
-      if (currentDropdown && currentDropdown !== optionsContainer) {
-        currentDropdown.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
-      }
 
       if (!isVisible) {
         optionsContainer.style.display = "block";
-        if (els.sizeArrow) els.sizeArrow.src = upperArrow;
-        preventBodyScroll(true);
+        if (els.sizeArrow) els.sizeArrow.src = upperArrow; // show upper arrow
         currentDropdown = optionsContainer;
-        selectedSize = null;
-        button.textContent = placeholder;
-        button.classList.add("placeholder");
-        optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
       } else {
         optionsContainer.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
+        if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // show lower arrow
         currentDropdown = null;
       }
     });
@@ -136,27 +95,22 @@ function initCustomGrid() {
       if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === "block") {
         optionsContainer.style.display = "none";
         if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
         currentDropdown = null;
       }
     });
 
     dropdownContainer.append(button, optionsContainer);
-
     const select = container.querySelector("select");
     select ? container.replaceChild(dropdownContainer, select) : container.appendChild(dropdownContainer);
-
     return dropdownContainer;
-  }
+  };
 
-  // ---------- Popup ----------
-  async function showProductPopup(handle) {
-    if (!handle) return;
+  const showProductPopup = async (handle) => {
     try {
       const data = await (await fetch(`/products/${handle}.js`)).json();
       currentProduct = data;
 
-      // set product info
+      // set info
       els.popupImage.src = data.images?.[0] || placeholderSrc;
       els.popupTitle.textContent = data.title || "";
       els.popupPrice.textContent = data.variants?.[0] ? formatMoney(+data.variants[0].price * 100) : "";
@@ -170,14 +124,12 @@ function initCustomGrid() {
       selectedColor = selectedSize = null;
       cleanupDropdown();
 
-      // Size & color options
       data.options?.forEach((option) => {
         const name = option.name.toLowerCase();
         if (name === "size") {
           els.sizeOptionContainer.style.display = "block";
-          const wrapper = els.sizeOptionContainer.querySelector(".size-select-wrapper");
-          if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
-          createCustomDropdown(wrapper, option.values, "Choose your size");
+          if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // reset arrow
+          createCustomDropdown(els.sizeOptionContainer.querySelector(".size-select-wrapper"), option.values, "Choose your size");
         } else if (name === "color") {
           els.colorOptionContainer.style.display = "block";
           option.values.forEach((val, i) => {
@@ -204,25 +156,20 @@ function initCustomGrid() {
               colorOption.classList.add("selected");
               selectedColor = val;
               els.hiddenColorSelect.value = val;
-              updatePrice();
             });
 
             els.colorSwatchesContainer.appendChild(colorOption);
           });
-          updatePrice();
         }
       });
 
       els.popup.classList.remove("hidden");
       document.body.classList.add("popup-open");
-      preventBodyScroll(true);
-
     } catch (err) {
       console.error("Error loading product:", err);
     }
-  }
+  };
 
-  // ---------- Events ----------
   els.gridItems.forEach((item) => {
     item.querySelector(".popup-icon")?.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -232,62 +179,8 @@ function initCustomGrid() {
 
   els.popupClose?.addEventListener("click", closePopup);
   els.popup?.addEventListener("click", (e) => e.target === els.popup && closePopup());
-
-  // Add to cart logic remains unchanged
-  if (els.addToCartBtn) {
-    const addToCartIcon = els.addToCartBtn.querySelector(".add-to-cart-icon");
-    els.addToCartBtn.addEventListener("click", async () => {
-      if (!currentProduct) return;
-      if (!selectedSize) return alert("Please select a size before adding to cart.");
-
-      const opts = currentProduct.options.map((o) => {
-        const n = o.name.toLowerCase();
-        if (n === "color") return selectedColor;
-        if (n === "size") return selectedSize;
-        return o.values?.[0] || null;
-      });
-
-      const variant = findVariant(currentProduct, opts);
-      if (!variant) return alert("Please select valid options");
-
-      try {
-        els.addToCartBtn.disabled = true;
-        const res = await fetch("/cart/add.js", {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-Requested-With": "XMLHttpRequest" },
-          body: JSON.stringify({ id: variant.id, quantity: 1 }),
-        });
-        if (!res.ok) throw new Error("Failed to add to cart");
-
-        updateCartCount();
-        alert("Product added to cart!");
-        closePopup();
-      } catch (err) {
-        console.error(err);
-        alert("Could not add product to cart.");
-      } finally {
-        els.addToCartBtn.disabled = false;
-        addToCartIcon.src = "{{ 'add-to-cart.svg' | asset_url }}";
-      }
-    });
-  }
-
-  const updateCartCount = () =>
-    fetch("/cart.js")
-      .then((r) => r.json())
-      .then((cart) => {
-        document.querySelectorAll(".cart-count, [data-cart-count], #cart-count").forEach(
-          (el) => (el.textContent = cart.item_count)
-        );
-        document.dispatchEvent(new CustomEvent("cart:updated", { detail: { cart } }));
-      })
-      .catch(console.error);
 }
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initCustomGrid);
 } else initCustomGrid();
-
-if (typeof Shopify !== "undefined") {
-  document.addEventListener("shopify:section:load", initCustomGrid);
-}
