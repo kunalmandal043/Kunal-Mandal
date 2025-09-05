@@ -22,7 +22,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   padding: 18px;
   width: 100%;
   max-width: 420px;   
-  max-height: 90vh;       /* increased height */
+  max-height: 95vh;       /* increased height for desktop */
   overflow-y: auto;       
   position: relative;
   border-radius: 6px;
@@ -163,7 +163,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .size-select-wrapper select { display: none; }
 .size-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; transition: .2s; }
 
-/* Force choose-size-lower & choose-size-upper fully visible with overflow visible */
+/* Force choose-size-lower & choose-size-upper fully visible */
 .choose-size-lower .dropdown-options,
 .choose-size-upper .dropdown-options {
   max-height: none !important;
@@ -176,10 +176,10 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   .heading { text-align: center; font-size: 24px; }
   .popup-icon { width: 16px; height: 16px; }
   .popup { padding: 10px; }
-  .popup-content { padding: 15px; max-width: 90%; max-height: 95vh; } /* taller popup */
+  .popup-content { padding: 15px; max-width: 90%; max-height: 98vh; } /* taller popup */
 
   .popup-top { flex-direction: row; align-items: flex-start; text-align: left; gap: 8px; }
-  .popup-top img#popup-image { width: 42%; max-width: 140px; max-height: 32vh; } /* taller image */
+  .popup-top img#popup-image { width: 42%; max-width: 140px; max-height: 36vh; } /* taller image */
 
   .popup-details { width: 58%; font-size: 11px; line-height: 1.2; }
   .popup-details h2 { font-size: 12px; margin-bottom: 3px; }
@@ -204,9 +204,9 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 }
 
 @media (max-width: 480px) {
-  .popup-content { padding: 12px; max-width: 95%; max-height: 95vh; } /* taller popup */
+  .popup-content { padding: 12px; max-width: 95%; max-height: 98vh; } /* taller popup */
   .popup-top { gap: 6px; }
-  .popup-top img#popup-image { width: 45%; max-width: 120px; max-height: 30vh; } /* taller image */
+  .popup-top img#popup-image { width: 45%; max-width: 120px; max-height: 38vh; } /* taller image */
 
   .popup-details h2 { font-size: 11px; margin-bottom: 2px; }
   .popup-details p, .popup-option label, .dropdown-button, .dropdown-option { font-size: 11px; padding: 6px 8px; }
