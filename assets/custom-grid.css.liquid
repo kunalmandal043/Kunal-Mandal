@@ -1,4 +1,3 @@
-/* ===================== General ===================== */
 .hidden {
   display: none !important;
 }
@@ -16,7 +15,7 @@
   font-size: 36px;
   line-height: 120%;
   text-align: left;
-  margin-bottom: 20px;
+  margin: 0 0 20px 0;
 }
 
 .grid-container {
@@ -53,7 +52,7 @@
   box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-/* ===================== Popup ===================== */
+/* Popup Styles */
 .popup {
   position: fixed;
   top: 0;
@@ -67,10 +66,11 @@
   transition: opacity 0.4s ease, transform 0.4s ease;
   border: 2px solid #ccc;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.5); /* overlay background */
 }
 
 .popup-content {
+  
   background: white;
   padding: 20px;
   width: 90%;
@@ -93,32 +93,33 @@
   color: #333;
 }
 
-/* ===================== Popup Top: Image + Details ===================== */
+/* Popup Top Section: Image + Details */
 .popup-top {
   display: flex;
   flex-direction: row;
   gap: 20px;
   margin-bottom: 20px;
-  align-items: stretch; /* image & details same height */
+  align-items: stretch; /* image & description same height by default */
 }
 
 .popup-top img#popup-image {
   width: 50%;
   max-width: 250px;
-  height: 100%;
+  height: 100%; /* image fully stretched */
   object-fit: cover;
 }
 
 .popup-details {
   flex: 1;
   text-align: left;
-  height: 100%;
+  height: 100%; /* default height */
   overflow-y: auto;
 }
 
 .popup-details h2 {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
+  font-style: normal;
   font-size: 18px;
   line-height: 120%;
   margin-bottom: 10px;
@@ -130,15 +131,16 @@
 }
 
 .popup-details p {
+  margin-bottom: 10px;
   font-family: 'Jost', sans-serif;
   font-weight: 300;
+  font-style: normal;
   font-size: 14px;
   line-height: 110%;
-  margin-bottom: 10px;
   letter-spacing: -0.01em;
 }
 
-/* ===================== Color Options ===================== */
+/* Color Options */
 .color-swatches {
   display: flex;
   flex-wrap: nowrap;
@@ -204,7 +206,7 @@
   text-align: center;
 }
 
-/* ===================== Popup Bottom ===================== */
+/* Bottom Section: Options + Add to Cart */
 .popup-bottom {
   display: flex;
   flex-direction: column;
@@ -225,8 +227,8 @@
 .popup-option select {
   padding: 12px 20px;
   border: 1px solid #ddd;
-  font-size: 16px;
   cursor: pointer;
+  font-size: 16px;
   width: 100%;
   box-sizing: border-box;
 }
@@ -238,10 +240,10 @@
   border: none;
   cursor: pointer;
   background: black;
+  transition: background 0.3s ease;
   margin-top: 15px;
   width: 100%;
   height: 50px;
-  transition: background 0.3s ease;
 }
 
 #add-to-cart:disabled {
@@ -262,6 +264,8 @@
 
 .size-select-wrapper select {
   appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
   width: 100%;
   padding-right: 40px;
   text-align: left;
@@ -281,6 +285,7 @@
   padding-left: 12px;
   height: 100%;
   width: 16px;
+  box-sizing: content-box;
   position: absolute;
   right: 12px;
   top: 50%;
@@ -290,7 +295,7 @@
   transition: transform 0.2s ease;
 }
 
-/* ===================== Mobile: <768px ===================== */
+/* Responsive: Mobile layout (all screens <768px) */
 @media (max-width: 768px) {
   .grid-container {
     grid-template-columns: repeat(2, 1fr);
@@ -302,34 +307,39 @@
   }
 
   .popup-icon { 
-    width: 16px;
-    height: 16px;
+    width: 16px; 
+    height: 16px; 
   }
 
   .popup-content {
+    padding: 20px;
     width: 90%;
     max-width: 600px;
     max-height: 70vh;
-    padding: 20px;
+    overflow: hidden;
   }
 
   .popup-top {
+    display: flex;
+    flex-direction: row;
     gap: 10px;
-    align-items: flex-start;
+    align-items: flex-start; /* description smaller than image */
   }
 
   .popup-top img#popup-image {
     width: 50%;
     max-width: 250px;
-    height: 100%;
+    height: 100%; /* image fully stretched */
+    object-fit: cover;
   }
 
   .popup-details {
     width: 50%;
-    height: 40%;
+    height: 40%; /* smaller height */
     overflow-y: auto;
   }
 
+  /* Smaller text and minimal gaps */
   .popup-details h2 {
     font-size: 14px;
     margin-bottom: 2px;
@@ -350,7 +360,7 @@
   }
 }
 
-/* ===================== Tiny Screens: <480px ===================== */
+/* Tiny screen adjustments: keep same side-by-side layout */
 @media (max-width: 480px) {
   .color-option {
     font-size: 10px;
@@ -360,41 +370,60 @@
 
   .color-option::before {
     width: 3px;
+    height: 100%;
     margin-right: 4px;
   }
 
+  .popup-top {
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .popup-top img#popup-image {
+    width: 50%;
+    height: 100%;
+  }
+
+  .popup-details {
+    width: 50%;
+    height: 40%;
+  }
+
   .popup-details h2 {
     font-size: 12px;
+    margin-bottom: 2px;
   }
 
   .popup-details .popup-price {
     font-size: 10px;
+    margin-bottom: 2px;
   }
 
   .popup-details p {
     font-size: 10px;
+    margin-bottom: 2px;
   }
 }
-
-/* ===================== Desktop: >768px popup-details ===================== */
+/* Desktop adjustments for popup-details */
 @media (min-width: 769px) {
   .popup-details h2 {
-    font-size: 12px;
-    margin-bottom: 2px;
+    font-size: 12px; /* even smaller title */
+    margin-bottom: 2px; /* minimal gap */
   }
 
   .popup-details .popup-price {
-    font-size: 11px;
+    font-size: 11px; /* smaller price */
     margin-bottom: 2px;
   }
 
   .popup-details p {
-    font-size: 11px;
+    font-size: 11px; /* smaller description */
     margin-bottom: 2px;
   }
 
   .popup-details {
-    max-height: 100%;
+    max-height: 100%; /* match image height */
     overflow-y: auto;
   }
 }
