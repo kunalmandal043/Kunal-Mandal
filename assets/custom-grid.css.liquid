@@ -1,5 +1,5 @@
 .hidden {
-  display: none !important;
+  display: none !important; /* Utility class to hide elements */
 }
 
 /* Container for the custom grid layout */
@@ -28,7 +28,7 @@
 }
 
 .grid-item {
-  position: relative; /* For absolute children positioning */
+  position: relative; /* For absolute positioning of children (e.g., icons) */
 }
 
 .grid-image-wrapper {
@@ -42,20 +42,23 @@
   object-fit: cover; /* Crop image if needed */
 }
 
+/* Popup icon inside grid item */
 .popup-icon {
   position: absolute;
   bottom: 30%;
   right: 60%;
   width: 22px;
   height: 22px;
-  cursor: pointer; /* Shows pointer on hover */
-  z-index: 4; /* Above other elements */
+  cursor: pointer; /* Pointer cursor on hover */
+  z-index: 4; /* Ensure it appears above other elements */
   border-radius: 50%; /* Circular icon */
   padding: 4px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Slight shadow */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Slight shadow for depth */
 }
 
 /* POPUP STYLES */
+
+/* Fullscreen overlay */
 .popup {
   position: fixed;
   top: 0;
@@ -65,24 +68,26 @@
   display: flex;
   justify-content: center; /* Center horizontally */
   align-items: center;     /* Center vertically */
-  z-index: 1000; /* On top of other content */
-  transition: opacity 0.4s ease, transform 0.4s ease; /* Smooth animation */
+  z-index: 1000; /* Ensure popup is on top */
+  transition: opacity 0.4s ease, transform 0.4s ease; /* Smooth show/hide animation */
   border: 2px solid #ccc;
   box-shadow: 0 10px 30px rgba(0,0,0,0.3);
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
 }
 
+/* Popup content box */
 .popup-content {
   background: white;
   padding: 20px;
   width: 90%;
   max-width: 350px; /* Limit width */
   max-height: 60vh; /* Limit height to 60% of viewport */
-  overflow: hidden;
+  overflow: hidden; /* Prevent scroll outside content */
   position: relative;
   box-sizing: border-box;
 }
 
+/* Close button */
 #popup-close {
   position: absolute;
   top: 4px;
@@ -95,19 +100,20 @@
   color: #333;
 }
 
+/* Top section: image + details */
 .popup-top {
   display: flex;
   flex-direction: row; /* Image and details side by side */
-  gap: 20px;
+  gap: 20px; /* Space between image and details */
   margin-bottom: 20px;
-  align-items: stretch; /* Make both same height */
+  align-items: stretch; /* Make both sides equal height */
 }
 
 .popup-top img#popup-image {
   width: 50%;
   max-width: 250px;
   height: 100%; /* Fill container height */
-  object-fit: cover;
+  object-fit: cover; /* Maintain aspect ratio */
 }
 
 /* Details section next to image */
@@ -117,16 +123,18 @@
   height: 100%;
   overflow-y: auto; /* Scroll if content overflows */
   display: flex;
-  flex-direction: column; /* Stack children vertically */
-  gap: 8px; /* Gap between title, price, description */
+  flex-direction: column; /* Stack title, price, description vertically */
+  gap: 8px; /* Space between title, price, description */
 }
 
+/* Reset default margins to respect gap */
 .popup-details h2,
 .popup-details .popup-price,
 .popup-details p {
-  margin: 0; /* Remove default margin to respect gap */
+  margin: 0;
 }
 
+/* Popup title */
 .popup-details h2 {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
@@ -135,10 +143,12 @@
   line-height: 120%;
 }
 
+/* Popup price */
 .popup-details .popup-price {
   font-size: 14px;
 }
 
+/* Popup description */
 .popup-details p {
   font-family: 'Jost', sans-serif;
   font-weight: 300;
@@ -150,12 +160,13 @@
 /* COLOR OPTIONS */
 .color-swatches {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap; /* Keep colors in a single row */
   width: 100%;
   margin-top: 8px;
   gap: 0;
 }
 
+/* Each color option */
 .color-option {
   display: flex;
   align-items: center;
@@ -166,13 +177,15 @@
   cursor: pointer;
   position: relative;
   min-height: 44px;
-  flex: 1 1 auto;
+  flex: 1 1 auto; /* Flexible width */
 }
 
+/* Ensure equal width for all colors */
 .color-swatches > .color-option {
   width: calc(100% / var(--color-count));
 }
 
+/* Colored indicator bar */
 .color-option::before {
   content: "";
   display: block;
@@ -183,15 +196,18 @@
   background-color: var(--color-bar, #ccc);
 }
 
+/* Special style for white color */
 .color-option.is-white::before {
   background-color: var(--color-bar, #fff);
   box-shadow: 0 0 0 1px #ddd;
 }
 
+/* Hover effect for color option */
 .color-option:hover {
   background: #f9f9f9;
 }
 
+/* Selected color option */
 .color-option.selected {
   background: #000;
   color: #fff;
@@ -206,6 +222,7 @@
   box-shadow: 0 0 0 1px rgba(0,0,0,0.08);
 }
 
+/* Color label */
 .color-name {
   font-size: 14px;
   font-weight: 400;
@@ -213,12 +230,14 @@
   text-align: center;
 }
 
+/* Bottom section of popup */
 .popup-bottom {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
+/* Option container */
 .popup-option {
   display: flex;
   flex-direction: column;
@@ -226,7 +245,7 @@
 }
 
 .popup-option label {
-  margin-bottom: 6px;
+  margin-bottom: 6px; /* Space between label and select */
   font-weight: 500;
 }
 
@@ -239,6 +258,7 @@
   box-sizing: border-box;
 }
 
+/* Add to cart button */
 #add-to-cart {
   display: flex;
   align-items: center;
@@ -252,42 +272,43 @@
   height: 50px;
 }
 
+/* Disabled state */
 #add-to-cart:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
+/* Icon inside add to cart button */
 .add-to-cart-icon {
   width: auto;
   height: 100%;
   object-fit: contain;
 }
 
+/* Size select wrapper for custom arrow */
 .size-select-wrapper {
   position: relative;
   width: 100%;
 }
 
 .size-select-wrapper select {
-  appearance: none;
+  appearance: none; /* Remove default arrow */
   -webkit-appearance: none;
   -moz-appearance: none;
   width: 100%;
-  padding-right: 40px;
+  padding-right: 40px; /* Space for custom arrow */
   text-align: left;
   outline: none;
   box-shadow: none;
 }
 
-.size-select-wrapper select option {
-  text-align: center;
-}
-
+/* Center text when focused or value selected */
 .size-select-wrapper select:focus,
 .size-select-wrapper select:not([value=""]):not(:focus) {
   text-align: center;
 }
 
+/* Custom arrow for size select */
 .size-select-wrapper .size-arrow {
   border-left: 1px solid #ccc;
   padding-left: 12px;
@@ -298,15 +319,17 @@
   right: 12px;
   top: 50%;
   transform: translateY(-50%);
-  pointer-events: none;
+  pointer-events: none; /* Prevent arrow from being clickable */
   font-size: 16px;
   transition: transform 0.2s ease;
 }
 
 /*RESPONSIVE STYLES*/
+
+/* Tablet screens */
 @media (max-width: 768px) {
   .grid-container {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on tablet */
   }
 
   .heading {
@@ -320,11 +343,9 @@
   }
 
   .popup-content {
-    padding: 20px;
     width: 90%;
     max-width: 600px;
     max-height: 70vh;
-    overflow: hidden;
   }
 
   .popup-top {
@@ -332,27 +353,20 @@
     align-items: flex-start;
   }
 
-  .popup-top img#popup-image {
-    width: 50%;
-    height: 100%;
-  }
-
   .popup-details {
     width: 50%;
     height: 40%;
-    overflow-y: auto;
   }
 
   .popup-details h2 { font-size: 14px; }
   .popup-details .popup-price { font-size: 12px; }
   .popup-details p { font-size: 12px; }
-
-  .popup-bottom { width: 100%; }
 }
 
+/* Mobile screens */
 @media (max-width: 480px) {
   .color-option { font-size: 10px; min-width: 30px; height: 36px; }
-  .color-option::before { width: 3px; height: 100%; margin-right: 4px; }
+  .color-option::before { width: 3px; margin-right: 4px; }
 
   .popup-top { gap: 10px; align-items: flex-start; }
   .popup-top img#popup-image { width: 50%; height: 100%; }
@@ -363,6 +377,7 @@
   .popup-details p { font-size: 10px; }
 }
 
+/* Desktop screens */
 @media (min-width: 769px) {
   .popup-details h2 { font-size: 12px; }
   .popup-details .popup-price { font-size: 11px; }
