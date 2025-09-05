@@ -1,33 +1,36 @@
+/*  MAIN BANNER CONTAINER */
 .custom-banner {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
+  width: 100%; /* Full width */
+  min-height: 100vh; /* Full viewport height */
+  display: flex; /* Flex container for header, body, footer */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: space-between; /* Spread children vertically */
+  position: relative; /* For absolute-positioned children */
 }
 
-/* ------------------ HEADER ------------------ */
+/*  HEADER  */
 .banner-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  padding: 10px 5%;
-  background: #F5F5F5;
+  display: flex; /* Flex layout for brand, center, right CTA */
+  align-items: center; /* Vertical centering */
+  justify-content: space-between; /* Space between elements */
+  gap: 16px; /* Gap between items */
+  padding: 10px 5%; /* Internal spacing */
+  background: #F5F5F5; /* Light gray background */
   width: 100%;
   height: auto;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* Wrap on smaller screens */
   position: relative;
-  z-index: 1001;
+  z-index: 1001; /* Stack above body background */
 }
 
+/* Brand/logo text */
 .brand {
-  font-weight: 900;
-  font-size: 1.25rem;
-  text-transform: uppercase;
+  font-weight: 900; /* Bold text */
+  font-size: 1.25rem; /* Medium-large font */
+  text-transform: uppercase; /* Uppercase letters */
 }
 
+/* Center header text */
 .banner-head__center {
   margin: 0 auto;
   text-align: center;
@@ -35,42 +38,45 @@
   font-weight: 400;
   font-size: 1rem;
 }
-.banner-taskbar{
-  display:none;
+
+/* Hamburger/menu taskbar hidden by default */
+.banner-taskbar {
+  display: none;
 }
 
-/* ------------------ HOVER EFFECT FOR TOP-RIGHT CTA ------------------ */
+/* HEADER RIGHT CTA HOVER EFFECT  */
 .banner-head__right {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 245, 68, 1);
+  position: relative; /* For overlay */
+  overflow: hidden; /* Clip sliding overlay */
+  background: rgba(255, 245, 68, 1); /* Yellow background */
   padding: 10px 20px;
   display: flex;
   align-items: center;
   cursor: pointer;
-  transition: color 0.4s ease-in-out;
+  transition: color 0.4s ease-in-out; /* Smooth color transition */
 }
 
-/* Sliding black overlay */
+/* Sliding black overlay on hover */
 .banner-head__right::before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: -100%; /* Start outside view */
   width: 100%;
   height: 100%;
   background: #000;
-  z-index: 0;
-  transition: left 0.4s ease-in-out;
+  z-index: 0; /* Behind CTA text */
+  transition: left 0.4s ease-in-out; /* Smooth sliding */
 }
 
 .banner-head__right:hover::before {
-  left: 0;
+  left: 0; /* Slide overlay fully */
 }
 
+/* CTA text inside header */
 .banner-head__right .banner-cta {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Above overlay */
   color: #000;
   font-weight: 400;
   font-family: "Jost", system-ui, sans-serif;
@@ -79,32 +85,33 @@
   text-transform: uppercase;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 8px; /* Gap between icon and text */
   transition: color 0.4s ease-in-out;
 }
 
+/* CTA icon styling */
 .banner-head__right .banner-cta img {
   width: 20px;
   height: 20px;
-  filter: brightness(0);
+  filter: brightness(0); /* Black icon */
   transition: filter 0.4s ease-in-out;
 }
 
+/* Change CTA text & icon on hover */
 .banner-head__right:hover .banner-cta {
   color: #fff;
 }
-
 .banner-head__right:hover .banner-cta img {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1); /* White icon */
 }
 
-/* ------------------ BODY ------------------ */
+/* BODY */
 .banner-body {
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 100vh; /* Full viewport height */
   background: url('{{ "bg-img.svg" | asset_url }}') no-repeat center center;
-  background-size: cover;
+  background-size: cover; /* Cover entire container */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -112,8 +119,9 @@
   color: #000;
 }
 
+/* Body text container */
 .body-text {
-  position: absolute;
+  position: absolute; /* Positioned within banner-body */
   top: 400px;
   left: 67px;
   max-width: 600px;
@@ -122,15 +130,17 @@
   gap: 20px;
 }
 
+/* Banner title */
 .banner-title {
   font-family: "Jost", sans-serif;
   font-weight: 500;
-  font-size: clamp(2rem, 6vw, 4.5rem);
+  font-size: clamp(2rem, 6vw, 4.5rem); /* Responsive font */
   line-height: 1.1;
   margin-bottom: 1rem;
   max-width: 90%;
 }
 
+/* Banner subtitle */
 .banner-sub {
   max-width: 483px;
   position: relative;
@@ -144,36 +154,38 @@
   letter-spacing: 0px;
 }
 
-/* ------------------ SHOP NOW BUTTON ------------------ */
+/*  SHOP NOW BUTTON  */
 .banner-head__bottom {
-  position: relative;
+  position: relative; /* For overlay */
   width: fit-content;
   padding: 12px 24px;
   margin-top: 1.5rem;
-  background: #000;
-  overflow: hidden;
+  background: #000; /* Black button */
+  overflow: hidden; /* Clip overlay */
   cursor: pointer;
 }
 
+/* Sliding yellow overlay for button */
 .banner-head__bottom::before {
   content: "";
   position: absolute;
   top: 0;
-  left: -100%;
+  left: -100%; /* Start hidden */
   width: 100%;
   height: 100%;
   background: rgba(255, 245, 68, 1);
-  z-index: 0;
+  z-index: 0; /* Behind text */
   transition: left 0.4s ease-in-out;
 }
 
 .banner-head__bottom:hover::before {
-  left: 0;
+  left: 0; /* Slide overlay on hover */
 }
 
+/* CTA text on button */
 .bottom-banner-cta {
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Above overlay */
   font-family: "Jost", system-ui, sans-serif;
   font-weight: 400;
   font-size: 1rem;
@@ -186,6 +198,7 @@
   transition: color 0.4s ease-in-out;
 }
 
+/* Icon inside button */
 .bottom-btn-icon {
   width: 20px;
   height: 20px;
@@ -193,17 +206,17 @@
   transition: filter 0.4s ease-in-out;
 }
 
+/* Hover effects for button */
 .banner-head__bottom:hover .bottom-banner-cta {
   color: #000;
 }
-
 .banner-head__bottom:hover .bottom-btn-icon {
   filter: brightness(0) invert(0);
 }
 
-/* ------------------ FOOTER ------------------ */
+/*  FOOTER  */
 .banner-footer {
-  background: #F5F5F5;
+  background: #F5F5F5; /* Light gray */
   min-height: 34px;
   display: flex;
   align-items: center;
@@ -220,34 +233,32 @@
   text-align: center;
 }
 
-/* ------------------ SMOOTH MOBILE DROPDOWN STYLES ------------------ */
+/*  MOBILE DROPDOWN */
 .mobile-dropdown {
-  position: fixed;
+  position: fixed; /* Overlay entire screen */
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 9999;
+  background: rgba(0, 0, 0, 0.7); /* Semi-transparent overlay */
+  z-index: 9999; /* On top of all content */
   display: flex;
   justify-content: center;
   align-items: flex-start;
   padding-top: 80px;
-  opacity: 0;
+  opacity: 0; /* Hidden initially */
   visibility: hidden;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; /* Smooth appear/disappear */
 }
 
 .mobile-dropdown.active {
   opacity: 1;
-  visibility: visible;
-  transition: all 0.3s ease;
+  visibility: visible; /* Show overlay */
 }
 
 .mobile-dropdown.closing {
   opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
+  visibility: hidden; /* Hide overlay */
 }
 
 .mobile-dropdown__content {
@@ -261,20 +272,19 @@
   gap: 25px;
   align-items: center;
   box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
-  transform: translateY(-20px);
+  transform: translateY(-20px); /* Initial slide-up */
   transition: transform 0.3s ease;
 }
 
 .mobile-dropdown.active .mobile-dropdown__content {
-  transform: translateY(0);
-  transition: transform 0.3s ease;
+  transform: translateY(0); /* Slide into view */
 }
 
 .mobile-dropdown.closing .mobile-dropdown__content {
-  transform: translateY(-20px);
-  transition: transform 0.3s ease;
+  transform: translateY(-20px); /* Slide up when closing */
 }
 
+/* Centered text inside dropdown */
 .mobile-dropdown__center {
   font-family: Jost, system-ui, sans-serif;
   font-weight: 400;
@@ -284,6 +294,7 @@
   color: #000;
 }
 
+/* CTA button inside mobile dropdown */
 .mobile-dropdown__cta {
   display: flex;
   align-items: center;
@@ -295,7 +306,7 @@
   text-transform: uppercase;
   color: #000;
   padding: 12px 24px;
-  background: rgba(255, 245, 68, 1);
+  background: rgba(255, 245, 68, 1); /* Yellow button */
   border-radius: 4px;
   transition: all 0.3s ease;
 }
@@ -306,18 +317,18 @@
 }
 
 .mobile-dropdown__cta:hover img {
-  filter: brightness(0) invert(1);
+  filter: brightness(0) invert(1); /* Invert icon color on hover */
 }
 
-/* ------------------ RESPONSIVE FIXES ------------------ */
+/* RESPONSIVE */
 @media (max-width: 768px) {
   .banner-body {
     position: relative;
     min-height: 80vh;
     justify-content: flex-start;
-    background: none;
+    background: none; /* Remove desktop background */
     overflow: hidden;
-    --mobile-zoom: 1.8;
+    --mobile-zoom: 1.8; /* For scaling mobile background */
   }
 
   .banner-body::before {
@@ -326,17 +337,16 @@
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    
     width: 100%;
     height: 100%;
     background: url('{{ "mobile-bg-img.svg" | asset_url }}') no-repeat center bottom;
-    background-size: 180% auto;
     background-size: calc(190% * var(--mobile-zoom)) auto;
     background-position: center bottom;
-    z-index: -1;
-    pointer-events: none;
+    z-index: -1; /* Behind content */
+    pointer-events: none; /* Allow clicks through */
   }
 
+  /* Body text adjustments */
   .body-text {
     position: static;
     top: auto;
@@ -352,10 +362,6 @@
 
   .banner-title {
     font-size: 3rem;
-    font-weight: 500;
-    line-height: 1.2;
-    margin-top: 100;
-    width: 100%;
     text-align: center;
   }
 
@@ -366,10 +372,9 @@
     max-width: 90%;
     text-align: center;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 2; /* Limit lines */
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: hidden;
   }
 
   .banner-head__bottom {
@@ -387,32 +392,26 @@
     width: auto;
   }
 
-  /* ------------------ MOBILE HEADER FIXES ------------------ */
-  
+  /* MOBILE HEADER*/
   .banner-head {
     display: flex;
     align-items: center;
     justify-content: center;
-    position: relative;
     padding: 10px 16px;
     height: 60px;
-    z-index: 10000; /* Higher than dropdown */
+    z-index: 10000; /* On top of dropdown */
   }
 
-  /* Taskbar pinned left */
   .banner-taskbar {
-    display: flex;
+    display: flex; /* Show hamburger */
     align-items: center;
     justify-content: center;
     position: absolute;
     left: 16px;
     top: 50%;
     transform: translateY(-50%);
-    background: none;
-    border: none;
-    padding: 0;
     cursor: pointer;
-    z-index: 10001; /* Highest z-index */
+    z-index: 10001; /* Above all */
   }
 
   .banner-taskbar img {
@@ -420,15 +419,12 @@
     height: 28px;
   }
 
-  /* Hide center + right on mobile */
   .banner-head__center,
   .banner-head__right {
-    display: none !important;
+    display: none !important; /* Hide for mobile */
   }
 
-  /* Brand text perfectly centered */
   .banner-head__left {
-    margin: 0;
     flex: 1;
     display: flex;
     justify-content: center;
@@ -440,7 +436,7 @@
   }
 }
 
-/* Prevent body scrolling when menu is open */
+/* Prevent body scroll when mobile menu is open */
 body.mobile-menu-open {
   overflow: hidden;
 }
