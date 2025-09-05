@@ -152,9 +152,10 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   border-top: none;
   background: #fff;
   z-index: 1001;
-  /* ❌ remove scrolling */
-  max-height: none;   /* no max height */
-  overflow-y: visible; /* disable scroll */
+
+  /* ✅ disable scroll globally */
+  max-height: none;   
+  overflow-y: visible; 
   display: none;
 }
 
