@@ -103,7 +103,9 @@ function initCustomGrid() {
       colorOptionContainer.style.display = 'none';
       sizeOptionContainer.style.display = 'none';
       selectedColor = null;
-      sizeSelectArrow.src = lowerArrow;
+      
+      // FIXED: Set initial arrow to upperArrow
+      sizeSelectArrow.src = upperArrow;
 
       if (Array.isArray(data.options)) {
         data.options.forEach(option => {
@@ -205,7 +207,7 @@ function initCustomGrid() {
     // Keep the click handler for fallback
     sizeSelectWrapper.addEventListener("click", () => {
       const isUpper = sizeSelectArrow.src.includes('choose-size-upper.svg');
-      sizeSelectArrow.src = isUpper ? lowerArrow :upperArrow ;
+      sizeSelectArrow.src = isUpper ? lowerArrow : upperArrow;
     });
   }
 
