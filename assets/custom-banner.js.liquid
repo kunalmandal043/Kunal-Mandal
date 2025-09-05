@@ -1,29 +1,28 @@
-// Mobile menu implementation with better error handling
+// Mobile menu implementation
 (function() {
-  // Initialize when DOM is ready
   function initMobileMenu() {
     const menuToggle = document.getElementById('mobile-menu-toggle');
     const mobileDropdown = document.getElementById('mobile-dropdown');
-    
-    if (!menuToggle || !mobileDropdown) {
-      console.error('Mobile menu elements not found');
-      return;
-    }
-    
+    if (!menuToggle || !mobileDropdown) return;
+
     const menuIcon = menuToggle.querySelector('.menu-icon');
     const closeIcon = menuToggle.querySelector('.close-icon');
     const body = document.body;
-    
-    // Toggle menu function
+
     function toggleMenu() {
       const isOpen = mobileDropdown.classList.contains('active');
-      
+
       if (isOpen) {
-        // Close menu
+        // Close menu with smooth animation
         mobileDropdown.classList.remove('active');
-        if (menuIcon) menuIcon.style.display = 'block';
-        if (closeIcon) closeIcon.style.display = 'none';
-        body.classList.remove('mobile-menu-open');
+        mobileDropdown.classList.add('closing');
+
+        setTimeout(() => {
+          mobileDropdown.classList.remove('closing');
+          if (menuIcon) menuIcon.style.display = 'block';
+          if (closeIcon) closeIcon.style.display = 'none';
+          body.classList.remove('mobile-menu-open');
+        }, 300); // Match CSS transition
       } else {
         // Open menu
         mobileDropdown.classList.add('active');
@@ -32,33 +31,29 @@
         body.classList.add('mobile-menu-open');
       }
     }
-    
-    // Add click event to menu toggle
-    menuToggle.addEventListener('click', function(e) {
+
+    // Click toggle
+    menuToggle.addEventListener('click', e => {
       e.stopPropagation();
       toggleMenu();
     });
-    
-    // Close menu when clicking on the overlay (outside content)
-    mobileDropdown.addEventListener('click', function(e) {
-      if (e.target === mobileDropdown) {
-        toggleMenu();
-      }
+
+    // Click overlay to close
+    mobileDropdown.addEventListener('click', e => {
+      if (e.target === mobileDropdown) toggleMenu();
     });
-    
-    // Close menu when pressing Escape key
-    document.addEventListener('keydown', function(e) {
+
+    // Press Escape to close
+    document.addEventListener('keydown', e => {
       if (e.key === 'Escape' && mobileDropdown.classList.contains('active')) {
         toggleMenu();
       }
     });
   }
-  
-  // Run initialization when DOM is loaded
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initMobileMenu);
   } else {
-    // DOM is already ready
     initMobileMenu();
   }
 })();
