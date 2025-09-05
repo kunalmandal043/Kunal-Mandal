@@ -192,21 +192,24 @@ function initCustomGrid() {
   });
 
   if (sizeSelectWrapper && sizeSelectArrow) {
+    // Set default arrow to upper
+    sizeSelectArrow.src = upperArrow;
+
     // Update arrow on focus/blur
     sizeSelect.addEventListener('focus', () => {
-      sizeSelectArrow.src = upperArrow;
+        sizeSelectArrow.src = lowerArrow; // show downward arrow on focus
     });
-    
+
     sizeSelect.addEventListener('blur', () => {
-      sizeSelectArrow.src = lowerArrow;
+        sizeSelectArrow.src = upperArrow; // revert to default upper arrow on blur
     });
-    
-    // Keep the click handler for fallback
+
+    // Toggle arrow on wrapper click
     sizeSelectWrapper.addEventListener("click", () => {
-      const isLower = sizeSelectArrow.src.includes('choose-size-upper.svg');
-      sizeSelectArrow.src = isLower ? upperArrow : lowerArrow;
+        const isLower = sizeSelectArrow.src.includes('choose-size-lower.svg');
+        sizeSelectArrow.src = isLower ? upperArrow : lowerArrow;
     });
-  }
+}
 
   if (addToCartBtn) {
     const addToCartIcon = addToCartBtn.querySelector('.add-to-cart-icon');
