@@ -131,40 +131,42 @@
   letter-spacing: -0.01em;
 }
 
-/* Color Options - Single Row Responsive */
+/* Color Options - Single Row, No Gap */
 .color-swatches {
   display: flex;
   flex-wrap: nowrap; /* keep in one line */
   width: 100%;
   margin-top: 8px;
-  gap: 6px;
-  overflow: hidden; /* prevent horizontal scroll */
+  gap: 0;            /* no gap between options */
+  overflow: hidden;  /* prevent scroll */
 }
 
 .color-option {
-  flex: 1 1 auto;      /* auto-resize to fit */
-  min-width: 40px;     /* readable minimum width */
+  flex: 1 1 auto;     /* auto-resize to fit */
+  min-width: 40px;    /* readable minimum width */
   display: flex;
   align-items: center;
+  justify-content: center;
   text-align: center;
   box-sizing: border-box;
   border: 1px solid #ddd;
   cursor: pointer;
   position: relative;
-  padding: 6px 4px;
+  padding: 0;         /* remove extra padding to match height */
   font-size: 12px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 44px;       /* fixed height for consistency */
 }
 
 .color-option::before {
   content: "";
   display: block;
   width: 4px;
-  height: 100%;
+  height: 100%;       /* full height of the option */
   flex-shrink: 0;
-  margin-right: 6px;
+  margin-right: 0;    /* no gap between strip and next option */
   background-color: var(--color-bar, #ccc);
   box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
 }
@@ -335,10 +337,10 @@
   .color-option {
     font-size: 10px;
     min-width: 30px;
-    padding: 4px 2px;
+    height: 36px;
   }
   .color-option::before {
     width: 3px;
-    margin-right: 4px;
+    margin-right: 0;
   }
 }
