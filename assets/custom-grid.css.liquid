@@ -21,9 +21,9 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   background: #fff;
   padding: 18px;
   width: 100%;
-  max-width: 420px;   /* smaller popup */
-  max-height: 80vh;
-  overflow-y: auto;
+  max-width: 420px;   
+  max-height: 80vh;       
+  overflow-y: auto;       
   position: relative;
   border-radius: 6px;
   display: flex;
@@ -57,7 +57,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .popup-top {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;     /* align image + content at top */
+  align-items: flex-start;
   justify-content: flex-start;
   gap: 12px;
   margin-bottom: 15px;
@@ -142,7 +142,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .custom-dropdown, .size-select-wrapper { position: relative; width: 100%; }
 .dropdown-button { width: 100%; padding: 10px 16px; border: 1px solid #ddd; background: #fff; display: flex; justify-content: space-between; align-items: center; font-size: 14px; cursor: pointer; }
 .dropdown-button.placeholder { color: #999; }
-/* Dropdown */
+/* Dropdown options: fully visible, no scroll */
 .dropdown-options {
   position: absolute;
   top: 100%;
@@ -152,13 +152,12 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   border-top: none;
   background: #fff;
   z-index: 1001;
-
-  /* ✅ disable scroll globally */
-  max-height: none;   
-  overflow-y: visible; 
+  max-height: none;
+  overflow-y: visible;
   display: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  border-radius: 4px;
 }
-
 .dropdown-options::-webkit-scrollbar { display: none; }
 .dropdown-option { padding: 10px 16px; text-align: center; cursor: pointer; transition: .2s; font-size: 13px; }
 .dropdown-option:hover, .dropdown-option.selected { background: #000; color: #fff; }
