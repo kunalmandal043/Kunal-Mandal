@@ -104,8 +104,8 @@
 .popup-top img#popup-image {
   width: 50%;
   max-width: 250px;
-  height: 100%;
   object-fit: cover;
+  height: 100%;
 }
 
 .popup-details {
@@ -313,22 +313,21 @@
     overflow: hidden;
   }
 
-  /* Side-by-side layout with stretched image & small description */
+  /* Keep image and description side by side */
   .popup-top {
-    display: flex;
     flex-direction: row;
-    gap: 10px;
+    gap: 15px;
     align-items: stretch;
   }
 
   .popup-top img#popup-image {
-    width: 80%; /* image takes most width */
-    height: 100%; /* stretch image */
-    object-fit: cover;
+    width: 50%;
+    max-width: 250px;
+    height: 100%;
   }
 
   .popup-details {
-    width: 20%; /* very small description area */
+    width: 50%;
     height: 100%;
     overflow-y: auto;
   }
@@ -345,7 +344,6 @@
     min-width: 30px;
     height: 36px;
   }
-
   .color-option::before {
     width: 3px;
     height: 100%;
@@ -359,12 +357,9 @@
     align-items: stretch;
   }
 
-  .popup-top img#popup-image {
-    width: 75%; /* image takes most width */
-  }
-
+  .popup-top img#popup-image,
   .popup-details {
-    width: 25%; /* small description area */
+    width: 50%;
     height: 100%;
   }
 }
