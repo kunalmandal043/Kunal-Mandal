@@ -22,7 +22,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   padding: 18px;
   width: 100%;
   max-width: 420px;   
-  max-height: 100vh;       /* almost full viewport height */
+  max-height: 98vh;       /* increased more for desktop */
   overflow-y: auto;       
   position: relative;
   border-radius: 6px;
@@ -71,7 +71,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   object-fit: contain;
   border-radius: 4px;
   flex-shrink: 0;
-  max-height: 90vh; /* taller image for desktop */
+  max-height: 80vh; /* taller image for desktop */
 }
 
 .popup-details {
@@ -177,10 +177,10 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   .heading { text-align: center; font-size: 24px; }
   .popup-icon { width: 16px; height: 16px; }
   .popup { padding: 10px; }
-  .popup-content { padding: 15px; max-width: 90%; max-height: 100vh; } /* almost full height for tablet */
+  .popup-content { padding: 15px; max-width: 90%; max-height: 99vh; } /* taller popup */
 
   .popup-top { flex-direction: row; align-items: flex-start; text-align: left; gap: 8px; }
-  .popup-top img#popup-image { width: 42%; max-width: 140px; max-height: 45vh; } /* taller image for tablet */
+  .popup-top img#popup-image { width: 42%; max-width: 140px; max-height: 40vh; } /* taller image */
 
   .popup-details { width: 58%; font-size: 11px; line-height: 1.2; }
   .popup-details h2 { font-size: 12px; margin-bottom: 3px; }
@@ -205,6 +205,9 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 }
 
 @media (max-width: 480px) {
-  .popup-content { padding: 12px; max-width: 95%; max-height: 100vh; } /* almost full height for mobile */
+  .popup-content { padding: 12px; max-width: 95%; max-height: 99vh; } /* taller popup */
   .popup-top { gap: 6px; }
-  .popup-top img#popup-image { width: 45%; max-width: 120px; max-height:
+  .popup-top img#popup-image { width: 45%; max-width: 120px; max-height: 42vh; } /* taller image */
+
+  .popup-details h2 { font-size: 11px; margin-bottom: 2px; }
+ 
