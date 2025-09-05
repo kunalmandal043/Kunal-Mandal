@@ -29,9 +29,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  scrollbar-width: none; /* Firefox */
 }
-.popup-content::-webkit-scrollbar { display: none; }
 
 /* Close btn */
 #popup-close {
@@ -59,7 +57,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .popup-top {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: flex-start;     /* align image + content at top */
   justify-content: flex-start;
   gap: 12px;
   margin-bottom: 15px;
@@ -94,9 +92,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   font-size: 12px;
   line-height: 1.3;
   color: #444;
-  scrollbar-width: none; /* Firefox */
 }
-#popup-description::-webkit-scrollbar { display: none; }
 
 /* Color Options */
 .color-swatches { display: flex; flex-wrap: wrap; margin-top: 6px; width: 100%; gap: 0; }
@@ -166,7 +162,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 
   .popup-details { width: 58%; font-size: 11px; line-height: 1.2; }
   .popup-details h2 { font-size: 12px; margin-bottom: 3px; }
-  .popup-details p { font-size: 11px; margin-bottom: 2px; } /* reduced gap */
+  .popup-details p { font-size: 11px; margin-bottom: 3px; }
   #popup-description {
     max-height: none;
     overflow: hidden;
@@ -192,7 +188,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   .popup-top img#popup-image { width: 45%; max-width: 120px; max-height: 26vh; }
 
   .popup-details h2 { font-size: 11px; margin-bottom: 2px; }
-  .popup-details p, .popup-option label, .dropdown-button, .dropdown-option { font-size: 11px; padding: 6px 8px; margin-bottom: 2px; } /* less gap */
+  .popup-details p, .popup-option label, .dropdown-button, .dropdown-option { font-size: 11px; padding: 6px 8px; }
   #popup-description { font-size: 11px; -webkit-line-clamp: 3; line-height: 1.2; margin-bottom: 3px; }
   .color-name { font-size: 10px; }
   #popup-close { width: 24px; height: 24px; font-size: 14px; line-height: 24px; }
