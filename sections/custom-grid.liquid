@@ -44,9 +44,12 @@
 </section>
 
 <!-- Product Popup -->
-<div id="product-popup" class="popup hidden">
-  <div class="popup-content">
-    <span id="popup-close">&times;</span>
+<div id="product-popup" class="popup hidden" 
+     data-placeholder="{{ 'placeholder.png' | asset_url }}"
+     data-arrow-lower="{{ 'choose-size-lower.svg' | asset_url }}"
+     data-arrow-upper="{{ 'choose-size-upper.svg' | asset_url }}">
+  <div class="popup-content" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+    <button id="popup-close" aria-label="Close popup">&times;</button>
 
     <!-- Top section: Image + Details -->
     <div class="popup-top">
@@ -61,19 +64,33 @@
 
     <!-- Bottom section: Options + Add to Cart -->
     <div class="popup-bottom">
-      <div class="popup-option" id="color-option-container">
-        <label for="color-select">Choose Color:</label>
-        <select id="color-select"></select>
+      <div class="popup-option" id="color-option-container" style="display:none;">
+        <label for="color-select">Color:</label>
+        <select id="color-select" style="display:none;"></select>
+        <div id="color-swatches" class="color-swatches"></div>
       </div>
 
-      <div class="popup-option" id="size-option-container">
-        <label for="size-select">Choose Size:</label>
-        <select id="size-select"></select>
+      <div class="popup-option" id="size-option-container" style="display:none;">
+        <label for="size-select">Size:</label>
+        <div class="size-select-wrapper">
+          <select id="size-select">
+            <option value="" selected disabled hidden>Choose your size</option>
+          </select>
+          <img class="size-arrow" 
+          src="{{ 'choose-size-lower.svg' | asset_url }}" 
+          alt="Dropdown arrow"
+          width="16" 
+          height="16"
+          >
+        </div>
       </div>
 
       <button id="add-to-cart">
-        
-        <span>ADD TO CART ➜ </span>
+        <img class="add-to-cart-icon" 
+          src="{{ 'add-to-cart.svg' | asset_url }}" 
+          alt="Add to Cart"
+          width="" 
+          height="">
       </button>
     </div>
   </div>
