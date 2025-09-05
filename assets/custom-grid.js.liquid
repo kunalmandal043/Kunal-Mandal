@@ -71,7 +71,8 @@ function initCustomGrid() {
   }
 
   // Function to create custom dropdown
-  function createCustomDropdown(container, options, placeholder) {
+  // inside your initCustomGrid, replace the existing createCustomDropdown with this one
+function createCustomDropdown(container, options, placeholder) {
   // Remove old dropdown if exists
   if (currentCustomDropdown) {
     currentCustomDropdown.remove();
@@ -88,6 +89,7 @@ function initCustomGrid() {
 
   const optionsContainer = document.createElement('div');
   optionsContainer.className = 'dropdown-options';
+  optionsContainer.style.display = 'none'; // hidden initially
 
   // Build options
   options.forEach(option => {
@@ -97,20 +99,30 @@ function initCustomGrid() {
     optionElement.dataset.value = option;
 
     optionElement.addEventListener('click', () => {
-      // Select size
-      optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
-      optionElement.classList.add('selected');
+      // Clear old selection
+      optionsContainer.querySelectorAll('.dropdown-option')
+        .forEach(opt => opt.classList.remove('selected'));
 
+      // Mark this option
+      optionElement.classList.add('selected');
       button.textContent = option;
       button.classList.remove('placeholder');
       selectedSize = option;
 
+      // Close dropdown
       optionsContainer.style.display = 'none';
       sizeArrow.src = lowerArrow;
       preventBodyScroll(false);
       currentDropdown = null;
 
       updatePrice();
+
+      // ✅ Center chosen option inside dropdown
+      optionElement.scrollIntoView({
+        block: "center",
+        inline: "nearest",
+        behavior: "smooth"
+      });
     });
 
     optionsContainer.appendChild(optionElement);
@@ -128,19 +140,13 @@ function initCustomGrid() {
     }
 
     if (!isVisible) {
-      // Opening dropdown
+      // Open dropdown
       optionsContainer.style.display = 'block';
       sizeArrow.src = upperArrow;
       preventBodyScroll(true);
       currentDropdown = optionsContainer;
-
-      // ✅ Reset previous selection when reopening
-      selectedSize = null;
-      button.textContent = placeholder;
-      button.classList.add('placeholder');
-      optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
     } else {
-      // Closing dropdown
+      // Close dropdown
       optionsContainer.style.display = 'none';
       sizeArrow.src = lowerArrow;
       preventBodyScroll(false);
@@ -161,6 +167,7 @@ function initCustomGrid() {
   dropdownContainer.appendChild(button);
   dropdownContainer.appendChild(optionsContainer);
 
+  // Replace select with custom dropdown
   const select = container.querySelector('select');
   if (select) container.replaceChild(dropdownContainer, select);
   else container.appendChild(dropdownContainer);
