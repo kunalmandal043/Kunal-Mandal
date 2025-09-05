@@ -21,9 +21,9 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   background: #fff;
   padding: 18px;
   width: 100%;
-  max-width: 420px;   
-  max-height: 100vh;       /* almost full viewport height */
-  overflow-y: auto;       
+  max-width: 460px;   /* increased width slightly */
+  max-height: 90vh;   /* increased height */
+  overflow-y: auto;
   position: relative;
   border-radius: 6px;
   display: flex;
@@ -57,7 +57,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .popup-top {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
+  align-items: stretch; /* ensures image matches details height */
   justify-content: flex-start;
   gap: 12px;
   margin-bottom: 15px;
@@ -67,13 +67,12 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .popup-top img#popup-image {
   width: 40%;
   max-width: 200px;
-  height: auto;
   object-fit: contain;
   border-radius: 4px;
   flex-shrink: 0;
-  max-height: 90vh; /* taller image for desktop */
 }
 
+/* Popup Details */
 .popup-details {
   flex: 1;
   display: flex;
@@ -88,7 +87,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .popup-details h2 { font-size: 16px; margin-bottom: 6px; word-wrap: break-word; }
 .popup-details p { font-size: 13px; margin-bottom: 6px; line-height: 1.3; }
 #popup-description {
-  max-height: 100px;
+  max-height: 120px; /* increased height */
   overflow-y: auto;
   font-size: 12px;
   line-height: 1.3;
@@ -152,8 +151,8 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   border-top: none;
   background: #fff;
   z-index: 1001;
-  max-height: none;      
-  overflow: visible;    
+  max-height: none;
+  overflow: visible;
   display: none;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
   border-radius: 4px;
@@ -164,7 +163,7 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 .size-select-wrapper select { display: none; }
 .size-arrow { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); pointer-events: none; transition: .2s; }
 
-/* Force choose-size-lower & choose-size-upper fully visible */
+/* Force choose-size-lower & choose-size-upper fully visible with overflow visible */
 .choose-size-lower .dropdown-options,
 .choose-size-upper .dropdown-options {
   max-height: none !important;
@@ -177,24 +176,15 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
   .heading { text-align: center; font-size: 24px; }
   .popup-icon { width: 16px; height: 16px; }
   .popup { padding: 10px; }
-  .popup-content { padding: 15px; max-width: 90%; max-height: 100vh; } /* almost full height for tablet */
+  .popup-content { padding: 15px; max-width: 95%; max-height: 95vh; } /* increased height */
 
-  .popup-top { flex-direction: row; align-items: flex-start; text-align: left; gap: 8px; }
-  .popup-top img#popup-image { width: 42%; max-width: 140px; max-height: 45vh; } /* taller image for tablet */
+  .popup-top { flex-direction: row; align-items: stretch; text-align: left; gap: 8px; } /* match heights */
+  .popup-top img#popup-image { width: 42%; max-width: 140px; }
 
-  .popup-details { width: 58%; font-size: 11px; line-height: 1.2; }
+  .popup-details { width: 58%; font-size: 12px; line-height: 1.3; }
   .popup-details h2 { font-size: 12px; margin-bottom: 3px; }
   .popup-details p { font-size: 11px; margin-bottom: 3px; }
-  #popup-description {
-    max-height: none;
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 3;
-    -webkit-box-orient: vertical;
-    font-size: 11px;
-    line-height: 1.2;
-    margin-bottom: 4px;
-  }
+  #popup-description { max-height: none; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; font-size: 11px; line-height: 1.2; margin-bottom: 4px; }
 
   .popup-bottom { width: 100%; gap: 6px; }
   .popup-option, .custom-dropdown, .size-select-wrapper, #add-to-cart { width: 100% !important; }
@@ -205,6 +195,13 @@ body.popup-open, .body-no-scroll { overflow: hidden; }
 }
 
 @media (max-width: 480px) {
-  .popup-content { padding: 12px; max-width: 95%; max-height: 100vh; } /* almost full height for mobile */
-  .popup-top { gap: 6px; }
-  .popup-top img#popup-image { width: 45%; max-width: 120px; max-height:
+  .popup-content { padding: 12px; max-width: 95%; max-height: 95vh; } /* increased height */
+  .popup-top { gap: 6px; align-items: stretch; } /* match image & details height */
+  .popup-top img#popup-image { width: 45%; max-width: 120px; }
+
+  .popup-details h2 { font-size: 11px; margin-bottom: 2px; }
+  .popup-details p, .popup-option label, .dropdown-button, .dropdown-option { font-size: 11px; padding: 6px 8px; }
+  #popup-description { font-size: 11px; -webkit-line-clamp: 3; line-height: 1.2; margin-bottom: 3px; }
+  .color-name { font-size: 10px; }
+  #popup-close { width: 24px; height: 24px; font-size: 14px; line-height: 24px; }
+}
