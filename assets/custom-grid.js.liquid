@@ -20,10 +20,10 @@ function initCustomGrid() {
   const upperArrow = els.popup?.dataset.arrowUpper;
 
   let currentProduct = null,
-    selectedColor = null,
-    selectedSize = null,
-    currentDropdown = null,
-    currentCustomDropdown = null;
+      selectedColor = null,
+      selectedSize = null,
+      currentDropdown = null,
+      currentCustomDropdown = null;
 
   // ---------- Helpers ----------
   const formatMoney = (cents) =>
@@ -44,12 +44,27 @@ function initCustomGrid() {
   const cleanupDropdown = () => {
     currentCustomDropdown?.remove();
     currentCustomDropdown = null;
+    currentDropdown = null;
+    if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
   };
 
   const closePopup = () => {
     els.popup.classList.add("hidden");
     document.body.classList.remove("popup-open");
     preventBodyScroll(false);
+
+    // Clear dropdown and containers
+    if (els.sizeOptionContainer) {
+      els.sizeOptionContainer.style.display = "none";
+      const wrapper = els.sizeOptionContainer.querySelector(".size-select-wrapper");
+      if (wrapper) wrapper.innerHTML = "";
+    }
+    if (els.colorOptionContainer) {
+      els.colorOptionContainer.style.display = "none";
+      els.colorSwatchesContainer.innerHTML = "";
+      els.hiddenColorSelect.innerHTML = "";
+    }
+
     cleanupDropdown();
   };
 
@@ -155,12 +170,15 @@ function initCustomGrid() {
         : "";
       els.popupDescription.innerHTML = data.description || "";
 
+      // Reset containers and dropdowns
       els.hiddenColorSelect.innerHTML = "";
       els.colorSwatchesContainer.innerHTML = "";
       els.colorOptionContainer.style.display = "none";
       els.sizeOptionContainer.style.display = "none";
-      selectedColor = selectedSize = null;
+      const wrapper = els.sizeOptionContainer.querySelector(".size-select-wrapper");
+      if (wrapper) wrapper.innerHTML = "";
       cleanupDropdown();
+      selectedColor = selectedSize = null;
 
       data.options?.forEach((option) => {
         const name = option.name.toLowerCase();
