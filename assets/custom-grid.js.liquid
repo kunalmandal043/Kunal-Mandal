@@ -7,116 +7,138 @@ function initCustomGrid() {
     popupTitle: document.getElementById("popup-title"),
     popupPrice: document.getElementById("popup-price"),
     popupDescription: document.getElementById("popup-description"),
-    addToCartBtn: document.getElementById("add-to-cart"),
     colorOptionContainer: document.getElementById("color-option-container"),
     sizeOptionContainer: document.getElementById("size-option-container"),
     colorSwatchesContainer: document.getElementById("color-swatches"),
     hiddenColorSelect: document.getElementById("color-select"),
+    sizeSelectWrapper: document.querySelector(".size-select-wrapper"),
     sizeArrow: document.querySelector(".size-arrow"),
+    addToCartBtn: document.getElementById("add-to-cart"),
   };
 
-  const placeholderSrc = els.popup?.dataset.placeholder || "";
-  const lowerArrow = els.popup?.dataset.arrowLower;
-  const upperArrow = els.popup?.dataset.arrowUpper;
+  const placeholderSrc = els.popup.dataset.placeholder;
+  const lowerArrow = els.popup.dataset.arrowLower;
+  const upperArrow = els.popup.dataset.arrowUpper;
 
   let currentProduct = null;
   let selectedColor = null;
   let selectedSize = null;
   let currentDropdown = null;
-  let currentCustomDropdown = null;
 
   const formatMoney = (cents) =>
     (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
 
+  const getVariantOptionsArray = (v) =>
+    !v ? [] : v.options?.length ? v.options : [v.option1, v.option2, v.option3].filter(Boolean);
+
+  const findVariant = (product, selectedOptions) =>
+    product?.variants?.find((v) => {
+      const vOpts = getVariantOptionsArray(v);
+      return vOpts.every((opt, i) => selectedOptions[i] === opt);
+    }) || null;
+
+  const preventBodyScroll = (state) => document.body.classList.toggle("body-no-scroll", state);
+
   const cleanupDropdown = () => {
-    if (currentCustomDropdown) currentCustomDropdown.remove();
-    currentCustomDropdown = null;
+    const existing = els.sizeSelectWrapper.querySelector(".custom-dropdown");
+    if (existing) existing.remove();
     currentDropdown = null;
-    // Always reset arrow to lower
-    if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
+    if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // always reset arrow
   };
 
-  const closePopup = () => {
-    els.popup.classList.add("hidden");
-    document.body.classList.remove("popup-open");
-    cleanupDropdown();
-  };
-
-  const createCustomDropdown = (container, options, placeholder) => {
-    cleanupDropdown();
-
-    const dropdownContainer = document.createElement("div");
-    dropdownContainer.className = "custom-dropdown";
-    currentCustomDropdown = dropdownContainer;
-
-    const button = Object.assign(document.createElement("button"), {
-      className: "dropdown-button placeholder",
-      textContent: placeholder,
+  const updatePrice = () => {
+    if (!currentProduct) return;
+    const opts = currentProduct.options.map((o) => {
+      const name = o.name.toLowerCase();
+      if (name === "color") return selectedColor;
+      if (name === "size") return selectedSize || o.values[0];
+      return o.values?.[0] || null;
     });
+    const v = findVariant(currentProduct, opts);
+    if (v) els.popupPrice.textContent = formatMoney(+v.price * 100);
+  };
+
+  // Create the size dropdown
+  const createDropdown = (container, options, placeholder) => {
+    cleanupDropdown();
+
+    const dropdown = document.createElement("div");
+    dropdown.className = "custom-dropdown";
+
+    const button = document.createElement("button");
+    button.className = "dropdown-button placeholder";
+    button.textContent = placeholder;
 
     const optionsContainer = document.createElement("div");
     optionsContainer.className = "dropdown-options";
 
-    options.forEach((option) => {
-      const optEl = document.createElement("div");
-      optEl.className = "dropdown-option";
-      optEl.textContent = option;
+    options.forEach((opt) => {
+      const div = document.createElement("div");
+      div.className = "dropdown-option";
+      div.textContent = opt;
 
-      optEl.addEventListener("click", () => {
+      div.addEventListener("click", () => {
         optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
-        optEl.classList.add("selected");
-        button.textContent = option;
+        div.classList.add("selected");
+        button.textContent = opt;
         button.classList.remove("placeholder");
-        selectedSize = option;
         optionsContainer.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // back to lower
+        els.sizeArrow.src = lowerArrow;
+        selectedSize = opt;
         currentDropdown = null;
+        updatePrice();
       });
 
-      optionsContainer.appendChild(optEl);
+      optionsContainer.appendChild(div);
     });
 
     button.addEventListener("click", (e) => {
       e.stopPropagation();
       const isVisible = optionsContainer.style.display === "block";
 
+      if (currentDropdown && currentDropdown !== optionsContainer) {
+        currentDropdown.style.display = "none";
+        els.sizeArrow.src = lowerArrow;
+      }
+
       if (!isVisible) {
         optionsContainer.style.display = "block";
-        if (els.sizeArrow) els.sizeArrow.src = upperArrow; // show upper arrow
+        els.sizeArrow.src = upperArrow;
         currentDropdown = optionsContainer;
+        selectedSize = null;
+        button.textContent = placeholder;
+        button.classList.add("placeholder");
+        optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
       } else {
         optionsContainer.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // show lower arrow
+        els.sizeArrow.src = lowerArrow;
         currentDropdown = null;
       }
     });
 
     document.addEventListener("click", (e) => {
-      if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === "block") {
+      if (!dropdown.contains(e.target) && optionsContainer.style.display === "block") {
         optionsContainer.style.display = "none";
-        if (els.sizeArrow) els.sizeArrow.src = lowerArrow;
+        els.sizeArrow.src = lowerArrow;
         currentDropdown = null;
       }
     });
 
-    dropdownContainer.append(button, optionsContainer);
-    const select = container.querySelector("select");
-    select ? container.replaceChild(dropdownContainer, select) : container.appendChild(dropdownContainer);
-    return dropdownContainer;
+    dropdown.append(button, optionsContainer);
+    container.appendChild(dropdown);
   };
 
+  // Show the popup
   const showProductPopup = async (handle) => {
     try {
       const data = await (await fetch(`/products/${handle}.js`)).json();
       currentProduct = data;
 
-      // set info
       els.popupImage.src = data.images?.[0] || placeholderSrc;
       els.popupTitle.textContent = data.title || "";
       els.popupPrice.textContent = data.variants?.[0] ? formatMoney(+data.variants[0].price * 100) : "";
       els.popupDescription.innerHTML = data.description || "";
 
-      // reset options
       els.hiddenColorSelect.innerHTML = "";
       els.colorSwatchesContainer.innerHTML = "";
       els.colorOptionContainer.style.display = "none";
@@ -128,12 +150,13 @@ function initCustomGrid() {
         const name = option.name.toLowerCase();
         if (name === "size") {
           els.sizeOptionContainer.style.display = "block";
-          if (els.sizeArrow) els.sizeArrow.src = lowerArrow; // reset arrow
-          createCustomDropdown(els.sizeOptionContainer.querySelector(".size-select-wrapper"), option.values, "Choose your size");
+          createDropdown(els.sizeSelectWrapper, option.values, "Choose your size");
         } else if (name === "color") {
           els.colorOptionContainer.style.display = "block";
           option.values.forEach((val, i) => {
-            const opt = Object.assign(document.createElement("option"), { value: val, textContent: val });
+            const opt = document.createElement("option");
+            opt.value = val;
+            opt.textContent = val;
             els.hiddenColorSelect.appendChild(opt);
 
             const colorOption = document.createElement("div");
@@ -152,22 +175,37 @@ function initCustomGrid() {
             }
 
             colorOption.addEventListener("click", () => {
-              els.colorSwatchesContainer.querySelectorAll(".color-option").forEach((o) => o.classList.remove("selected"));
+              els.colorSwatchesContainer.querySelectorAll(".color-option").forEach((o) => {
+                o.classList.remove("selected");
+                o.setAttribute("aria-selected", "false");
+              });
               colorOption.classList.add("selected");
+              colorOption.setAttribute("aria-selected", "true");
               selectedColor = val;
               els.hiddenColorSelect.value = val;
+              updatePrice();
             });
 
             els.colorSwatchesContainer.appendChild(colorOption);
           });
+          updatePrice();
         }
       });
 
       els.popup.classList.remove("hidden");
       document.body.classList.add("popup-open");
+      els.sizeArrow.src = lowerArrow; // reset arrow every open
+      preventBodyScroll(true);
     } catch (err) {
       console.error("Error loading product:", err);
     }
+  };
+
+  const closePopup = () => {
+    els.popup.classList.add("hidden");
+    document.body.classList.remove("popup-open");
+    cleanupDropdown();
+    preventBodyScroll(false);
   };
 
   els.gridItems.forEach((item) => {
@@ -179,8 +217,9 @@ function initCustomGrid() {
 
   els.popupClose?.addEventListener("click", closePopup);
   els.popup?.addEventListener("click", (e) => e.target === els.popup && closePopup());
-}
 
+  // Add to Cart logic here (unchanged)
+}
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", initCustomGrid);
 } else initCustomGrid();
