@@ -192,6 +192,7 @@ function initCustomGrid() {
   });
 
   if (sizeSelectWrapper && sizeSelectArrow) {
+    sizeSelectArrow.src = upperArrow;
     // Update arrow on focus/blur
     sizeSelect.addEventListener('focus', () => {
       sizeSelectArrow.src = upperArrow;
@@ -203,8 +204,8 @@ function initCustomGrid() {
     
     // Keep the click handler for fallback
     sizeSelectWrapper.addEventListener("click", () => {
-      const isUpper = sizeSelectArrow.src.includes('choose-size-upper.svg');
-      sizeSelectArrow.src = isUpper ? lowerArrow :upperArrow ;
+      const isLower = sizeSelectArrow.src.includes('choose-size-lower.svg');
+      sizeSelectArrow.src = isLower ? upperArrow :lowerArrow ;
     });
   }
 
