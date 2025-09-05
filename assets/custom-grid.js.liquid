@@ -22,8 +22,7 @@ function initCustomGrid() {
   let currentProduct = null,
       selectedColor = null,
       selectedSize = null,
-      currentDropdown = null,
-      currentCustomDropdown = null;
+      currentDropdown = null;
 
   // ---------- Helpers ----------
   const formatMoney = (cents) =>
@@ -42,8 +41,7 @@ function initCustomGrid() {
     document.body.classList.toggle("body-no-scroll", state);
 
   const cleanupDropdown = () => {
-    currentCustomDropdown?.remove();
-    currentCustomDropdown = null;
+    currentDropdown = null;
   };
 
   const closePopup = () => {
@@ -67,82 +65,87 @@ function initCustomGrid() {
 
   // ---------- Dropdown ----------
   function createCustomDropdown(container, options, placeholder) {
-    // Remove any previous dropdown inside the container
-    const existingDropdown = container.querySelector(".custom-dropdown");
-    if (existingDropdown) existingDropdown.remove();
+    let dropdownContainer = container.querySelector(".custom-dropdown");
 
-    const dropdownContainer = document.createElement("div");
-    dropdownContainer.className = "custom-dropdown";
-    currentCustomDropdown = dropdownContainer;
+    if (!dropdownContainer) {
+      dropdownContainer = document.createElement("div");
+      dropdownContainer.className = "custom-dropdown";
 
-    const button = Object.assign(document.createElement("button"), {
-      className: "dropdown-button placeholder",
-      textContent: placeholder,
-    });
-
-    const optionsContainer = document.createElement("div");
-    optionsContainer.className = "dropdown-options";
-
-    options.forEach((option) => {
-      const optEl = document.createElement("div");
-      optEl.className = "dropdown-option";
-      optEl.textContent = option;
-      optEl.dataset.value = option;
-
-      optEl.addEventListener("click", () => {
-        optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
-        optEl.classList.add("selected");
-        button.textContent = option;
-        button.classList.remove("placeholder");
-        selectedSize = option;
-        optionsContainer.style.display = "none";
-        els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-        updatePrice();
+      const button = Object.assign(document.createElement("button"), {
+        className: "dropdown-button placeholder",
+        textContent: placeholder,
       });
 
-      optionsContainer.appendChild(optEl);
-    });
+      const optionsContainer = document.createElement("div");
+      optionsContainer.className = "dropdown-options";
 
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      const isVisible = optionsContainer.style.display === "block";
-      if (currentDropdown && currentDropdown !== optionsContainer) {
-        currentDropdown.style.display = "none";
-        els.sizeArrow.src = lowerArrow;
-      }
-      if (!isVisible) {
-        optionsContainer.style.display = "block";
-        els.sizeArrow.src = upperArrow;
-        preventBodyScroll(true);
-        currentDropdown = optionsContainer;
-        selectedSize = null;
-        button.textContent = placeholder;
-        button.classList.add("placeholder");
-        optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
-      } else {
-        optionsContainer.style.display = "none";
-        els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-      }
-    });
+      options.forEach((option) => {
+        const optEl = document.createElement("div");
+        optEl.className = "dropdown-option";
+        optEl.textContent = option;
+        optEl.dataset.value = option;
 
-    document.addEventListener("click", (e) => {
-      if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === "block") {
-        optionsContainer.style.display = "none";
-        els.sizeArrow.src = lowerArrow;
-        preventBodyScroll(false);
-        currentDropdown = null;
-      }
-    });
+        optEl.addEventListener("click", () => {
+          optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
+          optEl.classList.add("selected");
+          button.textContent = option;
+          button.classList.remove("placeholder");
+          selectedSize = option;
+          optionsContainer.style.display = "none";
+          els.sizeArrow.src = lowerArrow;
+          preventBodyScroll(false);
+          currentDropdown = null;
+          updatePrice();
+        });
 
-    dropdownContainer.append(button, optionsContainer);
+        optionsContainer.appendChild(optEl);
+      });
 
-    const select = container.querySelector("select");
-    if (select) container.replaceChild(dropdownContainer, select);
-    else container.appendChild(dropdownContainer);
+      button.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const isVisible = optionsContainer.style.display === "block";
+        if (currentDropdown && currentDropdown !== optionsContainer) {
+          currentDropdown.style.display = "none";
+          els.sizeArrow.src = lowerArrow;
+        }
+        if (!isVisible) {
+          optionsContainer.style.display = "block";
+          els.sizeArrow.src = upperArrow;
+          preventBodyScroll(true);
+          currentDropdown = optionsContainer;
+          button.textContent = placeholder;
+          button.classList.add("placeholder");
+          optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
+        } else {
+          optionsContainer.style.display = "none";
+          els.sizeArrow.src = lowerArrow;
+          preventBodyScroll(false);
+          currentDropdown = null;
+        }
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!dropdownContainer.contains(e.target) && optionsContainer.style.display === "block") {
+          optionsContainer.style.display = "none";
+          els.sizeArrow.src = lowerArrow;
+          preventBodyScroll(false);
+          currentDropdown = null;
+        }
+      });
+
+      dropdownContainer.append(button, optionsContainer);
+      container.appendChild(dropdownContainer);
+    } else {
+      // Reset existing dropdown on popup reopen
+      const button = dropdownContainer.querySelector(".dropdown-button");
+      const optionsContainer = dropdownContainer.querySelector(".dropdown-options");
+      button.textContent = placeholder;
+      button.classList.add("placeholder");
+      optionsContainer.style.display = "none";
+      optionsContainer.querySelectorAll(".dropdown-option").forEach((o) => o.classList.remove("selected"));
+      selectedSize = null;
+      els.sizeArrow.src = lowerArrow;
+    }
 
     return dropdownContainer;
   }
@@ -156,7 +159,9 @@ function initCustomGrid() {
 
       els.popupImage.src = data.images?.[0] || placeholderSrc;
       els.popupTitle.textContent = data.title || "";
-      els.popupPrice.textContent = data.variants?.[0] ? formatMoney(+data.variants[0].price * 100) : "";
+      els.popupPrice.textContent = data.variants?.[0]
+        ? formatMoney(+data.variants[0].price * 100)
+        : "";
       els.popupDescription.innerHTML = data.description || "";
 
       els.hiddenColorSelect.innerHTML = "";
