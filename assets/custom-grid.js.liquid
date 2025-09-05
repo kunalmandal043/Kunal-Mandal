@@ -97,21 +97,31 @@ function initCustomGrid() {
     optionElement.dataset.value = option;
 
     optionElement.addEventListener('click', () => {
-      // Select size
-      optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
-      optionElement.classList.add('selected');
+  // Reset all options
+  optionsContainer.querySelectorAll('.dropdown-option').forEach(opt => opt.classList.remove('selected'));
+  optionElement.classList.add('selected');
 
-      button.textContent = option;
-      button.classList.remove('placeholder');
-      selectedSize = option;
+  // Set size
+  button.textContent = option;
+  button.classList.remove('placeholder');
+  selectedSize = option;
 
-      optionsContainer.style.display = 'none';
-      sizeArrow.src = lowerArrow;
-      preventBodyScroll(false);
-      currentDropdown = null;
+  // Close dropdown
+  optionsContainer.style.display = 'none';
+  sizeArrow.src = lowerArrow;
+  preventBodyScroll(false);
+  currentDropdown = null;
 
-      updatePrice();
-    });
+  // 👉 Scroll the selected option into center
+  optionElement.scrollIntoView({
+    block: "center",
+    inline: "nearest",
+    behavior: "smooth"
+  });
+
+  updatePrice();
+});
+
 
     optionsContainer.appendChild(optionElement);
   });
