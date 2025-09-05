@@ -1,3 +1,4 @@
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -68,7 +69,7 @@ body.popup-open {
   left: 0;
   width: 100%;
   height: 100%;
-  border: solid 1px;
+  border:solid 1px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -314,11 +315,6 @@ body.popup-open {
   max-height: 200px;
   overflow-y: auto;
   display: none;
-
-  /* scroll behavior */
-  scroll-snap-type: y mandatory;
-  -webkit-overflow-scrolling: touch;
-
   /* Hide scrollbar */
   scrollbar-width: none; /* Firefox */
 }
@@ -332,7 +328,6 @@ body.popup-open {
   cursor: pointer;
   text-align: center;
   transition: all 0.2s ease;
-  scroll-snap-align: center; /* ensures selected option snaps in center */
 }
 
 .dropdown-option:hover {
@@ -363,6 +358,8 @@ body.popup-open {
   pointer-events: none;
   transition: transform 0.2s ease;
 }
+
+
 
 /* Class to prevent body scrolling when dropdown is open */
 .body-no-scroll {
