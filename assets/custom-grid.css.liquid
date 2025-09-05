@@ -124,6 +124,11 @@
   margin-bottom: 10px;
 }
 
+.popup-details .popup-price {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
 .popup-details p {
   margin-bottom: 10px;
   font-family: 'Jost', sans-serif;
@@ -313,12 +318,11 @@
     overflow: hidden;
   }
 
-  /* Side-by-side layout with stretched image */
   .popup-top {
     display: flex;
     flex-direction: row;
-    gap: 15px;
-    align-items: flex-start; /* allow description to be smaller */
+    gap: 10px;
+    align-items: flex-start; /* description smaller than image */
   }
 
   .popup-top img#popup-image {
@@ -330,8 +334,24 @@
 
   .popup-details {
     width: 50%;
-    height: 40%; /* smaller height than image */
+    height: 40%; /* smaller height */
     overflow-y: auto;
+  }
+
+  /* Smaller text and minimal gaps */
+  .popup-details h2 {
+    font-size: 14px;
+    margin-bottom: 2px;
+  }
+
+  .popup-details .popup-price {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .popup-details p {
+    font-size: 12px;
+    margin-bottom: 2px;
   }
 
   .popup-bottom {
@@ -366,6 +386,21 @@
 
   .popup-details {
     width: 50%;
-    height: 40%; /* smaller height than image */
+    height: 40%;
+  }
+
+  .popup-details h2 {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+
+  .popup-details .popup-price {
+    font-size: 10px;
+    margin-bottom: 2px;
+  }
+
+  .popup-details p {
+    font-size: 10px;
+    margin-bottom: 2px;
   }
 }
